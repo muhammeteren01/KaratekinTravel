@@ -1,0 +1,162 @@
+.add-tour-page {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  background: #FAF9FF;
+  padding: 37px 26px;
+}
+
+.add-tour-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.add-tour-content {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 26px;
+  display: flex;
+  gap: 48px;
+  min-height: 674px;
+}
+
+.progress-steps-container {
+  flex-shrink: 0;
+  background: transparent !important;
+}
+
+.tour-page-form-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tour-page-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 100%;
+  max-width: 581px;
+}
+
+.tour-page-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.save-continue-btn {
+  background: #24BAEC !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 12px 48px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  min-width: 245px !important;
+  justify-content: center !important;
+}
+
+.save-continue-btn:hover {
+  background: #1DA1D4 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(36, 186, 236, 0.3);
+}
+
+.save-continue-btn:active {
+  transform: translateY(0);
+}
+
+.save-continue-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(36, 186, 236, 0.2);
+}
+
+.save-continue-btn .btn-component__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+
+.save-continue-btn svg {
+  width: 7px;
+  height: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .add-tour-content {
+    flex-direction: column;
+    gap: 32px;
+  }
+  
+  .tour-page-form-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .add-tour-page {
+    padding: 20px 16px;
+  }
+  
+  .add-tour-content {
+    padding: 20px;
+    gap: 24px;
+  }
+  
+  .progress-steps-container {
+    display: none;
+  }
+  
+  .tour-page-form-container {
+    gap: 32px;
+  }
+  
+  .tour-page-form-group {
+    gap: 24px;
+  }
+  
+  .save-continue-btn {
+    width: 100% !important;
+    min-width: auto !important;
+    padding: 14px 24px !important;
+  }
+  
+  .form-actions {
+    justify-content: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-tour-page {
+    padding: 16px 12px;
+  }
+  
+  .add-tour-content {
+    padding: 16px;
+    gap: 20px;
+  }
+  
+  .tour-page-form-container {
+    gap: 24px;
+  }
+  
+  .tour-page-form-group {
+    gap: 20px;
+  }
+} 

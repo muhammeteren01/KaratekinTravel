@@ -1,0 +1,71 @@
+/* Wrapper mimicking the soft card background in the design */
+.ra-wrapper {
+  background: #FAF9FF;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.ra-header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #343C6A;
+}
+.ra-header p {
+  margin: 8px 0 16px;
+  color: #7D8FB3;
+  font-size: 15px;
+}
+
+.ra-inner {
+  background: #fff;
+  border: 1px solid #EEF2F7;
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.ra-inner-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ra-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #54B7E0;
+  background: #F2F9FF;
+  border: 1px solid #E1F2FF;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+}
+.ra-dropdown img { width: 14px; height: 8px; transition: transform .2s; }
+.ra-dropdown img.open { transform: rotate(180deg); }
+
+.ra-menu {
+  position: absolute;
+  right: 0; top: calc(100% + 6px);
+  background: #fff;
+  border: 1px solid #EEF2F7;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  min-width: 160px;
+  overflow: hidden;
+  z-index: 10;
+}
+.ra-item { padding: 10px 12px; cursor: pointer; }
+.ra-item:hover { background: #F7FBFF; }
+.ra-item.active { background: #E8F6FF; color: #24BAEC; font-weight: 600; }
+
+.ra-chart { height: 360px; }
+
+@media (max-width: 768px) {
+  .ra-header h2 { font-size: 22px; }
+  .ra-chart { height: 260px; }
+}

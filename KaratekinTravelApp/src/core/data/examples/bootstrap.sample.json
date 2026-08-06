@@ -1,0 +1,1924 @@
+{
+  "version": 2,
+  "companies": [
+    {
+      "id": "c1",
+      "name": "TurlaGitsin",
+      "logo": "asset:logo",
+      "rating": 4.6,
+      "reviewCount": 142,
+      "location": "Kastamonu, Türkiye"
+    },
+    {
+      "id": "kamil-koc",
+      "name": "Kamil Koç",
+      "logo": "asset:ob1",
+      "rating": 9.2,
+      "reviewCount": 0,
+      "about": "You will get a complete travel package on the beaches. Packages in the form of airline tickets, recommended Hotel rooms, Transportation, Have you ever been on holiday to the Greek ETC...",
+      "fullAbout": "You will get a complete travel package on the beaches. Packages in the form of airline tickets, recommended Hotel rooms, Transportation, Have you ever been on holiday to the Greek ETC... Our company has been providing excellent travel services for over 10 years. We ensure the best quality accommodations, reliable transportation, and unforgettable experiences for all our travelers. Our experienced guides will take you to the most beautiful locations and provide you with comprehensive information about each destination.",
+      "tripsLabel": "45+",
+      "participantsLabel": "350+"
+    },
+    {
+      "id": "pamukkale",
+      "name": "Pamukkale",
+      "logo": "asset:ob2",
+      "rating": 8.8,
+      "reviewCount": 0,
+      "about": "Göçebe ruhunu canlandıran özel rotalar, deneyimli rehberler ve konforlu ulaşım ile unutulmaz anlar.",
+      "fullAbout": "Pamukkale Turizm, Türkiye’nin dört bir yanında özenle hazırlanmış turlar sunar. Konforlu otobüslerimiz, tecrübeli sürücülerimiz ve güler yüzlü ekiplerimizle güvenli ve keyifli yolculuklar sağlarız. Misafir memnuniyeti odaklı anlayışımız ile farklı deneyimler sunuyoruz.",
+      "tripsLabel": "32+",
+      "participantsLabel": "220+"
+    },
+    {
+      "id": "metro-turizm",
+      "name": "Metro Turizm",
+      "logo": "asset:ob3",
+      "rating": 8.9,
+      "reviewCount": 0,
+      "about": "Türkiye’nin en çok tercih edilen rotalarında güçlü operasyon ve yüksek memnuniyet.",
+      "fullAbout": "Metro Turizm, geniş filo ve yaygın güzergah ağı ile misafirlerine hızlı ve güvenli ulaşım sağlar. Keşif tutkunları için planlanmış tur programlarımızla eşsiz deneyimler sunuyoruz.",
+      "tripsLabel": "58+",
+      "participantsLabel": "480+"
+    },
+    {
+      "id": "varan-turizm",
+      "name": "Varan Turizm",
+      "logo": "asset:ob1",
+      "rating": 8.5,
+      "reviewCount": 0,
+      "about": "Konforlu koltuk, ferah kabin ve deneyimli ekip ile sorunsuz bir seyahat deneyimi.",
+      "fullAbout": "Varan Turizm, uzun yıllara dayanan deneyimini modern yolcu ihtiyaçlarıyla birleştirerek rahat ve güvenli yolculuklar sunar. Doğa ve kültür odaklı tur programlarımızla farklı zevklere hitap ederiz.",
+      "tripsLabel": "24+",
+      "participantsLabel": "180+"
+    },
+    {
+      "id": "nilufer-turizm",
+      "name": "Nilüfer Turizm",
+      "logo": "asset:ob2",
+      "rating": 8.6,
+      "reviewCount": 0,
+      "about": "Sürdürülebilir turizm ilkeleriyle planlanan rotalarda güvenli ve keyifli seyahat.",
+      "fullAbout": "Nilüfer Turizm, müşteri memnuniyeti ve sürdürülebilirlik odaklı yaklaşımıyla fark yaratır. Zengin tur programları ve esnek planlama sayesinde beklentilerinizi karşılarız.",
+      "tripsLabel": "29+",
+      "participantsLabel": "210+"
+    }
+  ],
+  "trips": [
+    {
+      "id": "t1",
+      "companyId": "c1",
+      "title": "Amasra Günübirlik Tur",
+      "location": "Amasra, Türkiye",
+      "city": "Amasra",
+      "region": "Bartın",
+      "rating": 4.7,
+      "reviewCount": 98,
+      "pricing": { "currency": "TRY", "basePrice": 950 },
+      "dateStart": "2025-06-20T07:30:00.000Z",
+      "dateEnd": "2025-06-20T20:00:00.000Z",
+      "capacity": 50,
+      "joinedCount": 24,
+      "avatars": [],
+      "image": "asset:ob1",
+      "headerImage": "asset:ob1",
+      "gallery": ["asset:ob1", "asset:ob2", "asset:ob3"],
+      "description": "Amasra'nın eşsiz doğası ve tarihi...",
+      "details": {
+        "included": ["Ulaşım", "Rehberlik"],
+        "excluded": ["Öğle Yemeği"],
+        "specialNote": "Yanınızda rahat ayakkabı getiriniz."
+      },
+      "policy": {
+        "title": "İptal Politikası",
+        "paragraphs": ["7 gün kala %100 iade", "3 gün kala %50 iade"]
+      },
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Amasra Günübirlik",
+          "dateLabel": "20 Haziran Cuma",
+          "activities": [
+            { "time": "07:30", "label": "Kastamonu’dan Hareket" },
+            { "time": "10:30", "label": "Amasra Kalesi ve Çekiciler Çarşısı" },
+            {
+              "time": "13:00",
+              "label": "Öğle Yemeği",
+              "description": "Balık restoranında serbest menü"
+            },
+            { "time": "15:00", "label": "Amasra Limanı ve Sahil Yürüyüşü" },
+            { "time": "17:30", "label": "Fotoğraf Molası & Serbest Zaman" },
+            { "time": "19:00", "label": "Dönüş" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2",
+      "companyId": "c1",
+      "title": "Kastamonu Kültür Turu",
+      "location": "Kastamonu, Türkiye",
+      "city": "Kastamonu",
+      "region": "Kastamonu",
+      "rating": 4.6,
+      "reviewCount": 76,
+      "pricing": {
+        "currency": "TRY",
+        "basePrice": 1450,
+        "discount": { "label": "Erken Rez.", "amount": 150 }
+      },
+      "dateStart": "2025-07-10T08:00:00.000Z",
+      "dateEnd": "2025-07-12T21:00:00.000Z",
+      "capacity": 45,
+      "joinedCount": 31,
+      "avatars": [],
+      "image": "asset:ob2",
+      "headerImage": "asset:ob2",
+      "gallery": ["asset:ob2", "asset:ob3", "asset:ob1"],
+      "description": "Kastamonu'nun tarihi dokusu, yöresel lezzetleri ve doğasıyla keyifli bir kaçamak.",
+      "details": {
+        "included": ["Ulaşım", "Rehberlik", "Müze Girişleri"],
+        "excluded": ["Bazı Yemekler"],
+        "specialNote": "Rahat yürüyüş ayakkabısı önerilir."
+      },
+      "policy": {
+        "title": "İptal Politikası",
+        "paragraphs": ["7 gün kala %100 iade", "3 gün kala %50 iade"]
+      },
+      "hotels": [
+        {
+          "name": "Kastamonu Merkez Otel",
+          "stars": 4,
+          "address": "Merkez, Kastamonu",
+          "checkIn": "14:00",
+          "checkOut": "11:00",
+          "amenities": ["Wi-Fi", "Restoran", "Otopark"],
+          "description": "Şehir merkezinde, tarihi noktalara yürüme mesafesinde konforlu odalar."
+        },
+        {
+          "name": "Ilgaz Dağı Resort",
+          "stars": 4,
+          "address": "Ilgaz Dağı Milli Parkı",
+          "checkIn": "15:00",
+          "checkOut": "11:30",
+          "amenities": ["Wi-Fi", "Spa", "Manzara Terası"],
+          "description": "Doğanın içinde, dağ manzaralı odalar ve dinlenme alanları."
+        }
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Kastamonu Tarihi Merkez",
+          "dateLabel": "10 Temmuz Perşembe",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "09:00", "label": "Kastamonu Kalesi" },
+            { "time": "11:00", "label": "Nasrullah Camii ve Meydanı" },
+            { "time": "14:00", "label": "Liva Paşa Konağı Etnografya Müzesi" },
+            { "time": "17:00", "label": "Serbest Zaman" }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Doğa & Lezzet",
+          "dateLabel": "11 Temmuz Cuma",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "08:30", "label": "Otelde Kahvaltı" },
+            {
+              "time": "10:00",
+              "label": "Valla Kanyonu Seyir Terası (opsiyonel)"
+            },
+            { "time": "13:30", "label": "Yöresel Lezzetler Tadımı" },
+            { "time": "16:00", "label": "Serbest Zaman" }
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Ilgaz Dağı & Dönüş",
+          "dateLabel": "12 Temmuz Cumartesi",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "09:00", "label": "Ilgaz Tabiat Parkı Gezisi" },
+            { "time": "12:00", "label": "Piknik & Dinlenme" },
+            { "time": "15:30", "label": "Dönüş" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": 1,
+      "companyId": "kamil-koc",
+      "title": "Amasra Turu",
+      "location": "Amasra, Türkiye",
+      "city": "Amasra",
+      "region": "Kastamonu",
+      "rating": 4.7,
+      "reviewCount": 2498,
+      "price": "$720",
+      "peopleCountLabel": "+50",
+      "dateRange": "20 Haziran - 29 Haziran",
+      "dateStart": "2024-06-20T00:00:00.000Z",
+      "dateEnd": "2024-06-29T00:00:00.000Z",
+      "capacity": 50,
+      "joinedCount": 24,
+      "avatars": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format"
+      ],
+      "image": "asset:ob1",
+      "headerImage": "asset:ob1",
+      "gallery": [
+        "asset:ob1",
+        "asset:ob2",
+        "asset:ob3",
+        "asset:ob1",
+        "asset:ob2"
+      ],
+      "description": "Karadeniz'in incisi Amasra'da unutulmaz bir tatil deneyimi sizi bekliyor. Tarihi dokusu, muhteşem doğası ve eşsiz deniz manzarası ile Amasra, her yaştan ziyaretçi için ideal bir destinasyondur. Tur paketimizde uçak bileti, önerilen otel odaları ve ulaşım dahildir. Amasra Kalesi, Fatih Camii, Bedesten ve tarihi liman gibi önemli turistik noktaları ziyaret edeceksiniz. Ayrıca geleneksel Amasra balığı tatma fırsatı da bulacaksınız. Denize girebileceğiniz, fotoğraf çekebileceğiniz ve unutulmaz anılar biriktireceğiniz harika bir gezi sizi bekliyor.",
+      "pricing": {
+        "currency": "USD",
+        "basePrice": 450,
+        "discount": { "label": "Öğrenci İndirimi", "amount": 100 },
+        "extras": [
+          { "label": "Piknik ücreti", "amount": 40 },
+          { "label": "Otopark", "amount": 5 },
+          { "label": "Sucuk Ekmek", "amount": 15 }
+        ]
+      },
+      "details": {
+        "included": [
+          "Rehber : Tur için özel rehber eşliğinde bilgiler alabileceksiniz.",
+          "İkramlar : Tur esnasında 2 kere ikram servisimiz olacaktır"
+        ],
+        "excluded": [
+          "Kayak ücreti : Piknik bölgesinde mola esnasında kayak ücreti sizlere aittir."
+        ],
+        "specialNote": "Lütfen mevsim değişikliklerini göz önünde bulundurarak mont, ceket, kaban tarzı kalın eşyalarınızı yanınızda bulundurmayı unutmayın."
+      },
+      "policy": {
+        "title": "İptal ve Değişim Politikası",
+        "paragraphs": [
+          "Rezervasyon iptallerinizi, turun başlangıç tarihinden en az 7 gün önce bildirmeniz halinde ücretin tamamı iade edilir.",
+          "Tur başlangıcına 3-6 gün kala yapılan iptallerde ücretin %50’si iade edilir.",
+          "Son 72 saat içinde yapılan iptallerde herhangi bir iade yapılmaz.",
+          "Tarih değişikliği talepleri, turun başlamasına en az 5 gün kala yapılmalıdır ve uygunluk durumuna göre değerlendirilir.",
+          "Hava koşulları, yeterli katılım olmaması veya mücbir sebepler nedeniyle turun iptali durumunda, ücretin tamamı iade edilir veya isterseniz başka bir tur ile değişim yapılabilir."
+        ]
+      },
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Varış ve şehir Turu",
+          "dateLabel": "20 Haziran Perşembe",
+          "hotelIndex": 0,
+          "activities": [
+            {
+              "time": "08:30",
+              "label": "Otobüs Kalkışı",
+              "description": "Belirlenen duraktan hareket edilmesi."
+            },
+            {
+              "time": "12:00",
+              "label": "Amasra’ya Varış",
+              "description": "Otelde check-in ve kısa dinlenme."
+            },
+            { "time": "14:00", "label": "Amasra Kalesi Gezisi" },
+            { "time": "16:30", "label": "Sahil Yürüyüşü ve Fotoğraf Molası" },
+            {
+              "time": "19:30",
+              "label": "Akşam Yemeği",
+              "description": "Balık restaurantında grup yemeği."
+            }
+          ],
+          "note": "Akşam isteyenler için serbest zaman önerisi: Liman çevresi."
+        },
+        {
+          "day": 2,
+          "title": "Doğa ve Kültür",
+          "dateLabel": "21 Haziran Cuma",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "09:00", "label": "Otelde Kahvaltı" },
+            { "time": "10:30", "label": "Fatih Camii ve Bedesten Ziyareti" },
+            { "time": "13:00", "label": "Öğle Yemeği" },
+            {
+              "time": "15:00",
+              "label": "Tekne Turu",
+              "description": "Koylar ve çevre gezisi."
+            },
+            { "time": "18:00", "label": "Serbest Zaman" }
+          ],
+          "note": "Hava durumuna göre tekne turu saatlerinde esneme olabilir."
+        },
+        {
+          "day": 3,
+          "title": "Doğa Yürüyüşü & Dönüş",
+          "dateLabel": "22 Haziran Cumartesi",
+          "hotelIndex": 2,
+          "activities": [
+            { "time": "08:30", "label": "Kahvaltı" },
+            { "time": "10:00", "label": "Orman Yürüyüşü" },
+            { "time": "12:30", "label": "Öğle Molası" },
+            { "time": "14:00", "label": "Serbest Zaman / Alışveriş" },
+            { "time": "17:00", "label": "Dönüş İçin Toplanma" },
+            { "time": "18:00", "label": "Amasra’dan Ayrılış" }
+          ],
+          "note": "Hava durumuna göre yürüyüş rotası değişebilir."
+        }
+      ],
+      "hotels": [
+        {
+          "name": "Amasra Deniz Otel",
+          "stars": 4,
+          "address": "Çekiciler Çarşısı No:12, Amasra / Bartın",
+          "checkIn": "14:00",
+          "checkOut": "11:00",
+          "amenities": [
+            "Wi-Fi",
+            "Açık Büfe Kahvaltı",
+            "Deniz Manzarası",
+            "Otopark"
+          ],
+          "description": "Merkezde denize 2 dk, konforlu odalar.",
+          "phone": "+90 378 000 00 00",
+          "website": "https://amasradenizotel.example",
+          "mapLink": "https://maps.google.com/?q=Amasra"
+        },
+        {
+          "name": "Amasra Panoramik Suit",
+          "stars": 5,
+          "address": "Panaroma Sk. No:5, Amasra",
+          "checkIn": "15:00",
+          "checkOut": "11:30",
+          "amenities": ["Wi-Fi", "Teras", "Manzara", "Oda Servisi"],
+          "description": "Panoramik manzaralı seçkin konaklama.",
+          "phone": "+90 378 111 11 11"
+        },
+        {
+          "name": "Çekiciler Butik Pansiyon",
+          "stars": 3,
+          "address": "Çekiciler Çarşısı No:34, Amasra",
+          "checkIn": "13:30",
+          "checkOut": "10:30",
+          "amenities": ["Wi-Fi", "Çay Saati", "Merkeze Yakın"],
+          "description": "Sıcak butik pansiyon deneyimi.",
+          "phone": "+90 378 222 22 22"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "companyId": "metro-turizm",
+      "title": "Karadeniz Turu",
+      "location": "Karadeniz, Türkiye",
+      "city": "Karadeniz",
+      "region": "Türkiye",
+      "rating": 4.5,
+      "reviewCount": 1856,
+      "price": "$650",
+      "peopleCountLabel": "+40",
+      "dateRange": "15 Temmuz - 25 Temmuz",
+      "dateStart": "2024-07-15T00:00:00.000Z",
+      "dateEnd": "2024-07-25T00:00:00.000Z",
+      "capacity": 40,
+      "joinedCount": 18,
+      "avatars": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format"
+      ],
+      "image": "asset:ob2",
+      "headerImage": "asset:ob2",
+      "gallery": [
+        "asset:ob2",
+        "asset:ob3",
+        "asset:ob1",
+        "asset:ob2",
+        "asset:ob3"
+      ],
+      "description": "Karadeniz Turu boyunca doğal güzellikleri ve yaylaları keşfedin. Geleneksel lezzetler ve kültürel duraklarla dolu rota sizi bekliyor.",
+      "pricing": {
+        "currency": "USD",
+        "basePrice": 650,
+        "extras": [
+          { "label": "Müze Girişleri", "amount": 25 },
+          { "label": "Yemek", "amount": 30 }
+        ]
+      },
+      "details": {
+        "included": ["Profesyonel rehberlik hizmeti", "Ulaşım ve konaklama"],
+        "excluded": ["Kişisel harcamalar", "Bazı yemekler"]
+      },
+      "policy": {
+        "paragraphs": [
+          "Rezervasyon iptallerinizi, turun başlangıç tarihinden en az 7 gün önce bildirmeniz halinde ücretin tamamı iade edilir. Tur başlangıcına 3-6 gün kala yapılan iptallerde ücretin %50’si iade edilir. Son 72 saat içinde yapılan iptallerde herhangi bir iade yapılmaz.Tarih değişikliği talepleri, turun başlamasına en az 5 gün kala yapılmalıdır ve uygunluk durumuna göre değerlendirilir. </br>Hava koşulları, yeterli katılım olmaması veya mücbir sebepler nedeniyle turun iptali durumunda, ücretin tamamı iade edilir veya isterseniz başka bir tur ile değişim yapılabilir."
+        ]
+      },
+      "hotels": [
+        {
+          "name": "Trabzon City Hotel",
+          "stars": 4,
+          "address": "Trabzon Merkez",
+          "checkIn": "14:00",
+          "checkOut": "11:00",
+          "amenities": ["Wi-Fi", "Restoran", "Otopark"],
+          "description": "Şehir merkezine yürüme mesafesinde konforlu odalar."
+        },
+        {
+          "name": "Uzungöl Yayla Lodge",
+          "stars": 5,
+          "address": "Uzungöl",
+          "checkIn": "15:00",
+          "checkOut": "11:30",
+          "amenities": ["Wi-Fi", "Spa", "Manzara Terası"],
+          "description": "Yayla manzaralı huzurlu konaklama."
+        }
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Trabzon Varış & Tanışma",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "10:00", "label": "Trabzon Havalimanı Karşılama" },
+            { "time": "12:00", "label": "Sümela Manastırı Ziyareti" },
+            { "time": "16:00", "label": "Otel Check-in" },
+            { "time": "20:00", "label": "Hoşgeldin Yemeği" }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Uzungöl & Yayla Transfer",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "08:30", "label": "Kahvaltı" },
+            { "time": "10:00", "label": "Uzungöl’e Hareket" },
+            { "time": "12:00", "label": "Yayla Manzara Noktası" },
+            { "time": "15:00", "label": "Serbest Zaman" }
+          ],
+          "note": "Akşam ikinci otelde konaklama."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "companyId": "varan-turizm",
+      "title": "Sapanca Turu",
+      "location": "Sapanca, Türkiye",
+      "city": "Sapanca",
+      "region": "Sakarya",
+      "rating": 4.8,
+      "reviewCount": 3247,
+      "price": "$480",
+      "peopleCountLabel": "+30",
+      "dateRange": "10 Ağustos - 15 Ağustos",
+      "dateStart": "2024-08-10T00:00:00.000Z",
+      "dateEnd": "2024-08-15T00:00:00.000Z",
+      "capacity": 30,
+      "joinedCount": 22,
+      "avatars": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format"
+      ],
+      "image": "asset:ob3",
+      "headerImage": "asset:ob3",
+      "gallery": [
+        "asset:ob3",
+        "asset:ob2",
+        "asset:ob1",
+        "asset:ob3",
+        "asset:ob2"
+      ],
+      "description": "Sapanca Turu ile göl kenarında dinlenin, doğa yürüyüşleri yapın ve hafta sonu kaçamağının keyfini çıkarın.",
+      "pricing": { "currency": "USD", "basePrice": 480 },
+      "details": {
+        "included": ["Ulaşım", "Rehber", "İçecek ikramları"],
+        "excluded": ["Öğle yemeği"]
+      },
+      "policy": {
+        "paragraphs": ["Tur başlangıcına 5 gün kala ücretsiz iptal."]
+      },
+      "hotels": [
+        {
+          "name": "Sapanca Göl Resort",
+          "stars": 4,
+          "address": "Kırkpınar, Sapanca / Sakarya",
+          "checkIn": "14:00",
+          "checkOut": "11:00",
+          "amenities": ["Wi-Fi", "Göl Manzarası", "Spa", "Açık Havuz"],
+          "description": "Göl kenarında huzurlu konaklama, geniş odalar ve spa olanakları.",
+          "phone": "+90 264 000 00 00"
+        },
+        {
+          "name": "Maşukiye Doğa Otel",
+          "stars": 3,
+          "address": "Maşukiye, Kartepe / Kocaeli",
+          "checkIn": "15:00",
+          "checkOut": "11:30",
+          "amenities": ["Wi-Fi", "Restoran", "Otopark"],
+          "description": "Doğa ile iç içe, yürüyüş parkurlarına yakın sıcak bir işletme.",
+          "phone": "+90 262 111 11 11"
+        }
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Göl Kenarı ve Yürüyüş",
+          "dateLabel": "10 Ağustos Cumartesi",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "09:00", "label": "İstanbul'dan Hareket" },
+            { "time": "11:30", "label": "Sapanca Gölü Sahil Yürüyüşü" },
+            {
+              "time": "13:30",
+              "label": "Öğle Yemeği",
+              "description": "Göl manzaralı restoran"
+            },
+            { "time": "16:00", "label": "Serbest Zaman" },
+            { "time": "19:30", "label": "Akşam Yemeği" }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Maşukiye & Kartepe",
+          "dateLabel": "11 Ağustos Pazar",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "08:30", "label": "Otelde Kahvaltı" },
+            { "time": "10:00", "label": "Maşukiye Şelaleleri" },
+            { "time": "13:00", "label": "Zipline / Doğa Aktiviteleri" },
+            { "time": "16:00", "label": "Kartepe Seyir Terası" }
+          ],
+          "note": "Hava durumuna göre Kartepe faaliyeti değişebilir."
+        },
+        {
+          "day": 3,
+          "title": "Sapanca Köyleri & Dönüş",
+          "dateLabel": "12 Ağustos Pazartesi",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "09:00", "label": "Kırkpınar Köyü Gezisi" },
+            { "time": "12:30", "label": "Öğle Molası" },
+            { "time": "14:30", "label": "Gölde Tekne Turu (opsiyonel)" },
+            { "time": "17:00", "label": "Dönüş" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "companyId": "nilufer-turizm",
+      "title": "Bolu Turu",
+      "location": "Bolu, Türkiye",
+      "city": "Bolu",
+      "region": "Bolu",
+      "rating": 4.6,
+      "reviewCount": 1965,
+      "price": "$580",
+      "peopleCountLabel": "+35",
+      "dateRange": "5 Eylül - 12 Eylül",
+      "dateStart": "2024-09-05T00:00:00.000Z",
+      "dateEnd": "2024-09-12T00:00:00.000Z",
+      "capacity": 35,
+      "joinedCount": 19,
+      "avatars": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format"
+      ],
+      "image": "asset:ob3",
+      "headerImage": "asset:ob3",
+      "gallery": [
+        "asset:ob3",
+        "asset:ob1",
+        "asset:ob2",
+        "asset:ob3",
+        "asset:ob2"
+      ],
+      "description": "Bolu Turu ile doğanın kalbinde, göller ve ormanlarla çevrili rotalarda huzurlu bir deneyim yaşayın.",
+      "pricing": {
+        "currency": "USD",
+        "basePrice": 580,
+        "extras": [{ "label": "Milli Park Giriş", "amount": 20 }]
+      },
+      "details": {
+        "included": ["Ulaşım", "Rehber"],
+        "excluded": ["Yemekler"],
+        "specialNote": "Hava durumuna uygun giysiler getiriniz."
+      },
+      "policy": {
+        "paragraphs": ["Turdan 72 saat önce yapılan iptallerde iade yapılmaz."]
+      },
+      "hotels": [
+        {
+          "name": "Abant Göl Evi",
+          "stars": 4,
+          "address": "Abant Tabiat Parkı, Bolu",
+          "checkIn": "14:00",
+          "checkOut": "11:00",
+          "amenities": ["Wi-Fi", "Şömine", "Göl Manzarası"],
+          "description": "Abant gölüne yakın, doğa içinde sessiz bir kaçamak.",
+          "phone": "+90 374 000 00 00"
+        },
+        {
+          "name": "Bolu Merkez Otel",
+          "stars": 3,
+          "address": "Bolu Merkez",
+          "checkIn": "15:00",
+          "checkOut": "11:30",
+          "amenities": ["Wi-Fi", "Restoran", "Otopark"],
+          "description": "Şehir merkezinde pratik ve konforlu konaklama."
+        }
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Abant & Gölcük",
+          "dateLabel": "5 Eylül Perşembe",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "09:00", "label": "Abant Tabiat Parkı Gezisi" },
+            { "time": "12:30", "label": "Gölcük’te Piknik" },
+            { "time": "15:30", "label": "Göl Kenarı Yürüyüş" }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Yedigöller Milli Parkı",
+          "dateLabel": "6 Eylül Cuma",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "08:30", "label": "Kahvaltı" },
+            { "time": "10:00", "label": "Yedigöller’e Hareket" },
+            { "time": "13:00", "label": "Fotoğraf Molaları" },
+            { "time": "16:30", "label": "Serbest Zaman" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": 101,
+      "companyId": "c1",
+      "title": "Kapadokya Balon Turu",
+      "location": "Kapadokya, Türkiye",
+      "city": "Kapadokya",
+      "region": "Nevşehir",
+      "rating": 4.9,
+      "reviewCount": 4210,
+      "price": "$1200",
+      "peopleCountLabel": "+80",
+      "dateRange": "10 Ekim - 14 Ekim",
+      "dateStart": "2025-10-10T00:00:00.000Z",
+      "dateEnd": "2025-10-14T00:00:00.000Z",
+      "capacity": 80,
+      "joinedCount": 56,
+      "purchased": true,
+      "avatars": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format"
+      ],
+      "image": "asset:ob2",
+      "headerImage": "asset:ob2",
+      "gallery": [
+        "asset:ob2",
+        "asset:ob1",
+        "asset:ob2",
+        "asset:ob3",
+        "asset:ob2",
+        "asset:ob2",
+        "asset:ob2"
+      ],
+      "description": "Kapadokya Balon Turu ile gün doğumunda gökyüzüne yükselin. Peribacaları arasında benzersiz manzaralar eşliğinde unutulmaz bir deneyim yaşayın.",
+      "pricing": {
+        "currency": "USD",
+        "basePrice": 1200,
+        "extras": [
+          { "label": "Balon ücreti", "amount": 200 },
+          { "label": "Transfer", "amount": 50 }
+        ]
+      },
+      "details": {
+        "included": ["Rehber", "Konaklama", "Transfer"],
+        "excluded": ["Bazı yemekler"]
+      },
+      "policy": {
+        "paragraphs": ["Hava şartlarına bağlı olarak değişiklik gösterebilir."]
+      },
+      "hotels": [
+        {
+          "name": "Göreme Cave Suites",
+          "stars": 4,
+          "address": "Göreme, Nevşehir",
+          "checkIn": "14:00",
+          "checkOut": "11:00",
+          "amenities": ["Wi-Fi", "Teras", "Vadi Manzarası"],
+          "description": "Peribacaları manzaralı mağara odalarda özgün konaklama.",
+          "phone": "+90 384 000 00 00"
+        },
+        {
+          "name": "Uçhisar Panorama Hotel",
+          "stars": 5,
+          "address": "Uçhisar, Nevşehir",
+          "checkIn": "15:00",
+          "checkOut": "11:30",
+          "amenities": ["Wi-Fi", "Spa", "Restoran"],
+          "description": "Uçhisar Kalesi’ne yakın, lüks olanaklar ve geniş teras."
+        }
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Varış & Göreme Açık Hava Müzesi",
+          "dateLabel": "10 Ekim Cuma",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "09:00", "label": "Kapadokya’ya Varış" },
+            { "time": "11:00", "label": "Göreme Açık Hava Müzesi Ziyareti" },
+            { "time": "15:00", "label": "Aşk Vadisi Kısa Yürüyüş" }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Balon & Yeraltı Şehri",
+          "dateLabel": "11 Ekim Cumartesi",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "05:30", "label": "Gün Doğumu Balon Turu" },
+            { "time": "10:30", "label": "Kaymaklı Yeraltı Şehri" },
+            { "time": "14:30", "label": "Avanos Çanak Atölyesi" }
+          ],
+          "note": "Balon uçuşu hava şartlarına bağlıdır."
+        },
+        {
+          "day": 3,
+          "title": "Ihlara Vadisi & Serbest Zaman",
+          "dateLabel": "12 Ekim Pazar",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "08:00", "label": "Ihlara Vadisi Yürüyüşü" },
+            { "time": "13:00", "label": "Belisırma’da Öğle Yemeği" },
+            { "time": "16:00", "label": "Serbest Zaman" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "companyId": "c1",
+      "title": "Likya Yolu Trekking",
+      "location": "Fethiye, Türkiye",
+      "city": "Fethiye",
+      "region": "Muğla",
+      "rating": 4.8,
+      "reviewCount": 3120,
+      "price": "$950",
+      "peopleCountLabel": "+60",
+      "dateRange": "22 Ekim - 29 Ekim",
+      "dateStart": "2025-10-22T00:00:00.000Z",
+      "dateEnd": "2025-10-29T00:00:00.000Z",
+      "capacity": 60,
+      "joinedCount": 41,
+      "purchased": true,
+      "avatars": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format"
+      ],
+      "image": "asset:ob3",
+      "headerImage": "asset:ob3",
+      "gallery": [
+        "asset:ob3",
+        "asset:ob3",
+        "asset:ob2",
+        "asset:ob1",
+        "asset:ob3"
+      ],
+      "description": "Likya Yolu boyunca eşsiz koylar ve antik kentler arasında yürüyüşler yapın. Doğa ve tarih bir arada.",
+      "pricing": { "currency": "USD", "basePrice": 950 },
+      "details": {
+        "included": ["Rehberlik", "Kamp malzemeleri (seçili paketlerde)"],
+        "excluded": ["Ulaşım"],
+        "specialNote": "Zorlu parkurlar için uygun ekipman getiriniz."
+      },
+      "policy": {
+        "paragraphs": [
+          "İptal koşulları parkur ve tarihlere göre farklılık gösterebilir."
+        ]
+      },
+      "hotels": [
+        {
+          "name": "Fethiye Marina Hotel",
+          "stars": 4,
+          "address": "Fethiye Merkez",
+          "checkIn": "14:00",
+          "checkOut": "11:00",
+          "amenities": ["Wi-Fi", "Havuz", "Restoran"],
+          "description": "Marinaya yakın, yürüyüş sonrası dinlenmek için ideal."
+        },
+        {
+          "name": "Faralya Bungalow Lodge",
+          "stars": 3,
+          "address": "Faralya, Muğla",
+          "checkIn": "15:00",
+          "checkOut": "11:30",
+          "amenities": ["Wi-Fi", "Doğa Manzarası"],
+          "description": "Likya parkurlarına yakın bungalov konaklama."
+        }
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Fethiye – Likya Başlangıç",
+          "dateLabel": "22 Ekim Çarşamba",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "10:00", "label": "Kayıt & Ekipman Kontrol" },
+            { "time": "13:00", "label": "Kısa Parkur Isınma Yürüyüşü" },
+            { "time": "19:00", "label": "Takım Tanışma Toplantısı" }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Butterfly Valley Seyir – Faralya",
+          "dateLabel": "23 Ekim Perşembe",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "08:30", "label": "Kahvaltı" },
+            { "time": "10:00", "label": "Kelebekler Vadisi Seyir Terası" },
+            { "time": "15:00", "label": "Faralya’ya Yürüyüş" }
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Kabak Koyu Parkuru",
+          "dateLabel": "24 Ekim Cuma",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "09:00", "label": "Kabak Koyu’na İniş" },
+            { "time": "13:00", "label": "Deniz Mola" },
+            { "time": "16:30", "label": "Dönüş Yürüyüşü" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "companyId": "c1",
+      "title": "Karadeniz Yaylaları",
+      "location": "Rize, Türkiye",
+      "city": "Rize",
+      "region": "Rize",
+      "rating": 4.7,
+      "reviewCount": 2890,
+      "price": "$880",
+      "peopleCountLabel": "+45",
+      "dateRange": "5 Kasım - 12 Kasım",
+      "dateStart": "2025-11-05T00:00:00.000Z",
+      "dateEnd": "2025-11-12T00:00:00.000Z",
+      "capacity": 50,
+      "joinedCount": 33,
+      "avatars": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format"
+      ],
+      "image": "asset:ob1",
+      "headerImage": "asset:ob1",
+      "gallery": [
+        "asset:ob1",
+        "asset:ob2",
+        "asset:ob3",
+        "asset:ob1",
+        "asset:ob2"
+      ],
+      "description": "Karadeniz Yaylaları turunda sisli tepeler, şelaleler ve yayla kültürünü keşfedin.",
+      "pricing": {
+        "currency": "USD",
+        "basePrice": 880,
+        "extras": [{ "label": "Yayla Giriş", "amount": 30 }]
+      },
+      "details": {
+        "included": ["Rehber", "Ulaşım"],
+        "excluded": ["Öğle yemeği"]
+      },
+      "policy": {
+        "paragraphs": ["Hava durumuna bağlı değişiklikler olabilir."]
+      },
+      "hotels": [
+        {
+          "name": "Ayder Yayla Evi",
+          "stars": 4,
+          "address": "Ayder Yaylası, Rize",
+          "checkIn": "14:00",
+          "checkOut": "11:00",
+          "amenities": ["Wi-Fi", "Termal", "Yayla Manzarası"],
+          "description": "Yayla havasında konforlu odalar ve termal imkanlar."
+        },
+        {
+          "name": "Rize Merkez Otel",
+          "stars": 3,
+          "address": "Rize Merkez",
+          "checkIn": "15:00",
+          "checkOut": "11:30",
+          "amenities": ["Wi-Fi", "Restoran"],
+          "description": "Merkezde pratik konaklama, sahile yakın."
+        }
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Rize – Çamlıhemşin – Ayder",
+          "dateLabel": "5 Kasım Çarşamba",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "10:00", "label": "Rize’ye Varış" },
+            { "time": "12:00", "label": "Çamlıhemşin & Fırtına Deresi" },
+            { "time": "16:00", "label": "Ayder Yaylası Gezisi" }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Zil Kale & Palovit Şelalesi",
+          "dateLabel": "6 Kasım Perşembe",
+          "hotelIndex": 0,
+          "activities": [
+            { "time": "09:00", "label": "Zil Kale Ziyareti" },
+            { "time": "12:30", "label": "Palovit Şelalesi" },
+            { "time": "15:30", "label": "Serbest Zaman" }
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Rize Merkez & Dönüş",
+          "dateLabel": "7 Kasım Cuma",
+          "hotelIndex": 1,
+          "activities": [
+            { "time": "10:00", "label": "Rize Müzesi" },
+            { "time": "13:00", "label": "Sahil Yürüyüşü" },
+            { "time": "16:00", "label": "Dönüş" }
+          ]
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "u1",
+      "name": "Ali Veli",
+      "email": "ali@example.com",
+      "location": "Çankırı, Türkiye",
+      "phone": "555 123 45 67"
+    }
+  ],
+  "reservations": [
+    {
+      "id": "r1",
+      "userId": "u1",
+      "tripId": "t1",
+      "companyId": "c1",
+      "seatNumbers": [12],
+      "totalAmount": 950,
+      "currency": "TRY",
+      "status": "confirmed",
+      "createdAt": "2025-05-17T10:00:00.000Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev1",
+      "tripId": "t1",
+      "userId": "u1",
+      "rating": 5,
+      "comment": "Harika bir turdu!",
+      "createdAt": "2025-05-21T12:00:00.000Z"
+    }
+  ],
+  "supportingData": {
+    "userState": [
+      { "userId": "u1", "savedTripIds": ["t1"], "purchasedTripIds": [1, 2] }
+    ],
+    "featuredTripIds": ["t1", "t2", 101, 102, 103],
+    "calendarTrips": [
+      {
+        "id": 1,
+        "title": "Amasra Turu",
+        "location": "Amasra, Türkiye",
+        "date": "2025-07-26",
+        "time": "08:30",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 2,
+        "title": "Kastamonu Turu",
+        "location": "Kastamonu, Türkiye",
+        "date": "2025-10-10",
+        "time": "07:45",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 3,
+        "title": "Ege Turu",
+        "location": "İzmir, Türkiye",
+        "date": "2025-12-08",
+        "time": "09:30",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 4,
+        "title": "Sapanca Turu",
+        "location": "Sapanca, Türkiye",
+        "date": "2025-11-22",
+        "time": "09:00",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 5,
+        "title": "Bolu Turu",
+        "location": "Bolu, Türkiye",
+        "date": "2025-11-23",
+        "time": "10:15",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 6,
+        "title": "Kapadokya Turu",
+        "location": "Nevşehir, Türkiye",
+        "date": "2025-11-25",
+        "time": "06:00",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 7,
+        "title": "Pamukkale Turu",
+        "location": "Denizli, Türkiye",
+        "date": "2025-11-28",
+        "time": "08:45",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 8,
+        "title": "Antalya Turu",
+        "location": "Antalya, Türkiye",
+        "date": "2025-12-01",
+        "time": "09:15",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 9,
+        "title": "Trabzon Turu",
+        "location": "Trabzon, Türkiye",
+        "date": "2025-12-05",
+        "time": "07:30",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 10,
+        "title": "Bodrum Turu",
+        "location": "Muğla, Türkiye",
+        "date": "2025-12-10",
+        "time": "10:00",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 11,
+        "title": "Marmaris Turu",
+        "location": "Muğla, Türkiye",
+        "date": "2025-12-12",
+        "time": "08:00",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 12,
+        "title": "Fethiye Turu",
+        "location": "Muğla, Türkiye",
+        "date": "2025-12-15",
+        "time": "09:45",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 13,
+        "title": "Kaş Turu",
+        "location": "Antalya, Türkiye",
+        "date": "2025-12-18",
+        "time": "08:20",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 14,
+        "title": "Olympos Turu",
+        "location": "Antalya, Türkiye",
+        "date": "2025-12-20",
+        "time": "07:00",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 15,
+        "title": "Side Turu",
+        "location": "Antalya, Türkiye",
+        "date": "2025-12-22",
+        "time": "09:30",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 16,
+        "title": "Kayseri Turu",
+        "location": "Kayseri, Türkiye",
+        "date": "2026-01-05",
+        "time": "08:15",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 17,
+        "title": "Konya Turu",
+        "location": "Konya, Türkiye",
+        "date": "2026-01-08",
+        "time": "09:00",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 18,
+        "title": "Eskişehir Turu",
+        "location": "Eskişehir, Türkiye",
+        "date": "2026-01-12",
+        "time": "08:45",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 19,
+        "title": "Bursa Turu",
+        "location": "Bursa, Türkiye",
+        "date": "2026-01-15",
+        "time": "07:30",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 20,
+        "title": "Çanakkale Turu",
+        "location": "Çanakkale, Türkiye",
+        "date": "2026-01-18",
+        "time": "06:45",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 21,
+        "title": "Edirne Turu",
+        "location": "Edirne, Türkiye",
+        "date": "2026-01-22",
+        "time": "08:30",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 22,
+        "title": "Sinop Turu",
+        "location": "Sinop, Türkiye",
+        "date": "2026-01-25",
+        "time": "09:15",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 23,
+        "title": "Samsun Turu",
+        "location": "Samsun, Türkiye",
+        "date": "2026-01-28",
+        "time": "08:00",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 24,
+        "title": "Ordu Turu",
+        "location": "Ordu, Türkiye",
+        "date": "2026-02-02",
+        "time": "07:45",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 25,
+        "title": "Rize Turu",
+        "location": "Rize, Türkiye",
+        "date": "2026-02-05",
+        "time": "06:30",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 26,
+        "title": "Artvin Turu",
+        "location": "Artvin, Türkiye",
+        "date": "2026-02-10",
+        "time": "07:00",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 27,
+        "title": "Giresun Turu",
+        "location": "Giresun, Türkiye",
+        "date": "2026-02-15",
+        "time": "08:30",
+        "image": "asset:ob3"
+      },
+      {
+        "id": 28,
+        "title": "Tokat Turu",
+        "location": "Tokat, Türkiye",
+        "date": "2026-02-20",
+        "time": "09:00",
+        "image": "asset:ob1"
+      },
+      {
+        "id": 29,
+        "title": "Amasya Turu",
+        "location": "Amasya, Türkiye",
+        "date": "2026-02-25",
+        "time": "08:15",
+        "image": "asset:ob2"
+      },
+      {
+        "id": 30,
+        "title": "Çorum Turu",
+        "location": "Çorum, Türkiye",
+        "date": "2026-03-01",
+        "time": "07:30",
+        "image": "asset:ob3"
+      }
+    ],
+    "notifications": {
+      "recent": [
+        {
+          "id": 1,
+          "title": "Super Offer",
+          "message": "Get 60% off in our first booking",
+          "time": "Mon,11:50pm",
+          "avatarColor": "#FF6B35",
+          "avatarEmoji": "😊"
+        },
+        {
+          "id": 2,
+          "title": "Payment Received",
+          "message": "Your reservation payment is confirmed",
+          "time": "Mon,1:20pm",
+          "avatarColor": "#87CEEB",
+          "avatarEmoji": "💳"
+        },
+        {
+          "id": 3,
+          "title": "Trip Reminder",
+          "message": "Amasra Tour starts tomorrow at 09:00",
+          "time": "Tue,10:56pm",
+          "avatarColor": "#90EE90",
+          "avatarEmoji": "🚌"
+        },
+        {
+          "id": 4,
+          "title": "New Message",
+          "message": "You have a new message from support",
+          "time": "Wed,12:40pm",
+          "avatarColor": "#D3D3D3",
+          "avatarEmoji": "💬"
+        }
+      ],
+      "archived": [
+        {
+          "id": 5,
+          "title": "Survey",
+          "message": "Rate your last trip experience",
+          "time": "Fri,11:50pm",
+          "avatarColor": "#FFB6C1",
+          "avatarEmoji": "📝"
+        },
+        {
+          "id": 6,
+          "title": "Promo Code",
+          "message": "Use TRAVEL10 for extra 10% off",
+          "time": "Sat,10:56pm",
+          "avatarColor": "#C0C0C0",
+          "avatarEmoji": "🏷️"
+        }
+      ]
+    },
+    "routeStops": [
+      {
+        "id": 1,
+        "title": "Amasra Otel",
+        "time": "10:15",
+        "image": "asset:ob1",
+        "width": 198,
+        "height": 78,
+        "timelineAlign": "left",
+        "top": 24,
+        "side": "right",
+        "sideOffset": 20
+      },
+      {
+        "id": 2,
+        "title": "Amasra Tarihi Yer",
+        "time": "12:00",
+        "image": "asset:ob2",
+        "width": 232,
+        "height": 78,
+        "timelineAlign": "right",
+        "top": 173,
+        "side": "left",
+        "sideOffset": 23
+      },
+      {
+        "id": 3,
+        "title": "Serbest Zaman",
+        "time": "17:45",
+        "image": "asset:ob3",
+        "width": 219,
+        "height": 78,
+        "timelineAlign": "left",
+        "top": 298,
+        "side": "right",
+        "sideOffset": 10
+      }
+    ],
+    "reservationPresets": [
+      {
+        "id": "default",
+        "companyName": "Kamil Koç Turizm",
+        "durationHours": 9,
+        "dateLabel": "17/05/2025",
+        "busType": "2+2",
+        "amenities": ["wifi", "tv", "power", "snack", "wc", "usb"],
+        "backgroundImage": "asset:ob2",
+        "layout": {
+          "rows": 9,
+          "seatsLeft": 2,
+          "seatsRight": 2,
+          "totalSeats": 36
+        },
+        "soldSeats": []
+      }
+    ],
+    "onboarding": [
+      {
+        "id": 1,
+        "title": "Kolay Rezervasyon",
+        "description": "Gezilerini hızlıca planla, koltuk seçimini yap ve anında onay al.",
+        "image": "asset:onboarding1"
+      },
+      {
+        "id": 2,
+        "title": "Zengin Programlar",
+        "description": "Doğa, kültür, gastronomi... Hepsi tek uygulamada.",
+        "image": "asset:onboarding2"
+      },
+      {
+        "id": 3,
+        "title": "Güvenli Ödeme",
+        "description": "Şeffaf fiyatlandırma ve güvenli ödeme altyapısı.",
+        "image": "asset:onboarding3"
+      }
+    ],
+    "companyReviews": [
+      {
+        "id": 1,
+        "companyId": "c1",
+        "name": "Ayşe K.",
+        "trip": "Kastamonu Gezisi",
+        "date": "12 Ekim",
+        "rating": 5,
+        "comment": "Rehber çok ilgiliydi, rota harikaydı.",
+        "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+      {
+        "id": 2,
+        "companyId": "c1",
+        "name": "Mehmet D.",
+        "trip": "Ilgaz Dağı Turu",
+        "date": "03 Eylül",
+        "rating": 4,
+        "comment": "Ulaşım rahattı, program yoğundu ama keyifli.",
+        "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+
+      {
+        "id": 3,
+        "companyId": "kamil-koc",
+        "name": "Elif Y.",
+        "trip": "Amasra Turu",
+        "date": "26 Ekim",
+        "rating": 5,
+        "comment": "Amasra'da balık molası efsaneydi.",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+      {
+        "id": 4,
+        "companyId": "kamil-koc",
+        "name": "Serkan T.",
+        "trip": "Safranbolu Turu",
+        "date": "14 Eylül",
+        "rating": 4,
+        "comment": "Zaman yönetimi daha iyi olabilir, genel olarak başarılı.",
+        "avatar": "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+
+      {
+        "id": 5,
+        "companyId": "pamukkale",
+        "name": "Zeynep C.",
+        "trip": "Pamukkale Travertenleri",
+        "date": "02 Ağustos",
+        "rating": 5,
+        "comment": "Manzaralar muhteşemdi, rehber bilgiliydi.",
+        "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+      {
+        "id": 6,
+        "companyId": "pamukkale",
+        "name": "Okan B.",
+        "trip": "Hierapolis Antik Kenti",
+        "date": "05 Ağustos",
+        "rating": 4,
+        "comment": "Biraz sıcak ama organizasyon sorunsuzdu.",
+        "avatar": "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+
+      {
+        "id": 7,
+        "companyId": "metro-turizm",
+        "name": "Merve A.",
+        "trip": "Bolu Turu",
+        "date": "08 Ekim",
+        "rating": 4,
+        "comment": "Gölcük ve Abant durakları çok iyiydi.",
+        "avatar": "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+      {
+        "id": 8,
+        "companyId": "metro-turizm",
+        "name": "Cem R.",
+        "trip": "Kartalkaya Kayak",
+        "date": "11 Şubat",
+        "rating": 5,
+        "comment": "Otobüs konforlu, ekip profesyoneldi.",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+
+      {
+        "id": 9,
+        "companyId": "varan-turizm",
+        "name": "Nisa K.",
+        "trip": "Sapanca Turu",
+        "date": "15 Ekim",
+        "rating": 5,
+        "comment": "Sapanca göl kenarı çok huzurluydu.",
+        "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+      {
+        "id": 10,
+        "companyId": "varan-turizm",
+        "name": "Alper S.",
+        "trip": "Maşukiye",
+        "date": "18 Ekim",
+        "rating": 4,
+        "comment": "Yemek molası daha uzun olabilirdi.",
+        "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+
+      {
+        "id": 11,
+        "companyId": "nilufer-turizm",
+        "name": "Gamze T.",
+        "trip": "İznik Turu",
+        "date": "22 Eylül",
+        "rating": 4,
+        "comment": "Rehber çok kibar ve bilgiliydi.",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50&h=50&fit=crop&crop=face&auto=format"
+      },
+      {
+        "id": 12,
+        "companyId": "nilufer-turizm",
+        "name": "Yasin U.",
+        "trip": "Trilye Köyü",
+        "date": "01 Ekim",
+        "rating": 5,
+        "comment": "Araç temiz, klima idealdi. Tavsiye ederim.",
+        "avatar": "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=50&h=50&fit=crop&crop=face&auto=format"
+      }
+    ],
+    "pastTrips": [
+      {
+        "id": 1,
+        "title": "Amasra Turu",
+        "location": "Amasra, Kastamonu",
+        "rating": 4.7,
+        "image": "asset:ob2",
+        "date": "2024-10-26",
+        "companyId": "kamil-koc",
+        "companyName": "Kamil Koç",
+        "city": "Amasra",
+        "reviewCount": 2498,
+        "priceText": "$250/Kişi",
+        "headerImage": "asset:ob2",
+        "gallery": [
+          "asset:ob1",
+          "asset:ob2",
+          "asset:ob3",
+          "asset:ob1",
+          "asset:ob2"
+        ],
+        "about": "Karadeniz'in incisi Amasra'da unutulmaz bir deneyim. Tarihi sokaklar, sahil ve eşsiz lezzetler ile dolu bir gün.",
+        "timeline": [
+          {
+            "id": 1,
+            "title": "Amasra Otel",
+            "time": "10:15",
+            "image": "asset:ob2",
+            "isCompleted": true
+          },
+          {
+            "id": 2,
+            "title": "Amasra Tarihi Yer",
+            "time": "12:00",
+            "image": "asset:ob1",
+            "isCompleted": true
+          },
+          {
+            "id": 3,
+            "title": "Serbest Zaman",
+            "time": "17:45",
+            "image": "asset:ob2",
+            "isCompleted": true
+          }
+        ],
+        "hotel": {
+          "title": "Amasra Otel",
+          "durationText": "1 Gün Konaklama",
+          "rating": 4.7
+        },
+        "reviews": [
+          {
+            "id": 1,
+            "name": "Şakir Ayıtkı",
+            "avatar": {
+              "uri": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face&auto=format"
+            },
+            "rating": 5,
+            "text": "Harika bir geziydi, organizasyon ve rehberlik mükemmeldi."
+          },
+          {
+            "id": 3,
+            "name": "Şakir Ayıtkı",
+            "avatar": {
+              "uri": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face&auto=format"
+            },
+            "rating": 5,
+            "text": "Harika bir geziydi, organizasyon ve rehberlik mükemmeldi."
+          },
+          {
+            "id": 4,
+            "name": "Şakir Ayıtkı",
+            "avatar": {
+              "uri": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face&auto=format"
+            },
+            "rating": 5,
+            "text": "Harika bir geziydi, organizasyon ve rehberlik mükemmeldi."
+          },
+          {
+            "id": 2,
+            "name": "(Anonim)",
+            "rating": 4,
+            "text": "Genel olarak çok keyifliydi, tekrar katılmak isterim."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Sapanca Turu",
+        "location": "Sapanca, Sakarya",
+        "rating": 4.8,
+        "image": "asset:ob1",
+        "date": "2024-10-15",
+        "companyId": "varan-turizm",
+        "companyName": "Varan Turizm",
+        "city": "Sapanca",
+        "reviewCount": 3247,
+        "priceText": "$320/Kişi",
+        "headerImage": "asset:ob1",
+        "gallery": [
+          "asset:ob1",
+          "asset:ob2",
+          "asset:ob3",
+          "asset:ob3",
+          "asset:ob3"
+        ],
+        "about": "Sapanca göl kenarında yürüyüş ve doğa ile iç içe huzurlu bir kaçamak.",
+        "timeline": [
+          {
+            "id": 1,
+            "title": "Sapanca Gölü",
+            "time": "09:30",
+            "image": "asset:ob1",
+            "isCompleted": true
+          },
+          {
+            "id": 2,
+            "title": "Doğa Yürüyüşü",
+            "time": "11:00",
+            "image": "asset:ob2",
+            "isCompleted": true
+          },
+          {
+            "id": 3,
+            "title": "Serbest Zaman",
+            "time": "16:30",
+            "image": "asset:ob3",
+            "isCompleted": true
+          }
+        ],
+        "hotel": {
+          "title": "Göl Otel",
+          "durationText": "1 Gün Konaklama",
+          "rating": 4.8
+        },
+        "reviews": [
+          {
+            "id": 1,
+            "name": "Elif",
+            "rating": 5,
+            "text": "Manzara muhteşemdi."
+          },
+          {
+            "id": 2,
+            "name": "Mert",
+            "rating": 4,
+            "text": "Rehber çok ilgiliydi."
+          },
+          {
+            "id": 3,
+            "name": "Mert",
+            "rating": 4,
+            "text": "Rehber çok ilgiliydi."
+          },
+          {
+            "id": 4,
+            "name": "Mert",
+            "rating": 4,
+            "text": "Rehber çok ilgiliydi."
+          },
+          {
+            "id": 5,
+            "name": "Mert",
+            "rating": 4,
+            "text": "Rehber çok ilgiliydi."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Bolu Turu",
+        "location": "Bolu Merkez",
+        "rating": 4.6,
+        "image": "asset:ob3",
+        "date": "2024-10-08",
+        "companyId": "metro-turizm",
+        "companyName": "Metro Turizm",
+        "city": "Bolu",
+        "reviewCount": 1965,
+        "priceText": "$280/Kişi",
+        "headerImage": "asset:ob3",
+        "gallery": ["asset:ob3", "asset:ob2"],
+        "about": "Göller ve ormanlarla çevrili rotalarda huzurlu bir deneyim.",
+        "timeline": [
+          {
+            "id": 1,
+            "title": "Gölcük",
+            "time": "10:00",
+            "image": "asset:ob3",
+            "isCompleted": true
+          },
+          {
+            "id": 2,
+            "title": "Abant",
+            "time": "13:00",
+            "image": "asset:ob2",
+            "isCompleted": true
+          }
+        ],
+        "hotel": {
+          "title": "Bolu Dağ Oteli",
+          "durationText": "1 Gün Konaklama",
+          "rating": 4.6
+        },
+        "reviews": [
+          {
+            "id": 1,
+            "name": "Cem",
+            "rating": 5,
+            "text": "Doğa harikaydı, çok keyif aldık."
+          },
+          {
+            "id": 2,
+            "name": "Merve",
+            "rating": 4,
+            "text": "Rehber oldukça bilgiliydi."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Darıca Turu",
+        "location": "Darıca, Kocaeli",
+        "rating": 4.5,
+        "image": "asset:ob2",
+        "date": "2024-10-01",
+        "companyId": "nilufer-turizm",
+        "companyName": "Nilüfer Turizm",
+        "city": "Darıca",
+        "reviewCount": 1856,
+        "priceText": "$180/Kişi",
+        "headerImage": "asset:ob2",
+        "about": "Sahil şeridinde keyifli yürüyüşler ve fotoğraf molaları.",
+        "timeline": [
+          {
+            "id": 1,
+            "title": "Sahil Yürüyüşü",
+            "time": "11:00",
+            "image": "asset:ob2",
+            "isCompleted": true
+          }
+        ],
+        "hotel": {
+          "title": "Sahil Otel",
+          "durationText": "1 Gün Konaklama",
+          "rating": 4.5
+        },
+        "reviews": [
+          {
+            "id": 1,
+            "name": "Zeynep",
+            "rating": 5,
+            "text": "Sahil yürüyüşü çok keyifliydi."
+          },
+          {
+            "id": 2,
+            "name": "Emre",
+            "rating": 4,
+            "text": "Organizasyon güzeldi, rehber ilgiliydi."
+          },
+          {
+            "id": 3,
+            "name": "Ayşe",
+            "rating": 4,
+            "text": "Fotoğraf molaları yeterliydi."
+          }
+        ]
+      }
+    ],
+    "chats": {
+      "groups": [
+        {
+          "id": "1",
+          "groupName": "Amasra Turu",
+          "lastMessage": "Yönetici Yazıyor...",
+          "time": "09:46",
+          "isActive": true,
+          "avatar": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&auto=format"
+        },
+        {
+          "id": "2",
+          "groupName": "Karadeniz Turu",
+          "lastMessage": "Grup Pasif!",
+          "time": "09:46",
+          "isActive": false,
+          "avatar": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&auto=format"
+        },
+        {
+          "id": "3",
+          "groupName": "Kapadokya Turu",
+          "lastMessage": "Yeni program paylaşıldı",
+          "time": "11:20",
+          "isActive": true,
+          "avatar": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&auto=format"
+        },
+        {
+          "id": "4",
+          "groupName": "Ege Turu",
+          "lastMessage": "Grup Pasif!",
+          "time": "14:05",
+          "isActive": false,
+          "avatar": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&auto=format"
+        }
+      ],
+      "groupMemberAvatars": {
+        "1": [
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face&auto=format",
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face&auto=format",
+          "https://images.unsplash.com/photo-1522075469751-3847ae864c11?w=100&h=100&fit=crop&crop=face&auto=format"
+        ],
+        "2": [
+          "https://images.unsplash.com/photo-1522075469751-3847ae864c11?w=100&h=100&fit=crop&crop=face&auto=format",
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face&auto=format"
+        ],
+        "3": [
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face&auto=format"
+        ],
+        "4": [
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face&auto=format",
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face&auto=format",
+          "https://images.unsplash.com/photo-1522075469751-3847ae864c11?w=100&h=100&fit=crop&crop=face&auto=format",
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face&auto=format"
+        ]
+      },
+      "groupMessages": {
+        "1": [
+          {
+            "id": "1",
+            "text": "Hello!",
+            "time": "9:34",
+            "isOwn": true,
+            "isDelivered": true,
+            "isRead": true
+          },
+          {
+            "id": "2",
+            "text": "I'm very glad you like it👍",
+            "time": "9:35",
+            "isOwn": false,
+            "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face&auto=format",
+            "isDelivered": true,
+            "isRead": true
+          }
+        ],
+        "2": [
+          {
+            "id": "1",
+            "text": "Merhaba grup!",
+            "time": "10:12",
+            "isOwn": false,
+            "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face&auto=format",
+            "isDelivered": true,
+            "isRead": true
+          },
+          {
+            "id": "2",
+            "text": "Bugün aktif değiliz.",
+            "time": "10:15",
+            "isOwn": true,
+            "isDelivered": true,
+            "isRead": false
+          }
+        ],
+        "3": [
+          {
+            "id": "1",
+            "text": "Program güncellendi.",
+            "time": "11:21",
+            "isOwn": true,
+            "isDelivered": true,
+            "isRead": true
+          }
+        ],
+        "4": [
+          {
+            "id": "1",
+            "text": "Haftaya görüşürüz.",
+            "time": "14:10",
+            "isOwn": false,
+            "avatar": "https://images.unsplash.com/photo-1522075469751-3847ae864c11?w=100&h=100&fit=crop&crop=face&auto=format",
+            "isDelivered": true,
+            "isRead": true
+          }
+        ]
+      },
+      "companyContact": [
+        {
+          "id": 1,
+          "text": "Hello!",
+          "time": "9:34",
+          "isSent": true,
+          "isRead": true
+        },
+        {
+          "id": 2,
+          "text": "I'm very glad you like it👍",
+          "time": "9:35",
+          "isSent": true,
+          "isRead": true
+        },
+        {
+          "id": 3,
+          "text": "We are arriving today at 01:450, will someone be at home?",
+          "time": "9:37",
+          "isSent": false,
+          "isRead": false
+        },
+        {
+          "id": 4,
+          "text": "We are arriving today at 01:45, will someone be at home?",
+          "time": "9:37",
+          "isSent": false,
+          "isRead": false
+        }
+      ]
+    }
+  }
+}

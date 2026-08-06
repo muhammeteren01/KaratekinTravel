@@ -1,0 +1,485 @@
+/* TripLineAnalysis Component Styles */
+.trip-line-analysis {
+  width: 490px;
+  height: 303px;
+  background-color: #FAF9FF;
+  border-radius: 16px;
+  padding: 12px 23px;
+  box-sizing: border-box;
+}
+
+.trip-line-analysis__container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 16px;
+}
+
+.trip-line-analysis__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.trip-line-analysis__title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.21;
+  color: #343C6A;
+  margin: 0;
+  text-align: center;
+}
+
+.trip-line-analysis__subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 1.67;
+  color: #404D61;
+  margin: 0;
+  text-align: center;
+}
+
+.trip-line-analysis__search {
+  width: 100%;
+}
+
+.trip-line-analysis__search-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #FFFFFF;
+  border: 1px solid #E1E3E6;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 29px;
+}
+
+.trip-line-analysis__search-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.trip-line-analysis__search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 2em;
+  color: #757D8A;
+  background: transparent;
+}
+
+.trip-line-analysis__search-input::placeholder {
+  color: #757D8A;
+}
+
+.trip-line-analysis__chart-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+}
+
+.trip-line-analysis__chart-container {
+  flex: 1;
+  width: 100%;
+  height: 168px;
+  position: relative;
+}
+
+.trip-line-analysis__y-axis-left,
+.trip-line-analysis__y-axis-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 104px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.21;
+  color: #000000;
+}
+
+.trip-line-analysis__y-axis-left {
+  text-align: right;
+  width: auto;
+}
+
+.trip-line-analysis__y-axis-right {
+  text-align: left;
+  width: auto;
+}
+
+.trip-line-analysis__chart-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.trip-line-analysis__chart-wrapper {
+  height: 104px;
+  width: 100%;
+}
+
+.trip-line-analysis__chart-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.trip-line-analysis__line {
+  stroke-width: 1;
+  fill: none;
+}
+
+.trip-line-analysis__point {
+  stroke-width: 1;
+  fill: none;
+  cursor: pointer;
+  transition: r 0.2s ease;
+}
+
+.trip-line-analysis__point:hover {
+  r: 4;
+}
+
+.trip-line-analysis__x-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 10px;
+}
+
+.trip-line-analysis__x-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 1.21;
+  color: #000000;
+  text-align: center;
+}
+
+.trip-line-analysis__legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 0px 0;
+}
+
+.trip-line-analysis__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 0;
+}
+
+.trip-line-analysis__legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.trip-line-analysis__legend-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.5em;
+  color: #000000;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .trip-line-analysis {
+    width: 100%;
+    max-width: 490px;
+  }
+}
+
+@media (max-width: 768px) {
+  .trip-line-analysis {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 250px;
+    padding: 12px 16px;
+  }
+  
+  .trip-line-analysis__title {
+    font-size: 18px;
+  text-align: center;
+
+  }
+  
+  .trip-line-analysis__subtitle {
+    font-size: 11px;
+  text-align: center;
+
+  }
+  
+  .trip-line-analysis__container {
+    gap: 12px;
+  }
+  
+  .trip-line-analysis__search-container {
+    height: 32px;
+    padding: 8px 12px;
+  }
+  
+  .trip-line-analysis__search-input {
+    font-size: 11px;
+  }
+  
+  .trip-line-analysis__chart-container {
+    height: 140px;
+  }
+  
+  .trip-line-analysis__chart-wrapper {
+    height: 90px;
+  }
+  
+  .trip-line-analysis__y-axis-left,
+  .trip-line-analysis__y-axis-right {
+    height: 90px;
+    font-size: 10px;
+  }
+  
+  .trip-line-analysis__x-label {
+    font-size: 9px;
+  }
+  
+  .trip-line-analysis__legend-label {
+    font-size: 10px;
+  }
+  
+  .trip-line-analysis__legend-dot {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .trip-line-analysis {
+    padding: 8px 12px;
+    min-height: 200px;
+  }
+  
+  .trip-line-analysis__title {
+    font-size: 16px;
+    text-align: center;
+
+  }
+  
+  .trip-line-analysis__subtitle {
+    font-size: 10px;
+    text-align: center;
+
+  }
+  
+  .trip-line-analysis__container {
+    gap: 8px;
+  }
+  
+  .trip-line-analysis__search-container {
+    height: 28px;
+    padding: 6px 10px;
+  }
+  
+  .trip-line-analysis__search-input {
+    font-size: 10px;
+  }
+  
+  .trip-line-analysis__chart-container {
+    height: 120px;
+  }
+  
+  .trip-line-analysis__chart-wrapper {
+    height: 70px;
+  }
+  
+  .trip-line-analysis__y-axis-left,
+  .trip-line-analysis__y-axis-right {
+    height: 70px;
+    font-size: 9px;
+  }
+  
+  .trip-line-analysis__x-label {
+    font-size: 8px;
+  }
+  
+  .trip-line-analysis__legend {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .trip-line-analysis__legend-label {
+    font-size: 9px;
+  }
+  
+  .trip-line-analysis__legend-dot {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* Large Screens - 1920px and above (24", 27" monitors) */
+@media (min-width: 1920px) {
+  .trip-line-analysis {
+    width: 780px;
+    height: 480px;
+    padding: 32px 36px;
+    border-radius: 20px;
+  }
+  
+  .trip-line-analysis__title {
+    font-size: 26px;
+    text-align: center;
+
+  }
+  
+  .trip-line-analysis__subtitle {
+    font-size: 14px;    
+    text-align: center;
+
+  }
+  
+  .trip-line-analysis__container {
+    gap: 20px;
+  }
+  
+  .trip-line-analysis__search-container {
+    height: 36px;
+    padding: 12px 18px;
+  }
+  
+  .trip-line-analysis__search-input {
+    font-size: 14px;
+  }
+  
+  .trip-line-analysis__chart-container {
+    height: 200px;
+  }
+  
+  .trip-line-analysis__chart-wrapper {
+    height: 120px;
+  }
+  
+  .trip-line-analysis__y-axis-left,
+  .trip-line-analysis__y-axis-right {
+    height: 120px;
+    font-size: 14px;
+  }
+  
+  .trip-line-analysis__x-label {
+    font-size: 12px;
+  }
+  
+  .trip-line-analysis__legend-label {
+    font-size: 14px;
+  }
+  
+  .trip-line-analysis__legend-dot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Extra Large Screens - 1600px to 1919px */
+@media (min-width: 1600px) and (max-width: 1919px) {
+  .trip-line-analysis {
+    width: 600px;
+    height: 350px;
+    padding: 22px 28px;
+    border-radius: 18px;
+  }
+  
+  .trip-line-analysis__title {
+    font-size: 24px;
+  text-align: center;
+
+  }
+  
+  .trip-line-analysis__subtitle {
+    font-size: 13px;
+  text-align: center;
+
+  }
+  
+  .trip-line-analysis__container {
+    gap: 18px;
+  }
+  
+  .trip-line-analysis__search-container {
+    height: 36px;
+    padding: 12px 18px;
+  }
+  
+  .trip-line-analysis__search-input {
+    font-size: 13px;
+  }
+  
+  .trip-line-analysis__chart-container {
+    height: 200px;
+  }
+  
+  .trip-line-analysis__chart-wrapper {
+    height: 125px;
+  }
+  
+  .trip-line-analysis__y-axis-left,
+  .trip-line-analysis__y-axis-right {
+    height: 125px;
+    font-size: 13px;
+  }
+  
+  .trip-line-analysis__x-label {
+    font-size: 11px;
+  }
+  
+  .trip-line-analysis__legend-label {
+    font-size: 13px;
+  }
+}
+
+/* Large Screens - 1440px to 1599px */
+@media (min-width: 1440px) and (max-width: 1599px) {
+  .trip-line-analysis {
+    width: 540px;
+    height: 330px;
+    padding: 18px 26px;
+  }
+  
+  .trip-line-analysis__title {
+    font-size: 23px;
+    text-align: center;
+  }
+  
+  .trip-line-analysis__container {
+    gap: 16px;
+  }
+  
+  .trip-line-analysis__search-container {
+    height: 34px;
+    padding: 10px 16px;
+  }
+  
+  .trip-line-analysis__chart-container {
+    height: 185px;
+  }
+  
+  .trip-line-analysis__chart-wrapper {
+    height: 115px;
+  }
+  
+  .trip-line-analysis__y-axis-left,
+  .trip-line-analysis__y-axis-right {
+    height: 115px;
+  }
+} 

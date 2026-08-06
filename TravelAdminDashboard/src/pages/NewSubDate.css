@@ -1,0 +1,29 @@
+.nsd-page { background:#ffffff; min-height:100vh; padding:24px; box-sizing:border-box; }
+.nsd-card { background:#fff; border:1px solid #E5E7EB; border-radius:16px; padding:16px; max-width:1120px; margin:0 auto; }
+.nsd-title { font-size:18px; font-weight:700; color:#1F2937; margin:6px 0 16px; }
+.nsd-field { margin-bottom:16px; }
+.nsd-label { display:block; font-weight:600; color:#374151; margin-bottom:6px; }
+.nsd-inline { display:flex; gap:8px; align-items:center; }
+.nsd-select { position:relative; flex:1; }
+.nsd-select select { width:100%; appearance:none; -webkit-appearance:none; -moz-appearance:none; border:1px solid #E5E7EB; border-radius:8px; padding:10px 36px 10px 12px; background:#fff; outline:none; }
+.nsd-select::after { content:""; position:absolute; right:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; background:url('/icons/chevron-down-icon.svg') no-repeat center/14px; opacity:0.8; pointer-events:none; }
+.nsd-bus-btn { background:#24BAEC; color:#fff; border:none; border-radius:8px; padding:10px 14px; font-weight:600; }
+.nsd-preview { background:#E5E7EB; border:1px solid #D1D5DB; border-radius:12px; padding:12px; }
+
+/* Seat preview */
+.nsd-seat-legend { display:flex; gap:8px; margin-bottom:8px; }
+.lg { font-size:12px; padding:4px 8px; border-radius:6px; background:#E5E7EB; color:#1F2937; }
+.lg-door { background:#D1FAE5; }
+.lg-seat { background:#DBEAFE; }
+.lg-driver { background:#FFE4E6; }
+.nsd-seat-grid { display:grid; grid-template-columns: repeat(6, minmax(60px, 1fr)); gap:8px; background:#D1D5DB; padding:10px; border-radius:8px; }
+.cell { background:#fff; border:1px solid #E5E7EB; border-radius:10px; min-height:54px; display:flex; align-items:center; justify-content:center; color:#6B7280; font-weight:600; }
+.cell.gap { background:#F3F4F6; color:#9CA3AF; border-style:dashed; }
+.cell.aisle, .cell.aisle-label { background:#E5E7EB; color:#6B7280; }
+.cell.door { background:#C7F9E1; color:#065F46; }
+.cell.driver { background:#FFE4E6; color:#9B1C1C; }
+
+.nsd-radios { display:flex; gap:16px; color:#374151; }
+.nsd-field textarea { width:100%; min-height:110px; border:1px solid #E5E7EB; border-radius:8px; padding:10px 12px; resize:vertical; }
+.nsd-actions { margin-top:10px; }
+.nsd-primary { background:#22C55E; color:#fff; border:none; padding:10px 16px; border-radius:8px; font-weight:700; font-size: 12px; }

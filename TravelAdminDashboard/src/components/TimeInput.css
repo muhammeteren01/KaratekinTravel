@@ -1,0 +1,12 @@
+.ti-wrap{display:flex;align-items:center;background:#FBFBFB;border:1px solid #EBEBEB;border-radius:12px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,0.04)}
+.ti-wrap:focus-within{border-color:#24BAEC;box-shadow:0 0 0 3px rgba(36,186,236,0.12)}
+.ti-wrap.ti-borderless{background:transparent;border:none}
+.ti-wrap.ti-invalid{border-color:#FCA5A5;background:#FEF2F2}
+.ti-btn{background:transparent;border:none;width:36px;height:36px;cursor:pointer;font-weight:700;color:#404D61;line-height:1;}
+.ti-btn, .ti-input{ -webkit-appearance: none; appearance: none; box-shadow:none; }
+.ti-btn:active{transform:scale(0.98)}
+.ti-btn:hover{background:#F3F4F6}
+.ti-input{width:84px;height:36px;text-align:center;border:none;outline:none;background:transparent;font-weight:700;color:#404D61;padding:0 8px;border-radius:8px;letter-spacing:0.5px;font-variant-numeric: tabular-nums;font-size:14px}
+.ti-btn + .ti-input{border-left:1px solid #EBEBEB}
+.ti-input + .ti-btn{border-left:1px solid #EBEBEB}
+.ti-input::placeholder{color:#9CA3AF;font-weight:600}

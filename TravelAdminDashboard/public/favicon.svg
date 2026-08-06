@@ -1,0 +1,8 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Orange dot -->
+  <rect x="18" y="6" width="8" height="4" rx="2" fill="#FF7029"/>
+  <!-- Blue dot -->
+  <rect x="6" y="22" width="20" height="4" rx="2" fill="#24BAEC"/>
+  <!-- Orange small dot -->
+  <rect x="6" y="16" width="6" height="4" rx="2" fill="#FF7029"/>
+</svg> 

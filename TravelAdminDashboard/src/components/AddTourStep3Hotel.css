@@ -1,0 +1,70 @@
+/* Hotel Step Styles */
+.step3hotel-main-container{background:#FAF9FF;min-height:100vh;padding:32px}
+.step3hotel-container{background:#fff;border-radius:16px;padding:24px;max-width:1200px;margin:0 auto}
+.step3hotel-layout{display:flex;gap:40px}
+.step3hotel-form-content{flex:1;display:flex;flex-direction:column;gap:24px}
+.step3hotel-form-section{display:flex;flex-direction:column;gap:20px}
+.step3hotel-section-title{font-size:20px;color:#2A2F3B;margin:0}
+
+.hotel-select-group .hotel-label{font-weight:600;color:#2A2F3B}
+.hotel-help{color:#667085;margin:6px 0 10px}
+.hotel-none-row{display:flex;align-items:center;gap:10px;margin:8px 0 12px}
+.radio-control{position:relative;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center}
+.radio-control input{appearance:none;width:20px;height:20px;border:2px solid #24BAEC;border-radius:999px;display:inline-block;background:#fff;cursor:pointer}
+.radio-control input:checked{background:radial-gradient(circle at center, #24BAEC 40%, transparent 41%)}
+.radio-mark{position:absolute;inset:0;border-radius:999px;pointer-events:none}
+.hotel-none-text{color:#667085;font-weight:600}
+.hotel-combobox{position:relative;display:flex;align-items:center}
+.hotel-combobox.disabled{opacity:.6;pointer-events:none}
+.hotel-input{width:100%;padding:12px 44px 12px 44px;border:1px solid #E5E7EB;border-radius:12px;background:#FFFFFF;color:#2A2F3B;box-shadow:0 1px 2px rgba(16,24,40,0.05)}
+.hotel-input::placeholder{color:#98A2B3}
+.hotel-input:focus{outline:none;border-color:#24BAEC;box-shadow:0 0 0 3px rgba(36,186,236,0.16)}
+.hotel-input-icon{position:absolute;left:14px;color:#98A2B3;font-size:16px}
+.hotel-input-chevron{position:absolute;right:12px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:4px}
+.hotel-input-chevron.open svg{transform:rotate(180deg);transition:transform .15s ease}
+.hotel-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:#FFFFFF;border-radius:12px;border:1px solid #EAEAEA;box-shadow:0 12px 30px rgba(17,24,39,0.08);padding:8px 0;z-index:10;overflow:hidden}
+.hotel-option{padding:12px 16px;font-size:15px;color:#475467;cursor:pointer}
+.hotel-option:hover{background:#F5FFF8}
+.hotel-option.selected{background:#F1FFF4;color:#111827;font-weight:600}
+.hotel-option.disabled{color:#98A2B3;cursor:default}
+
+.hotel-datetime-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hotel-datetime-field label{display:block;margin-bottom:8px;color:#2A2F3B;font-weight:600}
+
+.hotel-note-group textarea{width:100%;min-height:100px;border:1px solid #E5E7EB;border-radius:12px;padding:12px;background:#FBFBFB;resize:vertical}
+
+.hotel-actions{display:flex;justify-content:flex-end}
+.hotel-add-btn{background:#22C55E;color:#fff;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:700}
+.hotel-add-btn:hover{background:#16A34A}
+
+.hotel-preview h4{margin:8px 0 12px;color:#2A2F3B}
+.hotel-preview-list{display:grid;gap:14px;grid-template-columns:1fr}
+.hotel-card{background:#fff;border:1px solid #EAEAEA;border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(17,24,39,0.06);max-width:100%;box-sizing:border-box;overflow:hidden}
+.hotel-card-header{display:flex;align-items:center;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.hotel-chip{background:#F97316;color:#fff;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700}
+.hotel-details-btn{background:#22BAEC;color:#fff;border:none;border-radius:8px;padding:6px 10px;cursor:pointer}
+.hotel-remove-btn{background:#FFE4E6;border:1px solid #FCA5A5;border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hotel-card-title{font-size:24px;font-weight:800;color:#111827;margin:8px 0 12px;overflow-wrap:anywhere;word-break:break-word}
+.hotel-card-line{display:flex;gap:8px;align-items:center;color:#2A2F3B;flex-wrap:wrap;overflow-wrap:anywhere;word-break:break-word}
+.hotel-line-label{font-weight:700}
+
+.step3hotel-button-container{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+.step3hotel-back-button{background:#f8f9fa;border:1px solid #e9ecef;border-radius:8px;padding:12px 24px;font-size:16px;font-weight:500;color:#495057;cursor:pointer}
+.step3hotel-submit-btn{display:flex;align-items:center;gap:8px;background:#24BAEC;color:#fff;border:none;border-radius:8px;padding:12px 24px;font-weight:800}
+
+@media(max-width:1024px){.step3hotel-layout{flex-direction:column;gap:24px}.hotel-datetime-row{grid-template-columns:1fr}}
+
+@media(max-width:600px){
+	.step3hotel-main-container{padding:20px}
+	.step3hotel-container{padding:16px}
+	.hotel-card{padding:14px;border-radius:12px}
+	.hotel-card-title{font-size:20px;margin:6px 0 10px}
+	.hotel-card-line{font-size:14px}
+	.hotel-details-btn{padding:6px 8px}
+	.hotel-remove-btn{width:28px;height:28px}
+}
+
+@media(max-width:380px){
+	.hotel-card-title{font-size:18px}
+	.hotel-card-line{font-size:13px}
+}

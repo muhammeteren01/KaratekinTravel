@@ -1,0 +1,58 @@
+.std-page{padding:20px;background:#ffffff;min-height:100vh}
+.std-info{background:#faf9ff;border-radius:16px;padding:16px 24px;margin-bottom:16px}
+.std-info-title{margin:0 0 6px 0;font-weight:700;font-size:24px;color:#343C6A}
+.std-info-desc{color:#9291A5;font:500 14px 'DM Sans',system-ui,sans-serif;margin-bottom:12px}
+
+.std-info-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.std-info-card{display:flex;align-items:center;gap:12px;background:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+.std-info-icon{width:72px;height:88px;border-radius:50%;display:grid;place-items:center}
+.std-info-icon img{width:66px;height:66px}
+.std-info-texts{display:flex;flex-direction:column}
+.std-info-label{font-size:12px;color:#6b7a99}
+.std-info-value{font-weight:700;color:#111827}
+
+/* Reuse badge styles from TourDetails */
+.td-badge{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.td-badge-dot{width:6px;height:6px;border-radius:50%}
+.td-badge-active{background:#e6f9ff;color:#10b981}
+.td-badge-active .td-badge-dot{background:#10b981}
+.td-badge-inactive{background:#fff1f2;color:#ef4444}
+.td-badge-inactive .td-badge-dot{background:#ef4444}
+.td-badge-processing{background:#fefce8;color:#eab308}
+.td-badge-processing .td-badge-dot{background:#eab308}
+
+/* Hızlı işlemler already styled via TourDetails.css classes (hi-*) */
+
+.std-participants{background:#faf9ff;border-radius:16px;padding:16px 24px;margin-top:12px}
+.std-part-title{font:700 20px 'DM Sans',system-ui,sans-serif;color:#1D1C2B}
+
+.std-table-card{border:1px solid #F0F0F2;border-radius:20px;overflow:hidden;background:#fff;margin-top:12px}
+.std-table-wrap{overflow:auto}
+.std-table{width:100%;border-collapse:collapse}
+.std-table th,.std-table td{border-bottom:1px solid #f2f4f7;text-align:left;padding:14px 16px;font-size:14px;vertical-align:middle}
+.std-table thead th{background:#fff;border-bottom:1.5px solid #F0F0F2}
+.std-table tbody tr:nth-child(odd){background:#FFFFFF}
+.std-table tbody tr:nth-child(even){background:#FBFBFB}
+.std-table tbody td{color:#232323}
+.std-th{font:500 12px/20px 'DM Sans',system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#9291A5;white-space:nowrap}
+.std-th .th-cell{display:inline-flex;align-items:center;gap:8px}
+.std-th img{width:18px;height:18px}
+
+.std-seat{display:inline-flex;width:22px;height:22px;border-radius:6px;align-items:center;justify-content:center;font:700 12px 'Inter',system-ui,sans-serif}
+.std-seat.male{background:#DDEBFF;color:#004FCF}
+.std-seat.female{background:#FFEAF5;color:#CD0066}
+.std-note{color:#9291A5}
+.std-note-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#FFC0C0;margin-left:8px}
+
+/* Pagination - reuse existing td- styles from TourDetails */
+.td-pagination{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:12px}
+.td-page-chip{width:25px;height:25px;display:inline-flex;align-items:center;justify-content:center;border-radius:4px;background:#DDEBFF;color:#004FCF;border:none;font:500 11px/17px 'DM Sans',system-ui,sans-serif;cursor:pointer}
+.td-page-chip:not(.active){background:#EEF4FD;border:0.25px solid #DDEBFF;color:#004FCF}
+.td-page-chip.active{background:#DDEBFF;color:#004FCF}
+.td-page-next{width:15px;height:15px;padding:4px;display:inline-flex;align-items:center;justify-content:center;background:#DDEBFF;border-radius:3px;border:none;cursor:pointer}
+.td-page-next img{width:15px;height:15px}
+.td-page-next:disabled{opacity:.5;cursor:not-allowed}
+
+@media (max-width: 1024px){
+  .std-info-cards{grid-template-columns:1fr}
+}

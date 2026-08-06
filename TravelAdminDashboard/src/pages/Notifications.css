@@ -1,0 +1,85 @@
+/* Design tokens (scoped to this page for now) */
+:root {
+  --ntf-bg: #eef4ff;
+  --ntf-border: #e4ecff;
+  --ntf-text: #0b122a;
+  --ntf-subtext: #5b6476;
+  --ntf-muted: #7c8799;
+  --ntf-primary: #3b82f6;
+  --ntf-hover: rgba(15,23,42,0.06);
+  --ntf-menu-border: #e6eaf0;
+  --ntf-menu-shadow: 0 18px 44px rgba(16,24,40,0.14);
+}
+.ntf-page { padding: 24px; }
+.ntf-heading { font-size: 28px; font-weight: 700; margin: 6px 0 18px; color: #0b122a; }
+
+.ntf-card {
+  background: var(--ntf-bg);
+  border: 1px solid var(--ntf-border);
+  border-radius: 18px;
+  padding: 6px 0;
+  box-shadow: 0 1px 0 rgba(16,24,40,0.03) inset;
+  overflow: visible;
+}
+
+.ntf-list { list-style: none; margin: 0; padding: 10px; overflow: visible; }
+.ntf-list > li { margin: 0; }
+
+.ntf-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; gap: 12px; position: relative; border-radius: 14px; transition: background-color 180ms ease, box-shadow 180ms ease; cursor: pointer; margin-top: 10px; }
+.ntf-item + .ntf-item { border-top: 1px solid #e4ecff; }
+.ntf-item:hover { box-shadow: 0 1px 0 rgba(16,24,40,0.03) inset, 0 1px 3px rgba(16,24,40,0.06); }
+.ntf-item.ntf-open { z-index: 10000; }
+
+.ntf-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.ntf-dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
+.ntf-dot-unread { background: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.18); }
+.ntf-dot-read { background: #cbd5e1; }
+
+.ntf-avatar { width: 40px; height: 40px; border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: 0 1px 2px rgba(16,24,40,0.06); font-weight: 700; color: #7b8794; font-size: 16px; }
+.ntf-avatar img { width: 20px; height: 20px; }
+/* initials circle for message type */
+.ntf-avatar-initials { background: #e8eef6; color: #7a889a; font-weight: 700; }
+
+/* type color accents */
+.ntf-avatar-message { background: #eef2f7; }
+.ntf-avatar-payment { background: #eafff1; }
+.ntf-avatar-review { background: #fff7e6; }
+
+.ntf-body { min-width: 0; }
+.ntf-title { font-weight: 700; color: var(--ntf-text); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ntf-desc { color: var(--ntf-subtext); font-size: 13px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* unread-specific text tint closer to screenshot */
+.ntf-unread .ntf-title { color: #0d1838; }
+.ntf-unread .ntf-desc { color: #6e86b7; }
+
+.ntf-unread { background: rgba(59,130,246,0.08); }
+.ntf-read { opacity: 0.65; }
+
+.ntf-right { display: flex; align-items: center; gap: 8px; margin-left: auto; position: relative; }
+.ntf-time { color: var(--ntf-muted); font-size: 12px; min-width: 24px; text-align: right; }
+.ntf-more { border: none; background: transparent; width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; cursor: pointer; }
+.ntf-more:hover, .ntf-more:focus-visible { background: var(--ntf-hover); outline: none; }
+.ntf-more svg { width: 18px; height: 18px; color: #111827; }
+
+.ntf-menu { background: #fff; border: 1px solid var(--ntf-menu-border); box-shadow: var(--ntf-menu-shadow); border-radius: 12px; padding: 6px; min-width: 220px; }
+.ntf-menu::before { content: ""; position: absolute; top: -7px; right: 12px; width: 12px; height: 12px; background: #fff; border-left: 1px solid var(--ntf-menu-border); border-top: 1px solid var(--ntf-menu-border); transform: rotate(45deg); }
+/* close button removed per requirements */
+.ntf-menu-item { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; font-size: 14px; color: var(--ntf-text); border: none; background: #fff; border-radius: 8px; cursor: pointer; }
+.ntf-menu-item:hover { background: #f8fafc; }
+.ntf-check { display: inline-flex; width: 20px; height: 20px; border-radius: 6px; background: #eef2f7; align-items: center; justify-content: center; }
+.ntf-check img { width: 16px; height: 16px; opacity: 0.2; }
+.ntf-check-on img { opacity: 1; }
+
+@media (max-width: 640px) {
+  .ntf-heading { font-size: 22px; }
+  .ntf-title { white-space: normal; }
+  .ntf-desc { white-space: normal; }
+  .ntf-card { border-radius: 14px; }
+  .ntf-avatar { width: 36px; height: 36px; }
+}
+
+/* Reduce animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .ntf-item { transition: none; }
+}

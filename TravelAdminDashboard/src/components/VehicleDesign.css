@@ -1,0 +1,375 @@
+.vd-page {
+  --vd-ink: #1b2430;
+  --vd-muted: #5b6777;
+  --vd-line: #e6e9ef;
+  --vd-bg: #f3f5f8;
+  --vd-card: #ffffff;
+  --vd-accent: #0f766e;
+  --vd-accent-soft: #d9f3ef;
+  --vd-seat: #1d4e89;
+  --vd-warn: #b42318;
+  --vd-ok: #067647;
+  padding: 28px 24px 48px;
+  background: var(--vd-bg);
+  min-height: 100%;
+  color: var(--vd-ink);
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+.vd-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.vd-eyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  color: var(--vd-accent);
+  font-weight: 700;
+}
+
+.vd-hero h1 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.vd-lede {
+  margin: 10px 0 0;
+  max-width: 46ch;
+  color: var(--vd-muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.vd-hero-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.vd-hero-stats > div {
+  min-width: 92px;
+  padding: 12px 14px;
+  background: var(--vd-card);
+  border: 1px solid var(--vd-line);
+  border-radius: 14px;
+}
+
+.vd-hero-stats span {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.vd-hero-stats small {
+  color: var(--vd-muted);
+  font-size: 12px;
+}
+
+.vd-banner {
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.vd-banner.is-error {
+  background: #fef3f2;
+  color: var(--vd-warn);
+  border: 1px solid #fecdca;
+}
+
+.vd-banner.is-ok {
+  background: #ecfdf3;
+  color: var(--vd-ok);
+  border: 1px solid #abe8c6;
+}
+
+.vd-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.05fr) minmax(300px, 0.95fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.vd-panel,
+.vd-preview-panel {
+  background: var(--vd-card);
+  border: 1px solid var(--vd-line);
+  border-radius: 20px;
+  padding: 22px;
+}
+
+.vd-panel h2,
+.vd-preview-header h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.vd-panel h2:not(:first-child) {
+  margin-top: 26px;
+}
+
+.vd-templates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.vd-template-card {
+  text-align: left;
+  border: 1px solid var(--vd-line);
+  background: #fafbfd;
+  border-radius: 16px;
+  padding: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.vd-template-card:hover {
+  border-color: #9ec5c1;
+  transform: translateY(-1px);
+}
+
+.vd-template-card.is-active {
+  border-color: var(--vd-accent);
+  background: var(--vd-accent-soft);
+}
+
+.vd-template-preview {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+  min-height: 18px;
+}
+
+.vd-mini-seat {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--vd-seat);
+  display: inline-block;
+}
+
+.vd-mini-aisle {
+  width: 8px;
+  height: 14px;
+  border-radius: 999px;
+  background: #d7dde7;
+  display: inline-block;
+}
+
+.vd-template-card strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.vd-template-card span,
+.vd-template-card em {
+  display: block;
+  font-style: normal;
+  font-size: 12px;
+  color: var(--vd-muted);
+  line-height: 1.4;
+}
+
+.vd-fields {
+  display: grid;
+  gap: 12px;
+}
+
+.vd-fields label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vd-muted);
+}
+
+.vd-fields input,
+.vd-copy-row select {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--vd-line);
+  border-radius: 12px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: var(--vd-ink);
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.vd-capacity-row,
+.vd-copy-row {
+  display: flex;
+  gap: 8px;
+}
+
+.vd-capacity-row input {
+  flex: 1;
+}
+
+.vd-btn-primary,
+.vd-btn-secondary {
+  border: 0;
+  border-radius: 12px;
+  height: 44px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.vd-btn-primary {
+  width: 100%;
+  margin-top: 22px;
+  background: var(--vd-ink);
+  color: #fff;
+}
+
+.vd-btn-primary:disabled,
+.vd-btn-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.vd-btn-secondary {
+  background: #eef2f7;
+  color: var(--vd-ink);
+  white-space: nowrap;
+}
+
+.vd-copy-row select {
+  flex: 1;
+}
+
+.vd-preview-header p {
+  margin: 0 0 16px;
+  color: var(--vd-muted);
+  font-size: 13px;
+}
+
+.vd-bus {
+  background: linear-gradient(180deg, #eef3f8 0%, #e7edf5 100%);
+  border: 1px solid var(--vd-line);
+  border-radius: 28px;
+  padding: 18px 14px 16px;
+}
+
+.vd-bus-front,
+.vd-bus-rear {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--vd-muted);
+}
+
+.vd-bus-rear {
+  justify-content: center;
+  margin: 12px 0 0;
+  margin-bottom: 0;
+}
+
+.vd-door {
+  color: var(--vd-accent);
+}
+
+.vd-bus-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vd-bus-row {
+  display: grid;
+  grid-template-columns: repeat(var(--vd-cols, 4), minmax(36px, 1fr));
+  gap: 6px;
+}
+
+.vd-cell {
+  height: 40px;
+  border-radius: 10px;
+  border: 0;
+}
+
+.vd-aisle {
+  background: repeating-linear-gradient(
+    135deg,
+    #d5dde8,
+    #d5dde8 4px,
+    #e8eef6 4px,
+    #e8eef6 8px
+  );
+}
+
+.vd-seat {
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.vd-seat.is-seat {
+  background: var(--vd-seat);
+  color: #fff;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18);
+}
+
+.vd-seat.is-empty {
+  background: #fff;
+  color: #98a2b3;
+  border: 1px dashed #c9d2df;
+}
+
+.vd-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--vd-muted);
+}
+
+.vd-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.vd-dot.seat { background: var(--vd-seat); }
+.vd-dot.aisle { background: #d5dde8; }
+.vd-dot.empty { background: #fff; border: 1px dashed #c9d2df; }
+
+@media (max-width: 980px) {
+  .vd-layout,
+  .vd-templates,
+  .vd-hero {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vd-hero-stats {
+    width: 100%;
+  }
+
+  .vd-hero-stats > div {
+    flex: 1;
+  }
+}

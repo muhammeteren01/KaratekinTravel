@@ -1,0 +1,79 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Expo
+android/
+ios/
+.expo/
+.expo-shared/
+web-build/
+build/
+dist/
+
+expo-env.d.ts
+
+.env
+.env.*
+*.key
+*.keystore
+
+
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# Cache & temporary files
+tmp/
+temp/
+.cache/
+metro-cache/
+babel-cache/
+*.log
+*.tmp
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+*.pem
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.iml
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# cursor
+
+*.cursor/
+.cursorrules
+
+# Jest test coverage
+coverage/
+lcov-report/
+
+# Husky & Git
+.husky/_/

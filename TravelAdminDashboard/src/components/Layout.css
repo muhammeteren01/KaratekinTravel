@@ -1,0 +1,227 @@
+.ly-layout {
+  display: flex;
+  gap: 32px;
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: 27px 32px;
+  transition: gap 0.3s ease;
+  position: relative;
+}
+
+.ly-layout.ly-sidebar-collapsed {
+  gap: 24px;
+}
+
+.ly-layout-sidebar {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1000;
+}
+
+.ly-layout-sidebar.ly-mobile-open {
+  left: 0;
+}
+
+.ly-layout-content {
+  flex: 1;
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  min-height: fit-content;
+  padding: 24px;
+  transition: all 0.3s ease;
+  overflow-x: auto;
+}
+
+.ly-layout__container {
+  display: flex;
+  gap: var(--spacing-xl);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.ly-layout__content {
+  flex: 1;
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+}
+
+.ly-layout__content-inner {
+  padding: var(--spacing-lg);
+}
+
+.ly-layout__content-body {
+  margin-top: var(--spacing-xl);
+}
+
+.ly-layout__content-body > * + * {
+  margin-top: 28px;
+}
+
+/* Mobile overlay for sidebar */
+.ly-mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.ly-mobile-overlay.ly-active {
+  display: block;
+}
+
+/* Mobile menu button */
+.ly-mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1001;
+  background: #F5F7FA;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 8px;
+  color: #374151;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.ly-mobile-menu-btn:hover {
+  background: #E5E7EB;
+  border-color: #D1D5DB;
+  transform: translateY(-1px);
+}
+
+.ly-mobile-menu-btn:active {
+  background: #D1D5DB;
+  transform: scale(0.95);
+}
+
+.ly-mobile-menu-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Tablet responsive */
+@media (max-width: 1024px) {
+  .ly-layout {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .ly-layout-content {
+    padding: 20px;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .ly-layout {
+    padding: 0;
+    gap: 0;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .ly-layout-sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    background: white;
+    width: 280px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Sidebar scrollbar styling */
+  .ly-layout-sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .ly-layout-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .ly-layout-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+  
+  .ly-layout-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  .ly-layout-sidebar.ly-mobile-open {
+    left: 0;
+  }
+  
+  .ly-layout-content {
+    padding: 16px;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+    min-height: calc(100vh - 32px);
+    overflow-x: auto;
+    background: #FAF9FF;
+  }
+  
+  .ly-mobile-menu-btn {
+    display: none; /* Header'daki mobile menu button kullanılacak */
+  }
+  
+  .ly-layout.ly-sidebar-collapsed {
+    gap: 0;
+  }
+  
+  .ly-layout__container {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .ly-layout {
+    padding: 0;
+  }
+  
+  .ly-layout-content {
+    padding: 12px;
+    min-height: calc(100vh - 24px);
+    border-radius: 0;
+  }
+  
+  .ly-layout-sidebar {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 360px) {
+  .ly-layout {
+    padding: 0;
+  }
+  
+  .ly-layout-content {
+    padding: 8px;
+    min-height: calc(100vh - 16px);
+  }
+  
+  .ly-layout-sidebar {
+    width: 100%;
+    max-width: 260px;
+  }
+} 

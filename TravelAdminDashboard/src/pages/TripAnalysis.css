@@ -1,0 +1,266 @@
+.trip-analysis {
+  padding: 18px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+/* Page Title */
+.trip-analysis__page-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.21;
+  color: #343C6A;
+  margin: 0 0 16px 0;
+}
+
+/* Filter Section - Contains both filter dropdown and statistics cards */
+.trip-analysis__filter-section {
+  background-color: #FAF9FF;
+  border-radius: 16px;
+  padding: 17px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.trip-analysis__filter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trip-analysis__filter-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.56;
+  color: #101828;
+}
+
+/* Statistics Grid - Always visible in filter section */
+.trip-analysis__stats-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+/* Charts Section - Horizontal layout above table */
+.trip-analysis__charts-section {
+  display: flex;
+  flex-direction: row;
+  gap: 28px;
+  margin-bottom: 28px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Table Section - Full width below charts */
+.trip-analysis__table-section {
+  width: 100%;
+}
+
+/* Large Screens - 1920px and above (24", 27" monitors) */
+@media (min-width: 1920px) {
+  .trip-analysis {
+    padding: 32px;
+    max-width: 2200px;
+  }
+  
+  .trip-analysis__page-title {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+  
+  .trip-analysis__filter-section {
+    padding: 24px 32px;
+    margin-bottom: 40px;
+  }
+  
+  .trip-analysis__filter-label {
+    font-size: 20px;
+  }
+  
+  .trip-analysis__stats-grid {
+    gap: 40px;
+  }
+  
+  .trip-analysis__charts-section {
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+}
+
+/* Extra Large Screens - 1600px to 1919px */
+@media (min-width: 1600px) and (max-width: 1919px) {
+  .trip-analysis {
+    padding: 24px;
+    max-width: 1900px;
+  }
+  
+  .trip-analysis__page-title {
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
+  
+  .trip-analysis__filter-section {
+    padding: 20px 28px;
+    margin-bottom: 36px;
+  }
+  
+  .trip-analysis__filter-label {
+    font-size: 19px;
+  }
+  
+  .trip-analysis__stats-grid {
+    gap: 32px;
+  }
+  
+  .trip-analysis__charts-section {
+    gap: 36px;
+    margin-bottom: 36px;
+  }
+}
+
+/* Large Screens - 1440px to 1599px */
+@media (min-width: 1440px) and (max-width: 1599px) {
+  .trip-analysis {
+    padding: 20px;
+  }
+  
+  .trip-analysis__page-title {
+    font-size: 24px;
+    margin-bottom: 18px;
+  }
+  
+  .trip-analysis__filter-section {
+    padding: 18px 26px;
+    margin-bottom: 32px;
+  }
+  
+  .trip-analysis__stats-grid {
+    gap: 28px;
+  }
+  
+  .trip-analysis__charts-section {
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .trip-analysis__charts-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .trip-analysis__stats-grid {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .trip-analysis {
+    padding: 16px 12px;
+  }
+  
+  .trip-analysis__filter-section {
+    padding: 20px 16px;
+  }
+  
+  .trip-analysis__stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    justify-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .trip-analysis {
+    padding: 12px 8px;
+  }
+  
+  .trip-analysis__page-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  
+  .trip-analysis__filter-section {
+    padding: 16px 12px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+  }
+  
+  .trip-analysis__filter-wrapper {
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  
+  .trip-analysis__filter-label {
+    font-size: 16px;
+  }
+  
+  .trip-analysis__stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+    justify-items: center;
+  }
+  
+  .trip-analysis__charts-section {
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .trip-analysis {
+    padding: 8px 4px;
+  }
+  
+  .trip-analysis__page-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .trip-analysis__filter-section {
+    padding: 12px 8px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+  
+  .trip-analysis__filter-wrapper {
+    margin-bottom: 12px;
+  }
+  
+  .trip-analysis__filter-label {
+    font-size: 14px;
+  }
+  
+  .trip-analysis__stats-grid {
+    gap: 12px;
+  }
+  
+  .trip-analysis__charts-section {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+} 

@@ -1,0 +1,84 @@
+.hotel-drafts{padding-top:24px}
+
+/* Section header (title + subtitle) */
+.tm-section-card{background:#F8F8FF;border-radius:20px;padding:20px}
+.tm-section-title{font-family:'Inter',sans-serif;font-weight:700;font-size:28px;line-height:1.2;color:#343C6A;margin:0}
+.tm-section-subtitle{margin-top:8px;color:#6E7B8F;font-size:14px;line-height:1.6}
+
+/* Card media */
+.hd-media-img{width:100%;height:156px;object-fit:contain;object-position:left;border-radius:12px}
+
+/* Card body */
+.hd-body{padding:6px 0px;}
+.hd-title{font-weight:800;color:#111827;font-size:20px;line-height:1.2;margin-top:2px}
+.hd-sub{color:#7C8AA0;font-weight:600;margin-top:6px}
+.hd-actions{margin-top:12px;display:flex;justify-content:flex-start}
+.hotel-details-chip{background:#2EC8FF;color:#fff;border:none;border-radius:999px;padding:7px 14px;font-weight:700;font-size:12px;line-height:1;cursor:pointer}
+
+/* Toolbar */
+.hd-toolbar{display:flex;gap:12px;align-items:center;margin:16px 0 20px;flex-wrap:wrap}
+.hd-toolbar{min-width:0}
+.hd-chip-wrap{position:relative}
+.hd-search{flex:0 1 240px;border:none;border-radius:40px;padding:10px 14px 10px 44px;background:#F5F7FA url('/icons/search-icon.svg') no-repeat 16px center;font-size:12px;color:#24BAEC;outline:none}
+.hd-search::placeholder{color:rgba(36,186,236,.5)}
+.hd-toolbar-right{margin-left:auto}
+.hd-add-btn{background:#22C55E;color:#fff;border:none;border-radius:999px;padding:12px 18px;font-weight:800;box-shadow:0 6px 14px rgba(34,197,94,.25);display:inline-flex;align-items:center;gap:8px}
+
+/* Filter chips look */
+.chip-tag.gray.sm{background:#F5F7FA;border:1px solid #E6EAF0;color:#24BAEC;border-radius:999px;padding:8px 32px 8px 16px;font-weight:600;font-size:12px;position:relative;display:inline-flex;align-items:center;gap:8px}
+.chip-tag.gray.sm::after{content:'';position:absolute;right:12px;width:12px;height:6px;background:url('/icons/dropdown-arrow.svg') no-repeat center/contain;opacity:.7}
+
+/* Dropdown */
+.hd-dropdown{position:absolute;top:44px;left:0;background:#fff;border:1px solid #E6EAF0;border-radius:12px;box-shadow:0 10px 24px rgba(16,24,40,.08);min-width:220px;z-index:5;overflow:hidden}
+.hd-drop-item{padding:10px 12px;font-size:13px;color:#111827;cursor:pointer;white-space:nowrap}
+.hd-drop-item:hover{background:#F5F7FA}
+.hd-drop-item.active{background:#EFF6FF;color:#1D4ED8;font-weight:600}
+
+/* Grid */
+/* Fixed, narrower card width with spacing similar to Figma */
+.hd-grid{display:grid;grid-template-columns:repeat(3, 300px);gap:30px;justify-content:space-between}
+.hd-grid-item{background:transparent;border:none;border-radius:0;box-shadow:none;padding:0;width:300px}
+    
+/* Pagination */
+.hd-pagination{display:flex;justify-content:center;align-items:center;margin-top:24px;gap:20px}
+.hd-nav{background:transparent;border:none;color:#FF6A22;font-weight:600;font-size:22px;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.hd-nav:disabled{opacity:.4;cursor:not-allowed}
+.hd-nav-icon{font-size:26px;line-height:1}
+.hd-pages{display:flex;gap:24px}
+.hd-page{background:transparent;border:none;color:#FF6A22;font-weight:600;font-size:26px;width:auto;height:auto;border-radius:0;padding:0;cursor:pointer}
+.hd-page-active{background:#FF6A22;color:#fff;border:none;border-radius:16px;padding:14px 18px;min-width:56px;font-size:22px;font-weight:700;line-height:1}
+
+@media (max-width: 1200px){
+  .hd-grid{grid-template-columns:repeat(2, 300px);justify-content:center}
+}
+@media (max-width: 1024px){
+  .tm-section-title{font-size:26px}
+}
+@media (max-width: 768px){
+  .tm-section-card{padding:16px}
+  .tm-section-title{font-size:24px}
+  .tm-section-subtitle{font-size:13px}
+  .hd-toolbar{gap:10px}
+  .chip-tag.gray.sm{padding:8px 28px 8px 14px;font-size:12px}
+  .hd-search{order:3;flex:1 1 100%;max-width:100%}
+  .hd-toolbar-right{order:4;width:100%;margin-left:0}
+  .hd-add-btn{width:100%;justify-content:center}
+}
+@media (max-width: 640px){
+  .hd-grid{grid-template-columns:1fr;justify-content:stretch}
+  .hd-grid-item{width:100%}
+  .hd-media-img{height:140px}
+  .hd-pagination{flex-wrap:wrap;gap:12px}
+  .hd-pages{gap:12px;flex-wrap:wrap;justify-content:center}
+  .hd-page{font-size:20px}
+  .hd-page-active{font-size:20px;padding:10px 14px;min-width:48px}
+}
+@media (max-width: 480px){
+  .tm-section-title{font-size:22px}
+  .hd-media-img{height:132px}
+  .chip-tag.gray.sm{padding:8px 24px 8px 12px}
+}
+@media (max-width: 380px){
+  .tm-section-title{font-size:20px}
+  .hd-media-img{height:124px}
+}

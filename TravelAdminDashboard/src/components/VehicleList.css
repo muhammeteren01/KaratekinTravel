@@ -1,0 +1,900 @@
+.vl-vehicle-list {
+  padding: 2rem;
+  background: #FAF9FF;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 100%;
+}
+
+.vl-vehicle-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.vl-vehicle-list-title {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.21;
+  color: #343C6A;
+  margin: 0;
+}
+
+.vl-bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vl-delete-selected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFECEB;
+  color: #D60E0E;
+  border: 1px solid rgba(214, 14, 14, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.vl-delete-selected img { width: 16px; height: 16px; }
+
+.vl-download-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #24BAEC;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.vl-download-all img { width: 16px; height: 16px; filter: brightness(0) invert(1); }
+
+.vl-sort-dropdown {
+  position: relative;
+  background: #F5F7FA;
+  border-radius: 40px;
+  padding: 8px 36px 8px 16px;
+  min-width: 210px;
+}
+
+.vl-sort-select {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 12px;
+  color: #24BAEC;
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+}
+
+.vl-sort-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.vl-search-box {
+  position: relative;
+  background: #F5F7FA;
+  border-radius: 40px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 185px;
+}
+
+.vl-search-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+}
+
+.vl-search-input {
+  background: transparent !important;
+  border: none;
+  outline: none;
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(36, 186, 236, 0.5);
+  flex: 1;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.vl-search-input::placeholder {
+  color: rgba(36, 186, 236, 0.5);
+}
+
+.vl-vehicle-table-container {
+  background: #FFFFFF;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #EAECF0;
+  width: 100%;
+}
+
+.vl-table-header-badge {
+  padding: 20px 24px 19px;
+  border-bottom: 1px solid #EAECF0;
+}
+
+.vl-last-update {
+  background: #F7FAFF;
+  border-radius: 16px;
+  padding: 2px 8px;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 12px;
+  color: #24BAEC;
+}
+
+.vl-vehicle-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.vl-vehicle-table th,
+.vl-vehicle-table td {
+  border-bottom: 1px solid #EAECF0;
+  text-align: left;
+}
+
+.vl-vehicle-table th {
+  background: #FCFCFD;
+  padding: 12px 24px;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 12px;
+  color: #667085;
+}
+
+.vl-checkbox-column {
+  width: 10%;
+}
+
+.vl-checkbox-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Header Checkbox - Special "Tümü" Button Style */
+.vl-checkbox-column .vl-checkbox-container {
+  width: 27px;
+  height: 20px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.vl-checkbox-column .vl-checkbox-container input[type="checkbox"] {
+  width: 27px;
+  height: 20px;
+  border: 1px solid #24BAEC;
+  border-radius: 6px;
+  background: #F7FAFF;
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.vl-checkbox-column .vl-checkbox-container input[type="checkbox"]:checked {
+  background: #24BAEC;
+  border-color: #24BAEC;
+}
+
+.vl-checkbox-column .vl-checkbox-container input[type="checkbox"]:checked::after {
+  display: none !important;
+}
+
+.vl-checkbox-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 8px;
+  line-height: 20px;
+  color: #24BAEC;
+  position: absolute;
+  left: 2.5px;
+  top: 0;
+  width: 22px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0;
+  pointer-events: none;
+}
+
+.vl-checkbox-container:has(input[type="checkbox"]:checked) .vl-checkbox-text {
+  color: white;
+}
+
+/* Row Checkboxes */
+tbody .vl-checkbox-container input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #24BAEC;
+  border-radius: 6px;
+  background: #F7FAFF;
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+tbody .vl-checkbox-container input[type="checkbox"]:checked {
+  background: #24BAEC;
+  border-color: #24BAEC;
+}
+
+tbody .vl-checkbox-container input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  background: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e") center/contain no-repeat;
+}
+
+.vl-sortable-column.vl-plate-column {
+  width: 20%;
+}
+
+.vl-sortable-column.vl-design-column {
+  width: 40%;
+}
+
+.vl-sortable-column.vl-date-column { width: 20%; }
+.vl-sortable-column.vl-type-column { width: 15%; }
+
+.vl-column-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vl-column-header svg {
+  opacity: 0.7;
+}
+
+.vl-actions-column {
+  width: 15%;
+}
+
+.vl-vehicle-table td {
+  padding: 12px 16px;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  color: #101828;
+}
+
+.vl-checkbox-cell {
+  width: 10%;
+  text-align: center;
+}
+
+.vl-plate-cell {
+  width: 20%;
+}
+
+.vl-design-cell {
+  width: 40%;
+  font-weight: 400;
+  color: #667085;
+}
+
+.vl-type-cell {
+  width: 15%;
+  text-align: center;
+  font-weight: 400;
+  color: #667085;
+}
+
+.vl-type-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: #FFF2CC;
+  color: #5E4B00;
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+/* Variants */
+.vl-type-chip--21 {
+  background: #DCEBFF; /* soft blue */
+  color: #1F3A8A;
+}
+
+.vl-type-chip--22 {
+  background: #FFF2CC; /* warm yellow */
+  color: #7A5B00;
+}
+
+.vl-actions-cell {
+  width: 15%;
+  text-align: center;
+}
+
+.vl-cell-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.vl-action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.vl-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #EAECF0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  cursor: pointer;
+}
+
+.vl-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 112, 41, 0.6);
+  color: #FF7029;
+  background: #fff;
+  padding: 0 14px;
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.vl-pagination {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 8px 0;
+  justify-content: center;
+}
+
+.vl-pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.vl-page-number {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 15px;
+  color: #FF7029;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+.vl-page-number.active {
+  background: #FF7029;
+  color: white;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vl-pagination-next {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 15px;
+  color: #FF7029;
+}
+
+.vl-pagination-next:hover {
+  opacity: 0.8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .vl-vehicle-list-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .vl-vehicle-list-filters {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .vl-sort-dropdown,
+  .vl-search-box {
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .vl-vehicle-list {
+    padding: 1.5rem;
+  }
+  
+  .vl-vehicle-list-header {
+    gap: 12px;
+  }
+  
+  /* Stack filters and bulk actions below the title on medium screens */
+  .vl-header-right {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 12px;
+  }
+  
+  .vl-vehicle-list-filters {
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .vl-sort-dropdown,
+  .vl-search-box {
+    min-width: 160px;
+    flex: 1;
+  }
+  
+  .vl-action-buttons {
+    gap: 8px;
+  }
+  
+  .vl-edit-btn,
+  .vl-delete-btn {
+    padding: 3px 24px;
+    font-size: 9px;
+    height: 22px;
+  }
+
+  /* Make the two header action buttons align nicely and wrap */
+  .vl-bulk-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .vl-vehicle-list {
+    padding: 1rem;
+  }
+  
+  .vl-vehicle-list-header {
+    gap: 16px;
+  }
+  
+  .vl-vehicle-list-filters {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  /* Layout the bulk action buttons in two columns on small tablets/large phones */
+  .vl-bulk-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .vl-delete-selected,
+  .vl-download-all {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .vl-sort-dropdown,
+  .vl-search-box {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  /* Hide table and show mobile cards */
+  .vl-vehicle-table-container {
+    display: none;
+  }
+  
+  /* Mobile card layout */
+  .vl-mobile-vehicle-list {
+    display: block;
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #EAECF0;
+    overflow: hidden;
+  }
+  
+  .vl-mobile-header {
+    padding: 20px 16px;
+    border-bottom: 1px solid #EAECF0;
+    background: #FCFCFD;
+  }
+  
+  .vl-mobile-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .vl-mobile-select-all {
+    display: flex;
+    align-items: center;
+  }
+  
+  .vl-mobile-select-all .vl-checkbox-container {
+    width: 27px;
+    height: 20px;
+    position: relative;
+  }
+  
+  .vl-mobile-select-all .vl-checkbox-container input[type="checkbox"] {
+    width: 27px;
+    height: 20px;
+    border: 1px solid #24BAEC;
+    border-radius: 6px;
+    background: #F7FAFF;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+  
+  .vl-mobile-select-all .vl-checkbox-container input[type="checkbox"]:checked {
+    background: #24BAEC;
+    border-color: #24BAEC;
+  }
+  
+  .vl-mobile-select-all .vl-checkbox-container input[type="checkbox"]:checked::after {
+    display: none !important;
+  }
+  
+  .vl-mobile-select-all .vl-checkbox-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 8px;
+    line-height: 20px;
+    color: #24BAEC;
+    position: absolute;
+    left: 2.5px;
+    top: 0;
+    width: 22px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0;
+    pointer-events: none;
+  }
+  
+  .vl-mobile-select-all .vl-checkbox-container:has(input[type="checkbox"]:checked) .vl-checkbox-text {
+    color: white;
+  }
+  
+  .vl-mobile-vehicle-card {
+    padding: 16px;
+    border-bottom: 1px solid #EAECF0;
+    background: #FFFFFF;
+  }
+  
+  .vl-mobile-vehicle-card:last-child {
+    border-bottom: none;
+  }
+  
+  .vl-mobile-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  
+  .vl-mobile-card-title {
+    font-family: Inter;
+    font-weight: 500;
+    font-size: 16px;
+    color: #101828;
+    margin: 0;
+  }
+  
+  .vl-mobile-card-checkbox {
+    margin-left: 8px;
+  }
+  
+  .vl-mobile-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .vl-mobile-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .vl-mobile-info-label {
+    font-family: Inter;
+    font-weight: 500;
+    font-size: 12px;
+    color: #667085;
+  }
+  
+  .vl-mobile-info-value {
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 14px;
+    color: #101828;
+    text-align: right;
+  }
+  
+  .vl-mobile-card-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  .vl-mobile-edit-btn,
+  .vl-mobile-delete-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 16px;
+    height: 32px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 10px;
+    color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .vl-mobile-edit-btn {
+    background: #F7B63E;
+  }
+  
+  .vl-mobile-delete-btn {
+    background: #D60E0E;
+  }
+  
+  .vl-mobile-edit-btn:hover {
+    background: #E6A52D;
+  }
+  
+  .vl-mobile-delete-btn:hover {
+    background: #B50C0C;
+  }
+  
+  /* Pagination adjustments */
+  .vl-pagination {
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px 0;
+  }
+  
+  .vl-pagination-numbers {
+    gap: 12px;
+  }
+  
+  .vl-page-number {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+  
+  .vl-page-number.active {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .vl-pagination-next {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vl-vehicle-list {
+    padding: 0.75rem;
+  }
+  
+  .vl-vehicle-list-title {
+    font-size: 20px;
+  }
+  
+  .vl-sort-dropdown,
+  .vl-search-box {
+    padding: 6px 12px;
+    min-width: unset;
+  }
+  
+  .vl-sort-select,
+  .vl-search-input {
+    font-size: 11px;
+  }
+  
+  .vl-mobile-vehicle-card {
+    padding: 12px;
+  }
+
+  /* On very small screens stack action buttons vertically full width */
+  .vl-bulk-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .vl-mobile-card-title {
+    font-size: 15px;
+  }
+  
+  .vl-mobile-info-label {
+    font-size: 11px;
+  }
+  
+  .vl-mobile-info-value {
+    font-size: 13px;
+  }
+  
+  .vl-mobile-edit-btn,
+  .vl-mobile-delete-btn {
+    padding: 4px 12px;
+    height: 28px;
+    font-size: 9px;
+  }
+  
+  .vl-pagination {
+    gap: 12px;
+    padding: 12px 0;
+  }
+  
+  .vl-pagination-numbers {
+    gap: 8px;
+  }
+  
+  .vl-page-number {
+    font-size: 13px;
+    padding: 4px 8px;
+  }
+  
+  .vl-page-number.active {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .vl-pagination-next {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .vl-vehicle-list {
+    padding: 0.5rem;
+  }
+  
+  .vl-vehicle-list-title {
+    font-size: 18px;
+  }
+  
+  .vl-mobile-vehicle-card {
+    padding: 10px;
+  }
+  
+  .vl-mobile-card-title {
+    font-size: 14px;
+  }
+  
+  .vl-mobile-card-info {
+    gap: 6px;
+  }
+  
+  .vl-mobile-info-label {
+    font-size: 10px;
+  }
+  
+  .vl-mobile-info-value {
+    font-size: 12px;
+  }
+  
+  .vl-mobile-card-actions {
+    gap: 6px;
+  }
+  
+  .vl-mobile-edit-btn,
+  .vl-mobile-delete-btn {
+    padding: 3px 10px;
+    height: 26px;
+    font-size: 8px;
+  }
+  
+  .vl-pagination {
+    gap: 8px;
+  }
+  
+  .vl-pagination-numbers {
+    gap: 6px;
+  }
+  
+  .vl-page-number {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+  
+  .vl-page-number.active {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .vl-pagination-next {
+    font-size: 12px;
+  }
+}
+
+/* Desktop table visibility */
+@media (min-width: 769px) {
+  .vl-mobile-vehicle-list {
+    display: none;
+  }
+}
+
+.vl-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vl-vehicle-list-filters {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}

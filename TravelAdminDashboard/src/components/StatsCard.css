@@ -1,0 +1,151 @@
+.stats-card {
+  background: white;
+  border-radius: 25px;
+  width: 100%;
+  min-width: 250px;
+  height: 120px;
+  position: relative;
+  box-shadow: 0px 4px 18px 0px rgba(75, 70, 92, 0.10);
+}
+
+.stats-content {
+  padding: 25px 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stats-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stats-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.21;
+  color: #718EBF;
+  margin: 0;
+}
+
+.stats-value {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.21;
+  color: #232323;
+  margin: 0;
+}
+
+.stats-icon-container {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stats-icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* Tablet responsive */
+@media (max-width: 1024px) {
+  .stats-card {
+    min-width: 220px;
+    height: 110px;
+  }
+  
+  .stats-content {
+    padding: 20px;
+  }
+  
+  .stats-title {
+    font-size: 15px;
+  }
+  
+  .stats-value {
+    font-size: 18px;
+  }
+  
+  .stats-icon-container {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .stats-icon {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .stats-card {
+    width: 100%;
+    height: 100px;
+    min-width: 0;
+    border-radius: 20px;
+  }
+  
+  .stats-content {
+    padding: 16px;
+  }
+  
+  .stats-title {
+    font-size: 14px;
+  }
+  
+  .stats-value {
+    font-size: 16px;
+  }
+  
+  .stats-icon-container {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .stats-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Small mobile responsive */
+@media (max-width: 480px) {
+  .stats-card {
+    height: 90px;
+    border-radius: 16px;
+  }
+  
+  .stats-content {
+    padding: 12px;
+    gap: 8px;
+  }
+  
+  .stats-title {
+    font-size: 12px;
+  }
+  
+  .stats-value {
+    font-size: 14px;
+  }
+  
+  .stats-icon-container {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .stats-icon {
+    width: 18px;
+    height: 18px;
+  }
+} 

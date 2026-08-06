@@ -1,0 +1,24 @@
+.app {
+  padding: 2rem;
+}
+
+.page-placeholder {
+  padding: 2rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.page-placeholder h1 {
+  color: #27292C;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.page-placeholder p {
+  color: #9AA2AC;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}

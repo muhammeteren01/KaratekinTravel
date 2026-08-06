@@ -1,0 +1,319 @@
+.bottom-section .interesting-trips-table,
+.interesting-trips-table {
+  background: #FAF9FF !important;
+  border-radius: 16px !important;
+  padding: 24px 14px !important;
+  width: 100% !important;
+  min-width: 350px !important;
+  height: 369px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.interesting-trips-title {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 20px !important;
+  line-height: 1.2 !important;
+  color: #333B69 !important;
+  margin: 0 0 20px 0 !important;
+  padding: 0 !important;
+}
+
+.interesting-trips-container {
+  background: white !important;
+  border-radius: 25px !important;
+  padding: 24px 26px !important;
+  height: calc(100% - 60px) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.interesting-trips-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 12px !important;
+}
+
+.trips-header-cell {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  line-height: 1.21 !important;
+  color: #718EBF !important;
+  flex: 1 !important;
+}
+
+.trips-header-cell:first-child {
+  max-width: 60px !important;
+  text-align: left !important;
+}
+
+.trips-header-cell:nth-child(2) {
+  max-width: 100px !important;
+  text-align: left !important;
+}
+
+.trips-header-cell:nth-child(3) {
+  max-width: 80px !important;
+  text-align: left !important;
+}
+
+.trips-header-cell:last-child {
+  max-width: 80px !important;
+  text-align: right !important;
+}
+
+.interesting-trips-divider {
+  width: 100% !important;
+  height: 1px !important;
+  background: #F4F5F7 !important;
+  margin-bottom: 16px !important;
+}
+
+.interesting-trips-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  height: calc(100% - 50px) !important;
+  overflow: hidden !important;
+}
+
+.interesting-trips-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  min-height: 24px !important;
+}
+
+.trips-table-cell {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  line-height: 1.21 !important;
+  color: #232323 !important;
+  flex: 1 !important;
+}
+
+.trips-table-cell:first-child {
+  max-width: 60px !important;
+  text-align: left !important;
+}
+
+.trips-table-cell:nth-child(2) {
+  max-width: 100px !important;
+  text-align: left !important;
+}
+
+.trips-table-cell:nth-child(3) {
+  max-width: 80px !important;
+  text-align: left !important;
+}
+
+.trips-table-cell:last-child {
+  max-width: 80px !important;
+  text-align: right !important;
+}
+
+.trips-return-cell.positive {
+  color: #16DBAA !important;
+  font-weight: 500 !important;
+}
+
+.trips-return-cell.negative {
+  color: #FE5C73 !important;
+  font-weight: 500 !important;
+}
+
+/* Ultra Wide Monitors */
+@media (min-width: 2000px) {
+  .bottom-section .interesting-trips-table,
+  .interesting-trips-table {
+    padding: 32px 20px !important;
+    height: 420px !important;
+  }
+  
+  .interesting-trips-title {
+    font-size: 24px !important;
+    margin-bottom: 28px !important;
+  }
+  
+  .interesting-trips-container {
+    padding: 32px 36px !important;
+    height: calc(100% - 76px) !important;
+  }
+  
+  .interesting-trips-header {
+    margin-bottom: 16px !important;
+  }
+  
+  .trips-header-cell {
+    font-size: 18px !important;
+  }
+  
+  .interesting-trips-divider {
+    margin-bottom: 20px !important;
+  }
+  
+  .interesting-trips-body {
+    gap: 22px !important;
+    height: calc(100% - 60px) !important;
+  }
+  
+  .interesting-trips-row {
+    min-height: 28px !important;
+  }
+  
+  .trips-table-cell {
+    font-size: 18px !important;
+  }
+  
+  .trips-header-cell:first-child,
+  .trips-table-cell:first-child {
+    max-width: 70px !important;
+  }
+  
+  .trips-header-cell:nth-child(2),
+  .trips-table-cell:nth-child(2) {
+    max-width: 120px !important;
+  }
+  
+  .trips-header-cell:nth-child(3),
+  .trips-table-cell:nth-child(3) {
+    max-width: 100px !important;
+  }
+  
+  .trips-header-cell:last-child,
+  .trips-table-cell:last-child {
+    max-width: 100px !important;
+  }
+}
+
+/* Very Large Desktop */
+@media (min-width: 1800px) and (max-width: 1999px) {
+  .bottom-section .interesting-trips-table,
+  .interesting-trips-table {
+    padding: 28px 18px !important;
+    height: 400px !important;
+  }
+  
+  .interesting-trips-title {
+    font-size: 22px !important;
+    margin-bottom: 26px !important;
+  }
+  
+  .interesting-trips-container {
+    padding: 28px 32px !important;
+    height: calc(100% - 72px) !important;
+  }
+  
+  .interesting-trips-header {
+    margin-bottom: 14px !important;
+  }
+  
+  .trips-header-cell {
+    font-size: 17px !important;
+  }
+  
+  .interesting-trips-divider {
+    margin-bottom: 18px !important;
+  }
+  
+  .interesting-trips-body {
+    gap: 20px !important;
+    height: calc(100% - 56px) !important;
+  }
+  
+  .interesting-trips-row {
+    min-height: 26px !important;
+  }
+  
+  .trips-table-cell {
+    font-size: 17px !important;
+  }
+  
+  .trips-header-cell:first-child,
+  .trips-table-cell:first-child {
+    max-width: 65px !important;
+  }
+  
+  .trips-header-cell:nth-child(2),
+  .trips-table-cell:nth-child(2) {
+    max-width: 110px !important;
+  }
+  
+  .trips-header-cell:nth-child(3),
+  .trips-table-cell:nth-child(3) {
+    max-width: 90px !important;
+  }
+  
+  .trips-header-cell:last-child,
+  .trips-table-cell:last-child {
+    max-width: 90px !important;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1600px) and (max-width: 1799px) {
+  .bottom-section .interesting-trips-table,
+  .interesting-trips-table {
+    padding: 26px 16px !important;
+    height: 385px !important;
+  }
+  
+  .interesting-trips-title {
+    font-size: 21px !important;
+    margin-bottom: 24px !important;
+  }
+  
+  .interesting-trips-container {
+    padding: 26px 30px !important;
+    height: calc(100% - 66px) !important;
+  }
+  
+  .interesting-trips-header {
+    margin-bottom: 13px !important;
+  }
+  
+  .trips-header-cell {
+    font-size: 16.5px !important;
+  }
+  
+  .interesting-trips-divider {
+    margin-bottom: 17px !important;
+  }
+  
+  .interesting-trips-body {
+    gap: 19px !important;
+    height: calc(100% - 54px) !important;
+  }
+  
+  .interesting-trips-row {
+    min-height: 25px !important;
+  }
+  
+  .trips-table-cell {
+    font-size: 16.5px !important;
+  }
+  
+  .trips-header-cell:first-child,
+  .trips-table-cell:first-child {
+    max-width: 62px !important;
+  }
+  
+  .trips-header-cell:nth-child(2),
+  .trips-table-cell:nth-child(2) {
+    max-width: 105px !important;
+  }
+  
+  .trips-header-cell:nth-child(3),
+  .trips-table-cell:nth-child(3) {
+    max-width: 85px !important;
+  }
+  
+  .trips-header-cell:last-child,
+  .trips-table-cell:last-child {
+    max-width: 85px !important;
+  }
+} 

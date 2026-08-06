@@ -1,0 +1,143 @@
+/* Compact details drawer/view for cancelled tour */
+.cancelled-details-container {
+  padding: 12px 16px;
+  background: #FAF9FF;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.cancelled-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cancelled-details-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #141B34;
+  margin: 0;
+}
+
+.ctd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #141B34;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.ctd-section {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+}
+
+.ctd-section.ctd-info {
+  background: #F4F3FF;
+}
+
+.ctd-section-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333B69;
+  margin-bottom: 10px;
+}
+
+.ctd-info-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ctd-info-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.ctd-info-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.ctd-info-icon img {
+  width: 52px;
+  height: 52px;
+}
+
+.ctd-info-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3BA4F1;
+}
+
+.ctd-info-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #141B34;
+}
+
+.ctd-message-card {
+  background: #F6F6FE;
+  border-radius: 14px;
+  padding: 12px 14px;
+  color: #6B7280;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+}
+
+.cancelled-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 12px;
+}
+
+.cancelled-details-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.cancelled-details-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #111827;
+}
+
+.cancelled-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: #F0F9FF;
+  color: #0EA5E9;
+  border: 1px solid rgba(14,165,233,0.2);
+}
+
+@media (max-width: 768px) {
+  .cancelled-details-grid {
+    grid-template-columns: 1fr;
+  }
+  .ctd-info-cards { grid-template-columns: 1fr; }
+}

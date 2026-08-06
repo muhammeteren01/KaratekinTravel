@@ -1,0 +1,45 @@
+.ar-wrapper{background:#FAF9FF;border-radius:16px;padding:24px;}
+.ar-header h2{margin:0 0 16px;font-size:22px;font-weight:800;color:#343C6A}
+.ar-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.ar-chip{display:inline-flex;align-items:center;gap:6px;background:#F2F9FF;border:1px solid #E1F2FF;border-radius:999px;padding:8px 12px;color:#5CB4E1;cursor:pointer}
+.ar-chip img{width:14px;height:14px}
+.ar-dd{position:relative}
+.ar-menu{position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1px solid #EEF2F7;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06);min-width:180px;z-index:10;overflow:hidden}
+.ar-menu-item{padding:10px 12px;cursor:pointer}
+.ar-menu-item:hover{background:#F7FBFF}
+.ar-menu-item.active{background:#E8F6FF;color:#24BAEC;font-weight:600}
+.ar-search{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #EEF2F7;border-radius:12px;padding:8px 12px;flex:1;min-width:220px}
+.ar-search img{width:16px;height:16px}
+.ar-search input{border:0;outline:0;width:100%}
+
+.ar-list{display:flex;flex-direction:column;gap:16px;margin-top:8px}
+.ar-item{display:grid;grid-template-columns:56px 1fr auto;gap:12px;background:#fff;border:1px solid #EEF2F7;border-radius:16px;padding:12px}
+.ar-avatar{width:56px;height:56px;border-radius:50%;background:#EAF4FF;display:flex;align-items:center;justify-content:center}
+.ar-avatar--person img{width:28px;height:28px;opacity:.9}
+.ar-item-body{display:flex;flex-direction:column;gap:8px}
+.ar-name-row{display:flex;align-items:center;gap:8px;color:#343C6A;font-weight:800}
+.ar-name{display:none}
+.ar-date{color:#7D8FB3;font-weight:600}
+.ar-tour{color:#7D8FB3;font-size:12px;margin-top:-2px}
+.ar-stars{display:inline-flex;gap:4px}
+.ar-rating-row{display:flex;align-items:center;gap:8px}
+.ar-rating-text{color:#7D8FB3;font-weight:700}
+.ar-comment-bubble{background:#F7F8FA;border:1px solid #EEF2F7;border-radius:8px;padding:10px;color:#4B5563}
+.ar-report{align-self:start;display:inline-flex;align-items:center;gap:6px;background:#FFEEF0;color:#D64045;border:1px solid #FFD5DB;border-radius:999px;padding:8px 10px;cursor:pointer;height:fit-content}
+.ar-report img{width:14px;height:14px}
+
+/* Reuse Tour Management pagination visuals */
+.pagination{display:flex;align-items:center;justify-content:center;gap:24px;padding:20px 0;margin-top:16px;background:#fff}
+.pagination-numbers{display:flex;align-items:center;gap:12px}
+.page-btn{width:40px;height:40px;border:none;background:transparent;font-family:'Inter',sans-serif;font-weight:500;font-size:15px;line-height:1.21;color:#FF7029;cursor:pointer;transition:all .2s ease;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.page-btn.active{background:#FF7029;color:#fff}
+.page-btn:hover:not(.active){background:#FFF4F0}
+.next-btn{display:flex;justify-content:center;align-items:center;gap:8px;background:transparent;border:none;font-family:'Inter',sans-serif;font-weight:500;font-size:15px;line-height:1.21;color:#FF7029;cursor:pointer;transition:all .2s ease}
+.next-btn:hover{opacity:.8}
+.next-btn svg{stroke:#FF7029;stroke-width:2px}
+.next-btn:disabled{opacity:.5;cursor:not-allowed}
+
+@media(max-width:768px){
+  .ar-item{grid-template-columns:44px 1fr;}
+  .ar-report{grid-column:1/-1;}
+}

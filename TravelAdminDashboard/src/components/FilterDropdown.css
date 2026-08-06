@@ -1,0 +1,142 @@
+/* FilterDropdown Component Styles */
+.filter-dropdown {
+  position: relative;
+}
+
+.filter-dropdown__container {
+  width: 78px;
+  height: 37px;
+  position: relative;
+}
+
+.filter-dropdown__trigger {
+  width: 100%;
+  height: 100%;
+  background-color: #F5F7FA;
+  border: none;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-dropdown__trigger:hover {
+  background-color: #E8ECF0;
+}
+
+.filter-dropdown__value {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.21;
+  color: #101828;
+}
+
+.filter-dropdown__arrow {
+  width: 20px;
+  height: 20px;
+  opacity: 0.4;
+  transition: transform 0.2s ease;
+}
+
+.filter-dropdown__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #E1E3E6;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  margin-top: 4px;
+}
+
+.filter-dropdown__option {
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #101828;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.filter-dropdown__option:hover {
+  background-color: #F5F7FA;
+}
+
+.filter-dropdown__option--selected {
+  background-color: #F5F7FA;
+  color: #101828;
+  font-weight: 500;
+}
+
+.filter-dropdown__option:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.filter-dropdown__option:last-child {
+  border-radius: 0 0 8px 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filter-dropdown__container {
+    width: 70px;
+    height: 32px;
+  }
+  
+  .filter-dropdown__trigger {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  
+  .filter-dropdown__value {
+    font-size: 11px;
+  }
+  
+  .filter-dropdown__arrow {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .filter-dropdown__option {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-dropdown__container {
+    width: 60px;
+    height: 28px;
+  }
+  
+  .filter-dropdown__trigger {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+  
+  .filter-dropdown__value {
+    font-size: 10px;
+  }
+  
+  .filter-dropdown__arrow {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .filter-dropdown__option {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+} 

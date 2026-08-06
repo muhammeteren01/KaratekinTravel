@@ -1,0 +1,64 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE / Editor
+.idea/
+.vs/
+.vscode/
+*.iml
+*.suo
+*.user
+*.sw?
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.keystore
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+
+# Logs & caches
+*.log
+logs/
+.cache/
+tmp/
+temp/
+
+# Node / frontend
+node_modules/
+dist/
+dist-ssr/
+build/
+coverage/
+lcov-report/
+*.tsbuildinfo
+
+# Expo / React Native
+.expo/
+.expo-shared/
+web-build/
+android/
+ios/
+.kotlin/
+.metro-health-check*
+
+# .NET
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.nupkg
+*.snupkg
+*.binlog
+project.lock.json
+TestResult.xml
+[Tt]est[Rr]esult*/
+CodeCoverage/
