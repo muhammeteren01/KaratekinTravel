@@ -1,5 +1,19 @@
+import { ApiError } from './apiError';
+import { handleDemoRequest } from './demoServer';
+
 const DEFAULT_API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:5076';
+
+/**
+ * Demo modu: .env dosyasında VITE_DEMO_MODE=true olduğunda tüm API çağrıları
+ * ağa çıkmadan tarayıcı içindeki sahte sunucuya gider. Backend/veritabanı
+ * kurmadan paneli gezmek ve tur ekleme/yönetme akışlarını denemek için.
+ */
+export const DEMO_MODE = String(import.meta.env.VITE_DEMO_MODE || '').toLowerCase() === 'true';
+
+// ApiError artık ayrı modülde (demoServer da kullanıyor); eski import yolu
+// bozulmasın diye buradan tekrar dışa veriliyor.
+export { ApiError };
 
 const ADMIN_TOKEN_KEY = 'travelAdminDashboard.apiToken';
 
@@ -75,17 +89,14 @@ export function clearAdminToken() {
   }
 }
 
-export class ApiError extends Error {
-  constructor(status, message, body) {
-    super(message);
-    this.name = 'ApiError';
-    this.status = status;
-    this.body = body;
-  }
-}
-
 async function request(url, options = {}) {
   const { auth = true, headers, timeoutMs = 12000, signal, ...rest } = options;
+
+  if (DEMO_MODE) {
+    // Sahte sunucu senkron; gerçek istek gibi davranması için promise'e sarılıyor.
+    return Promise.resolve().then(() => handleDemoRequest(url, rest.method || 'GET', rest.body));
+  }
+
   const token = auth ? getAdminToken() : null;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -221,6 +232,8 @@ export function createTripApi(payload) {
       headerImage: payload.headerImage ?? null,
       description: payload.description ?? null,
       isFeatured: payload.isFeatured ?? false,
+      isPublished: payload.isPublished ?? false,
+      pricing: payload.pricing ?? null,
     }),
   }));
 }

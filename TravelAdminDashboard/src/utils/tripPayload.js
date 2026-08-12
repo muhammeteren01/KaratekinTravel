@@ -102,9 +102,7 @@ export function enrichDescription(formData) {
   if (tags.length) parts.push(`Etiketler: ${tags.join(', ')}`);
   if (formData.category) parts.push(`Kategori: ${formData.category}`);
 
-  const step3 = getStep3Data(formData);
-  if (step3.tourPrice) parts.push(`Tur fiyatı: ${step3.tourPrice} TL`);
-
+  // Fiyat artık payload.pricing ile gönderiliyor; açıklamaya gömmeye gerek yok.
   const policy = formData.cancellationPolicyText?.trim();
   if (policy) parts.push(`İptal politikası: ${policy}`);
 
@@ -150,7 +148,35 @@ export function buildCreateTripPayload(formData) {
     headerImage: resolveTripCoverUrl(additionalImages[0]),
     description: enrichDescription(formData),
     isFeatured: false,
+    // Yeni tur taslak açılır; kullanıcılara görünmesi için Tur Detayları
+    // ekranından "Yayınla" denmesi gerekir.
+    isPublished: false,
+    pricing: buildPricingPayload(formData),
   };
+}
+
+/** Sihirbazdaki fiyat alanlarını API'nin pricing yapısına çevirir. */
+export function buildPricingPayload(formData) {
+  const step3 = getStep3Data(formData);
+  const basePrice = parseAmount(step3.tourPrice);
+  if (basePrice == null) return null;
+
+  const extras = (Array.isArray(step3.extraCharges) ? step3.extraCharges : [])
+    .map((extra) => ({
+      label: extra.type || extra.label || 'Ek ücret',
+      amount: parseAmount(extra.amount) ?? 0,
+    }))
+    .filter((extra) => extra.label);
+
+  return { currency: 'TRY', basePrice, extras };
+}
+
+/** "2.500 TL", "2500", "2,5" gibi girdileri sayıya çevirir. */
+export function parseAmount(value) {
+  if (value == null || value === '') return null;
+  const cleaned = String(value).replace(/[^\d.,-]/g, '').replace(/\.(?=\d{3}\b)/g, '').replace(',', '.');
+  const num = Number(cleaned);
+  return Number.isFinite(num) ? num : null;
 }
 
 export function buildUpdateTripPayload(formData, existingTrip = {}) {
@@ -188,6 +214,11 @@ export function buildUpdateTripPayload(formData, existingTrip = {}) {
   else if (base.image) payload.image = base.image;
 
   if (typeof base.isFeatured === 'boolean') payload.isFeatured = base.isFeatured;
+  // Yayın durumu güncelleme sihirbazında değiştirilmiyor; mevcut değeri koru.
+  if (typeof base.isPublished === 'boolean') payload.isPublished = base.isPublished;
+
+  const pricing = buildPricingPayload(formData);
+  if (pricing) payload.pricing = pricing;
 
   return payload;
 }

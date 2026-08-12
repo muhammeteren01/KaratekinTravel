@@ -54,7 +54,7 @@
 }
 
 .stats-card-title-unique {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 12px;
   line-height: 1.25;
@@ -76,7 +76,7 @@
 }
 
 .stats-card-value-unique {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 10px;
   line-height: 1.2;

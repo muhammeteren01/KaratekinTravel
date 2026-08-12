@@ -5,9 +5,71 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Travel Admin Dashboard</title>
+    <style>
+      #boot-fallback {
+        display: none;
+        max-width: 620px;
+        margin: 64px auto;
+        padding: 28px 32px;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        color: #1f2937;
+        line-height: 1.65;
+      }
+      #boot-fallback h1 { margin: 0 0 12px; font-size: 20px; }
+      #boot-fallback code {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+      #boot-fallback pre {
+        background: #f3f4f6;
+        padding: 12px 14px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 13px;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+
+    <!--
+      Uygulama açılmazsa ekran bomboş kalıyordu. Bu blok, React 5 saniye içinde
+      #root'u dolduramazsa görünür olur; en sık sebep index.html'in bir sunucu
+      olmadan (file:// ile) doğrudan açılmasıdır.
+    -->
+    <div id="boot-fallback">
+      <h1>Uygulama başlatılamadı</h1>
+      <p>
+        Bu sayfa <code>file://</code> ile doğrudan açıldıysa tarayıcı JavaScript
+        modüllerini güvenlik nedeniyle yükleyemez ve ekran boş kalır. Proje bir
+        geliştirme sunucusu üzerinden çalıştırılmalıdır:
+      </p>
+      <pre>cd TravelAdminDashboard
+npm install
+npm run dev</pre>
+      <p>
+        Ardından terminalde görünen adresi (genellikle
+        <code>http://localhost:5173</code>) tarayıcıda açın.
+      </p>
+      <p>
+        Sunucu üzerinden açtığınız hâlde bu mesajı görüyorsanız, tarayıcı
+        konsolundaki (F12 &rarr; Console) ilk hatayı kontrol edin.
+      </p>
+    </div>
+
+    <script>
+      setTimeout(function () {
+        var root = document.getElementById('root');
+        if (!root || root.childElementCount === 0) {
+          document.getElementById('boot-fallback').style.display = 'block';
+        }
+      }, 5000);
+    </script>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

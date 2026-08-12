@@ -281,8 +281,8 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                       <td>{tour.price}</td>
                       <td>
                         <span className={`status-badge ${tour.status}`}>
-                          {tour.status === 'active' ? 'Yayında' : 
-                           tour.status === 'inactive' ? 'Pasif' : 'İşleniyor'}
+                          {tour.status === 'active' ? 'Yayında' :
+                           tour.status === 'inactive' ? 'Pasif' : 'Taslak'}
                         </span>
                       </td>
                       <td>
@@ -349,7 +349,7 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                 <div className="mobile-info-row">
                   <span className="mobile-info-label">Durum:</span>
                   <span className={`status-badge ${tour.status}`}>
-                    {tour.status === 'active' ? 'Yayında' : tour.status === 'inactive' ? 'Pasif' : 'İşleniyor'}
+                    {tour.status === 'active' ? 'Yayında' : tour.status === 'inactive' ? 'Pasif' : 'Taslak'}
                   </span>
                 </div>
                 <div className="mobile-info-row">

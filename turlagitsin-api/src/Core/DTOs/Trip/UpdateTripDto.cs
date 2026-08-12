@@ -11,5 +11,15 @@ public class UpdateTripDto
     public int? Capacity { get; set; }
     public string? Image { get; set; }
     public string? Description { get; set; }
+    public string? HeaderImage { get; set; }
     public bool? IsFeatured { get; set; }
+
+    // Turun kullanıcılara görünürlüğü. Bu alan olmadan bir tur yayından
+    // kaldırılamıyordu: entity'de IsPublished vardı ve TripResponseDto ile
+    // okunabiliyordu, ama hiçbir uç değerini değiştiremiyordu.
+    public bool? IsPublished { get; set; }
+
+    // Fiyat güncellemesi. Create tarafıyla aynı sebep: bu alan olmadan panelden
+    // değiştirilen fiyat sessizce yok sayılıyordu.
+    public CreateTripPricingDto? Pricing { get; set; }
 }

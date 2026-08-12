@@ -110,3 +110,34 @@
   color: #15803d;
   font-size: 13px;
 }
+
+.login-card .login-demo-hint {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.login-demo-hint code {
+  background: #ffedd5;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.login-demo-fill {
+  display: block;
+  margin-top: 10px;
+  padding: 5px 12px;
+  border: 1px solid #fdba74;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.login-demo-fill:hover { background: #ffedd5; }
