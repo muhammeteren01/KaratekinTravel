@@ -10,7 +10,6 @@ namespace Service.Service
     public class VehicleService : Service<Vehicle>, IVehicleService
     {
         private readonly ISeatLayoutRepository _seatLayoutRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
         public VehicleService(
             IGenericRepository<Vehicle> repository,
@@ -19,7 +18,6 @@ namespace Service.Service
             : base(repository, unitOfWork)
         {
             _seatLayoutRepository = seatLayoutRepository;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<VehicleDto>> GetByCompanyIdAsync(Guid companyId)

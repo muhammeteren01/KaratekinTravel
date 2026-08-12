@@ -61,6 +61,25 @@ static string BuildFreeTierConnectionString(string raw)
         csb = new NpgsqlConnectionStringBuilder(raw);
     }
 
+    // Yerel PostgreSQL kurulumlarında SSL genelde kapalıdır ve free-tier havuz
+    // limitleri (MaxPoolSize=3) gereksiz yere kısıtlayıcıdır. Aşağıdaki Supabase
+    // ayarlarını zorlamak yerel bağlantıyı doğrudan başarısız kılıyordu.
+    var isLocal = csb.Host is "localhost" or "127.0.0.1" or "::1";
+
+    if (isLocal)
+    {
+        csb.SslMode = SslMode.Disable;
+        csb.Pooling = true;
+        csb.MinPoolSize = 1;
+        csb.MaxPoolSize = 20;
+        csb.Timeout = 15;
+        csb.CommandTimeout = 30;
+        csb.ApplicationName = "turlagitsin-api";
+        csb.IncludeErrorDetail = true;
+        Console.WriteLine("💻 Yerel PostgreSQL tespit edildi — SSL kapalı, standart havuz ayarları");
+        return csb.ToString();
+    }
+
     // Transaction pooler (6543) → Session pooler (5432) — EF Core için zorunlu
     if (csb.Port == 6543)
     {
@@ -123,10 +142,10 @@ else
 // Connection info logging
 {
     var preview = new NpgsqlConnectionStringBuilder(finalConnectionString);
-    Console.WriteLine("=== SUPABASE FREE TIER CONNECTION ===");
+    Console.WriteLine("=== POSTGRESQL CONNECTION ===");
     Console.WriteLine($"Environment: {environment}");
     Console.WriteLine($"Host: {preview.Host}");
-    Console.WriteLine($"Port: {preview.Port} (5432=Session recommended)");
+    Console.WriteLine($"Port: {preview.Port} (Supabase için 5432=Session önerilir)");
     Console.WriteLine($"Timeout: {preview.Timeout}s | CommandTimeout: {preview.CommandTimeout}s | MaxPool: {preview.MaxPoolSize}");
     Console.WriteLine("=====================================");
 }

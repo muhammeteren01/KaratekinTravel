@@ -15,7 +15,6 @@ namespace Service.Service
         private readonly ITripDepartureRepository _departureRepository;
         private readonly IGenericRepository<Coupon> _couponRepository;
         private readonly IGenericRepository<TripPricing> _pricingRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
         public ReservationService(
             IGenericRepository<Reservation> repository,
@@ -30,7 +29,6 @@ namespace Service.Service
             _departureRepository = departureRepository;
             _couponRepository = couponRepository;
             _pricingRepository = pricingRepository;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<ReservationResponseDto>> GetAllReservationsAsync()
