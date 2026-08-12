@@ -234,6 +234,11 @@ export function createTripApi(payload) {
       isFeatured: payload.isFeatured ?? false,
       isPublished: payload.isPublished ?? false,
       pricing: payload.pricing ?? null,
+      // Tur içeriği: güzergâh, dahil/hariç olanlar, oteller, iptal politikası.
+      details: payload.details ?? null,
+      policy: payload.policy ?? null,
+      itinerary: payload.itinerary ?? null,
+      hotels: payload.hotels ?? null,
     }),
   }));
 }

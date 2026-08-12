@@ -22,4 +22,12 @@ public class CreateTripDto
 
     // Yeni turlar taslak olarak açılabilsin diye; verilmezse yayında başlar.
     public bool? IsPublished { get; set; }
+
+    // Tur içeriği. Bu alanlar olmadan güzergâh, dahil/hariç olanlar, oteller
+    // ve iptal politikası kaydedilemiyor; panel bunları Description'a
+    // düz metin olarak gömmek zorunda kalıyordu.
+    public TripDetailsInputDto? Details { get; set; }
+    public TripPolicyInputDto? Policy { get; set; }
+    public List<TripItineraryInputDto>? Itinerary { get; set; }
+    public List<TripHotelInputDto>? Hotels { get; set; }
 }

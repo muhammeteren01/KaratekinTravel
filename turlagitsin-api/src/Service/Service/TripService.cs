@@ -263,17 +263,139 @@ namespace Service.Service
                 };
             }
 
+            if (dto.Details != null)
+            {
+                trip.Details = new TripDetails { TripId = trip.Id };
+                ApplyDetails(trip.Details, dto.Details);
+            }
+
+            if (dto.Policy != null)
+            {
+                trip.Policy = new TripPolicy { TripId = trip.Id };
+                ApplyPolicy(trip.Policy, dto.Policy);
+            }
+
+            if (dto.Itinerary != null) trip.Itinerary = BuildItinerary(trip.Id, dto.Itinerary);
+            if (dto.Hotels != null) trip.Hotels = BuildHotels(trip.Id, dto.Hotels);
+
             await AddAsync(trip);
             return MapToResponseDto(trip);
         }
 
+        // --- Tur içeriği yardımcıları ---------------------------------------
+        // Güncellemede alt koleksiyonlar tümüyle değiştiriliyor: istemci ekranda
+        // gördüğü listenin tamamını gönderiyor, kısmi yama göndermiyor. Eski
+        // kayıtlar koleksiyondan çıkarılınca EF (Cascade + zorunlu FK) siliyor.
+
+        // Details ve Policy birebir ilişki: mevcut kaydı yenisiyle değiştirmek
+        // yerine yerinde güncelliyoruz, aksi halde aynı TripId'ye sahip iki
+        // bağımlı kayıt oluşup SaveChanges patlayabilir.
+        private static void ApplyDetails(TripDetails target, TripInputDtos.TripDetailsInputDto dto)
+        {
+            target.SpecialNote = dto.SpecialNote;
+            target.Included.Clear();
+            target.Excluded.Clear();
+
+            var order = 0;
+            foreach (var item in dto.Included.Where(i => !string.IsNullOrWhiteSpace(i)))
+            {
+                target.Included.Add(new TripIncluded { Item = item.Trim(), DisplayOrder = order++ });
+            }
+
+            order = 0;
+            foreach (var item in dto.Excluded.Where(i => !string.IsNullOrWhiteSpace(i)))
+            {
+                target.Excluded.Add(new TripExcluded { Item = item.Trim(), DisplayOrder = order++ });
+            }
+        }
+
+        private static void ApplyPolicy(TripPolicy target, TripInputDtos.TripPolicyInputDto dto)
+        {
+            target.Title = dto.Title;
+            target.Paragraphs.Clear();
+
+            var order = 0;
+            foreach (var paragraph in dto.Paragraphs.Where(p => !string.IsNullOrWhiteSpace(p)))
+            {
+                target.Paragraphs.Add(new TripPolicyParagraph { Content = paragraph.Trim(), DisplayOrder = order++ });
+            }
+        }
+
+        private static List<TripItinerary> BuildItinerary(Guid tripId, List<TripInputDtos.TripItineraryInputDto> items)
+        {
+            var result = new List<TripItinerary>();
+            var order = 0;
+
+            foreach (var item in items)
+            {
+                var day = new TripItinerary
+                {
+                    TripId = tripId,
+                    Day = item.Day,
+                    Title = item.Title ?? string.Empty,
+                    DateLabel = item.DateLabel,
+                    Note = item.Note,
+                    HotelIndex = item.HotelIndex,
+                    DisplayOrder = order++
+                };
+
+                var activityOrder = 0;
+                foreach (var activity in item.Activities.Where(a => !string.IsNullOrWhiteSpace(a.Label)))
+                {
+                    day.Activities.Add(new ItineraryActivity
+                    {
+                        Time = activity.Time ?? string.Empty,
+                        Label = activity.Label.Trim(),
+                        Description = activity.Description,
+                        DisplayOrder = activityOrder++
+                    });
+                }
+
+                result.Add(day);
+            }
+
+            return result;
+        }
+
+        private static List<TripHotel> BuildHotels(Guid tripId, List<TripInputDtos.TripHotelInputDto> items)
+        {
+            var result = new List<TripHotel>();
+            var order = 0;
+
+            foreach (var item in items.Where(h => !string.IsNullOrWhiteSpace(h.Name)))
+            {
+                var hotel = new TripHotel
+                {
+                    TripId = tripId,
+                    Name = item.Name.Trim(),
+                    Stars = item.Stars,
+                    Address = item.Address,
+                    CheckIn = item.CheckIn,
+                    CheckOut = item.CheckOut,
+                    Description = item.Description,
+                    Phone = item.Phone,
+                    Website = item.Website,
+                    MapLink = item.MapLink,
+                    DisplayOrder = order++
+                };
+
+                var amenityOrder = 0;
+                foreach (var amenity in item.Amenities.Where(a => !string.IsNullOrWhiteSpace(a)))
+                {
+                    hotel.Amenities.Add(new HotelAmenity { Name = amenity.Trim(), DisplayOrder = amenityOrder++ });
+                }
+
+                result.Add(hotel);
+            }
+
+            return result;
+        }
+
         public async Task<TripResponseDto?> UpdateTripAsync(Guid id, TripInputDtos.UpdateTripDto dto)
         {
-            // Pricing include edilmezse mevcut fiyat satırı null görünür ve
-            // aşağıdaki ??= her güncellemede yeni bir satır oluşturur.
-            var trip = await _repository.Where(t => t.Id == id)
-                .Include(t => t.Pricing)
-                .FirstOrDefaultAsync();
+            // Alt koleksiyonlar include edilmezse EF onları takip etmez:
+            // mevcut kayıtlar silinmez, üstüne yenileri eklenerek kopyalanır.
+            var trip = await QueryTrips().FirstOrDefaultAsync(t => t.Id == id);
             if (trip == null) return null;
 
             if (dto.Title != null) trip.Title = dto.Title;
@@ -298,9 +420,45 @@ namespace Service.Service
                 trip.Pricing.DiscountAmount = dto.Pricing.DiscountAmount;
             }
 
+            // Alt koleksiyonlar "gönderildiyse tümüyle değiştir" semantiğiyle
+            // güncelleniyor; gönderilmeyen alan mevcut hâlini korur.
+            if (dto.Details != null)
+            {
+                trip.Details ??= new TripDetails { TripId = trip.Id };
+                ApplyDetails(trip.Details, dto.Details);
+            }
+
+            if (dto.Policy != null)
+            {
+                trip.Policy ??= new TripPolicy { TripId = trip.Id };
+                ApplyPolicy(trip.Policy, dto.Policy);
+            }
+
+            if (dto.Itinerary != null)
+            {
+                trip.Itinerary.Clear();
+                foreach (var day in BuildItinerary(trip.Id, dto.Itinerary))
+                {
+                    trip.Itinerary.Add(day);
+                }
+            }
+
+            if (dto.Hotels != null)
+            {
+                trip.Hotels.Clear();
+                foreach (var hotel in BuildHotels(trip.Id, dto.Hotels))
+                {
+                    trip.Hotels.Add(hotel);
+                }
+            }
+
             trip.UpdatedAt = DateTime.UtcNow;
 
-            await UpdateAsync(trip);
+            // trip zaten takip ediliyor; alt koleksiyonlardaki ekleme/silmeleri
+            // change tracker biliyor. UpdateAsync (DbSet.Update) burada grafın
+            // tamamını Modified işaretleyip yeni alt kayıtları UPDATE etmeye
+            // çalışırdı ve satır bulunamadığı için hata verirdi.
+            await _unitOfWork.SaveChangesAsync();
             return await GetTripByIdAsync(id);
         }
 

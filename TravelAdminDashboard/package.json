@@ -8,8 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "dev:demo": "VITE_DEMO_MODE=true vite",
-    "build:demo": "VITE_DEMO_MODE=true vite build"
+    "dev:demo": "vite --mode demo",
+    "build:demo": "vite build --mode demo"
   },
   "dependencies": {
     "chart.js": "^4.5.0",

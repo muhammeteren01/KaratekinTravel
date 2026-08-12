@@ -200,6 +200,59 @@ function remove(name, id) {
   persist();
 }
 
+// --- Tur içeriği normalize edicileri -------------------------------------
+// Gerçek API boş koleksiyonları hep dizi olarak döndürüyor; demo da aynısını
+// yapsın ki ekranlar iki modda farklı davranmasın.
+
+const asList = (value) => (Array.isArray(value) ? value.filter(Boolean) : []);
+
+function normalizeDetails(details) {
+  return {
+    included: asList(details?.included),
+    excluded: asList(details?.excluded),
+    specialNote: details?.specialNote || '',
+  };
+}
+
+function normalizePolicy(policy) {
+  return {
+    title: policy?.title || '',
+    paragraphs: asList(policy?.paragraphs),
+  };
+}
+
+function normalizeItinerary(itinerary) {
+  return asList(itinerary).map((day, index) => ({
+    day: day?.day ?? index + 1,
+    title: day?.title || '',
+    dateLabel: day?.dateLabel || '',
+    note: day?.note || '',
+    hotelIndex: day?.hotelIndex ?? null,
+    activities: asList(day?.activities).map((activity) => ({
+      time: activity?.time || '',
+      label: activity?.label || '',
+      description: activity?.description || '',
+    })),
+  }));
+}
+
+function normalizeHotels(hotels) {
+  return asList(hotels).map((hotel) => ({
+    name: hotel?.name || '',
+    stars: Number(hotel?.stars) || 0,
+    address: hotel?.address || '',
+    image: hotel?.image || '',
+    gallery: asList(hotel?.gallery),
+    checkIn: hotel?.checkIn || '',
+    checkOut: hotel?.checkOut || '',
+    amenities: asList(hotel?.amenities),
+    description: hotel?.description || '',
+    phone: hotel?.phone || '',
+    website: hotel?.website || '',
+    mapLink: hotel?.mapLink || '',
+  }));
+}
+
 /** Bir tura ait alt tarih/rezervasyon sayısından joinedCount'u tazeler. */
 function recalcTripJoined(tripId) {
   const data = db();
@@ -313,10 +366,12 @@ const ROUTES = [
       isFeatured: body?.isFeatured ?? false,
       isDeleted: false,
       purchased: false,
-      details: {},
-      policy: {},
-      itinerary: [],
-      hotels: [],
+      // Tur içeriği artık yapılandırılmış geliyor; API'nin okuma DTO'sundaki
+      // adlarla saklanıyor ki düzenleme ekranı aynı yapıyı geri okuyabilsin.
+      details: normalizeDetails(body?.details),
+      policy: normalizePolicy(body?.policy),
+      itinerary: normalizeItinerary(body?.itinerary),
+      hotels: normalizeHotels(body?.hotels),
     });
   }],
 
@@ -326,6 +381,17 @@ const ROUTES = [
     if (patch.pricing?.basePrice != null) {
       patch.price = `${patch.pricing.basePrice} TRY`;
     }
+    // Gerçek API'deki "gönderildiyse tümüyle değiştir" semantiği; gönderilmeyen
+    // içerik alanı mevcut hâlini korumalı, bu yüzden patch'ten çıkarılıyor.
+    if (patch.details != null) patch.details = normalizeDetails(patch.details);
+    else delete patch.details;
+    if (patch.policy != null) patch.policy = normalizePolicy(patch.policy);
+    else delete patch.policy;
+    if (patch.itinerary != null) patch.itinerary = normalizeItinerary(patch.itinerary);
+    else delete patch.itinerary;
+    if (patch.hotels != null) patch.hotels = normalizeHotels(patch.hotels);
+    else delete patch.hotels;
+
     return update('trips', m[1], patch);
   }],
 

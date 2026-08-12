@@ -13,7 +13,11 @@ namespace Service.Service
     public class Service<T> : IService<T> where T : class
     {
         protected readonly IGenericRepository<T> _repository;
-        private readonly IUnitOfWork  _unitOfWork;
+        // protected: takip edilen bir nesne grafında değişiklik yapan servisler
+        // (bkz. TripService.UpdateTripAsync) DbSet.Update() çağırmadan doğrudan
+        // kaydedebilmeli. DbSet.Update() tüm grafı Modified işaretler ve yeni
+        // eklenen alt kayıtları INSERT yerine UPDATE etmeye çalışır.
+        protected readonly IUnitOfWork _unitOfWork;
 
         public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork)
         {
