@@ -37,6 +37,18 @@ const defaultForm = () => ({
   features: { klima: true, tv: false, wifi: false, balkon: false, minibar: true },
 });
 
+// Görseller base64 olarak API'ye gidiyor; büyük dosya hem isteği hem satırı
+// şişiriyor. Diğer yükleme ekranlarıyla aynı sınır uygulanıyor.
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+function rejectOversized(files) {
+  const tooBig = files.filter((f) => f.size > MAX_IMAGE_BYTES);
+  if (tooBig.length) {
+    alert(`En fazla 5MB yükleyebilirsiniz. Çok büyük: ${tooBig.map((f) => f.name).join(', ')}`);
+  }
+  return files.filter((f) => f.size <= MAX_IMAGE_BYTES);
+}
+
 const NewHotelDraft = () => {
   const [hotelId, setHotelId] = useState(null);
   const [form, setForm] = useState(defaultForm());
@@ -103,7 +115,7 @@ const NewHotelDraft = () => {
   }, []);
 
   const handleFile = async (e) => {
-    const files = Array.from(e.target.files || []);
+    const files = rejectOversized(Array.from(e.target.files || []));
     if (!files.length) return;
     try {
       const slice = files.slice(0, 9 - images.length);

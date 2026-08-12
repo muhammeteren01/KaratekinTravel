@@ -15,6 +15,18 @@ const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
   reader.readAsDataURL(file);
 });
 
+// Görseller base64 olarak API'ye gidiyor; büyük dosya hem isteği hem satırı
+// şişiriyor. Diğer yükleme ekranlarıyla aynı sınır uygulanıyor.
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+function rejectOversized(files) {
+  const tooBig = files.filter((f) => f.size > MAX_IMAGE_BYTES);
+  if (tooBig.length) {
+    alert(`En fazla 5MB yükleyebilirsiniz. Çok büyük: ${tooBig.map((f) => f.name).join(', ')}`);
+  }
+  return files.filter((f) => f.size <= MAX_IMAGE_BYTES);
+}
+
 const PostTourImages = ({ isSidebarCollapsed }) => {
   const [tripId, setTripId] = useState(getSelectedTripId());
   const [tourName, setTourName] = useState('');
@@ -81,7 +93,7 @@ const PostTourImages = ({ isSidebarCollapsed }) => {
   const addFromPicker = () => inputRef.current?.click();
 
   const stageFiles = async (fileList) => {
-    const files = Array.from(fileList || []);
+    const files = rejectOversized(Array.from(fileList || []));
     if (!files.length) return;
     try {
       const staged = await Promise.all(files.map(async (f) => ({

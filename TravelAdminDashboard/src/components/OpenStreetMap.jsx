@@ -198,7 +198,7 @@ const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
           mapInstanceRef.current.setView([latitude, longitude], 15);
         },
         () => {
-          console.log('Konum alınamadı');
+          console.warn('Konum alınamadı; harita varsayılan merkezde açılıyor.');
         }
       );
     }

@@ -12,16 +12,27 @@ namespace Api.Controllers
     public class ReservationsController : ControllerBase
     {
         private readonly IReservationService _reservationService;
+        private readonly ITripService _tripService;
 
-        public ReservationsController(IReservationService reservationService)
+        public ReservationsController(IReservationService reservationService, ITripService tripService)
         {
             _reservationService = reservationService;
+            _tripService = tripService;
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<ActionResult<List<ReservationResponseDto>>> GetAll()
         {
+            if (!User.IsPlatformAdmin())
+            {
+                var own = User.GetCompanyId();
+                if (own == null) return Forbid();
+
+                var all = await _reservationService.GetAllReservationsAsync();
+                return Ok(all.Where(r => r.CompanyId == own.Value.ToString()).ToList());
+            }
+
             var reservations = await _reservationService.GetAllReservationsAsync();
             return Ok(reservations);
         }
@@ -39,6 +50,13 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<ActionResult<List<ReservationResponseDto>>> GetByTrip(Guid tripId)
         {
+            if (!User.IsPlatformAdmin())
+            {
+                var owner = await _tripService.GetOwnerCompanyIdAsync(tripId);
+                if (owner == null) return NotFound();
+                if (!User.CanAccessCompany(owner.Value)) return Forbid();
+            }
+
             var reservations = await _reservationService.GetReservationsByTripIdAsync(tripId);
             return Ok(reservations);
         }
@@ -51,7 +69,25 @@ namespace Api.Controllers
             if (reservation == null)
                 return NotFound();
 
+            // Rezervasyon müşteri adı, koltuk ve tutar içeriyor. Yalnızca
+            // rezervasyonu yapan kullanıcı, turun şirketi ve platform admini
+            // görebilmeli; önceden oturum açan herkese açıktı.
+            if (!CanSeeReservation(reservation)) return Forbid();
+
             return Ok(reservation);
+        }
+
+        private bool CanSeeReservation(ReservationResponseDto reservation)
+        {
+            if (User.IsPlatformAdmin()) return true;
+
+            if (User.TryGetUserId(out var userId) &&
+                string.Equals(reservation.UserId, userId.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return Guid.TryParse(reservation.CompanyId, out var companyId) && User.CanAccessCompany(companyId);
         }
 
         [HttpPost]
@@ -72,6 +108,14 @@ namespace Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var existing = await _reservationService.GetReservationByIdAsync(id);
+            if (existing == null) return NotFound();
+            if (!User.IsPlatformAdmin())
+            {
+                if (!Guid.TryParse(existing.CompanyId, out var companyId) || !User.CanAccessCompany(companyId))
+                    return Forbid();
+            }
 
             var reservation = await _reservationService.UpdateReservationStatusAsync(id, dto);
             if (reservation == null)
@@ -98,6 +142,12 @@ namespace Api.Controllers
         [Authorize]
         public async Task<IActionResult> Cancel(Guid id, [FromQuery] string reason = "User cancelled")
         {
+            var existing = await _reservationService.GetReservationByIdAsync(id);
+            if (existing == null) return NotFound();
+
+            // Yalnızca rezervasyonu yapan kullanıcı veya turun şirketi iptal edebilir.
+            if (!CanSeeReservation(existing)) return Forbid();
+
             var cancelled = await _reservationService.CancelReservationAsync(id, reason);
             if (!cancelled)
                 return NotFound();

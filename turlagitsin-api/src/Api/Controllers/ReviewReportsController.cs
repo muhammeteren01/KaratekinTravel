@@ -25,7 +25,19 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<IActionResult> GetAll([FromQuery] string? status = null)
         {
-            var query = _repository.Where(r => true).Include(r => r.Review).AsQueryable();
+            var query = _repository.Where(r => true)
+                .Include(r => r.Review)
+                    .ThenInclude(rv => rv.Trip)
+                .AsQueryable();
+
+            // CompanyAdmin yalnızca kendi turlarına gelen şikayetleri görür.
+            if (!User.IsPlatformAdmin())
+            {
+                var own = User.GetCompanyId();
+                if (own == null) return Forbid();
+                query = query.Where(r => r.Review.Trip.CompanyId == own.Value);
+            }
+
             if (!string.IsNullOrWhiteSpace(status))
                 query = query.Where(r => r.Status == status);
 
@@ -58,9 +70,17 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateReviewReportStatusRequest request)
         {
-            var report = await _repository.Where(r => r.Id == id).FirstOrDefaultAsync();
+            var report = await _repository.Where(r => r.Id == id)
+                .Include(r => r.Review)
+                    .ThenInclude(rv => rv.Trip)
+                .FirstOrDefaultAsync();
+
             if (report == null)
                 return NotFound();
+
+            // Başka şirketin turuna gelen şikayetin durumu değiştirilemez.
+            if (!User.IsPlatformAdmin() && !User.CanAccessCompany(report.Review.Trip.CompanyId))
+                return Forbid();
 
             report.Status = request.Status;
             report.UpdatedAt = DateTime.UtcNow;

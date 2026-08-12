@@ -22,3 +22,10 @@
   font-size: 1.1rem;
   line-height: 1.6;
 }
+
+.page-loading {
+  padding: 48px 24px;
+  text-align: center;
+  color: #718EBF;
+  font-family: 'Inter', system-ui, sans-serif;
+}

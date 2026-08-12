@@ -1,29 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import Layout from './components/Layout';
-import Dashboard from './pages/Dashboard';
-import UserCommunication from './pages/UserCommunication';
-import TourManagement from './pages/TourManagement';
-import TripAnalysis from './pages/TripAnalysis';
-import { AddTourPage, CancellationRefunds, Finance, VehicleDesign, NewVehicleDefinition, VehicleHistory } from './components';
-import TourReviews from './components/TourReviews';
-import UpdateTourPage from './components/UpdateTourPage';
-import Settings from './pages/Settings';
-import Notifications from './pages/Notifications';
-import VehicleList from './components/VehicleList';
-import TourDetails from './pages/TourDetails';
-import UpdateSubDate from './pages/UpdateSubDate';
-import PostTourImages from './pages/PostTourImages';
-import DeleteTour from './pages/DeleteTour';
-import CouponManagement from './pages/CouponManagement';
-import NewSubDate from './pages/NewSubDate';
 import './App.css';
-import SubTourDetails from './pages/SubTourDetails';
-import HotelDrafts from './pages/HotelDrafts';
-import NewHotelDraft from './pages/NewHotelDraft';
 import LoginPage from './pages/LoginPage';
 import ErrorBoundary from './components/ErrorBoundary';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import { ApiError, canAccessDashboard, clearAdminToken, fetchMeApi, getAdminToken } from './services/adminApi';
+
+// Sayfalar talep üzerine yükleniyor: tek 910 kB'lık paket yerine ekran
+// başına ayrı parça. İlk açılışta yalnızca giriş ekranı ve iskelet iniyor.
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const UserCommunication = lazy(() => import('./pages/UserCommunication'));
+const TourManagement = lazy(() => import('./pages/TourManagement'));
+const TripAnalysis = lazy(() => import('./pages/TripAnalysis'));
+const TourReviews = lazy(() => import('./components/TourReviews'));
+const UpdateTourPage = lazy(() => import('./components/UpdateTourPage'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Notifications = lazy(() => import('./pages/Notifications'));
+const VehicleList = lazy(() => import('./components/VehicleList'));
+const TourDetails = lazy(() => import('./pages/TourDetails'));
+const UpdateSubDate = lazy(() => import('./pages/UpdateSubDate'));
+const PostTourImages = lazy(() => import('./pages/PostTourImages'));
+const DeleteTour = lazy(() => import('./pages/DeleteTour'));
+const CouponManagement = lazy(() => import('./pages/CouponManagement'));
+const NewSubDate = lazy(() => import('./pages/NewSubDate'));
+const SubTourDetails = lazy(() => import('./pages/SubTourDetails'));
+const HotelDrafts = lazy(() => import('./pages/HotelDrafts'));
+const NewHotelDraft = lazy(() => import('./pages/NewHotelDraft'));
+const AddTourPage = lazy(() => import('./components/AddTourPage'));
+const CancellationRefunds = lazy(() => import('./components/CancellationRefunds'));
+const Finance = lazy(() => import('./components/Finance'));
+const VehicleDesign = lazy(() => import('./components/VehicleDesign'));
+const NewVehicleDefinition = lazy(() => import('./components/NewVehicleDefinition'));
+const VehicleHistory = lazy(() => import('./components/VehicleHistory'));
 
 function App() {
   const [profile, setProfile] = useState(null);
@@ -154,7 +162,13 @@ const AppContent = ({ currentPage = 'Anasayfa', isSidebarCollapsed }) => {
   };
 
   // resetKey: sayfa değişince çöken ekranın hata durumu temizlensin.
-  return <ErrorBoundary resetKey={currentPage}>{renderPage()}</ErrorBoundary>;
+  return (
+    <ErrorBoundary resetKey={currentPage}>
+      <Suspense fallback={<div className="page-loading">Sayfa yükleniyor...</div>}>
+        {renderPage()}
+      </Suspense>
+    </ErrorBoundary>
+  );
 };
 
 export default App;

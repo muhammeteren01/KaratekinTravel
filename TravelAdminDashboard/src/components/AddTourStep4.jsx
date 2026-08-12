@@ -150,16 +150,6 @@ const AddTourStep4 = ({ onNext, onBack, formData, setFormData, updateMode = fals
       step4: step4Data
     }));
 
-    console.log('=== STEP 4 SAVE DEBUG ===');
-    console.log('Step 4 data:', step4Data);
-    console.log('Cover image:', coverImage);
-    console.log('Cover image preview length:', coverImage?.preview?.length);
-    console.log('Additional images count:', additionalImages.length);
-    console.log('Additional images:', additionalImages);
-    additionalImages.forEach((img, index) => {
-      console.log(`Image ${index + 1} preview length:`, img.preview?.length);
-    });
-    console.log('=== END STEP 4 DEBUG ===');
     onNext();
   };
 

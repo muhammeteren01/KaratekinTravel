@@ -56,7 +56,6 @@ const DatePicker = ({ value, onChange, placeholder }) => {
 
   // value prop'u değiştiğinde selectedDate'i güncelle
   useEffect(() => {
-    console.log('DatePicker value değişti:', value);
     if (value) {
       // Timezone sorununu önlemek için local tarih oluştur
       const [year, month, day] = value.split('-');
@@ -140,7 +139,6 @@ const DatePicker = ({ value, onChange, placeholder }) => {
       const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
       const day = String(selectedDate.getDate()).padStart(2, '0');
       const formattedDate = `${year}-${month}-${day}`;
-      console.log('Tarih gönderiliyor:', formattedDate);
       onChange(formattedDate);
     }
     setIsOpen(false);

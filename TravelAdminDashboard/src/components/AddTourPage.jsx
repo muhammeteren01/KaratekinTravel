@@ -193,15 +193,13 @@ const AddTourPage = () => {
   // Show success (no delay)
   setShowSuccess(true);
 
-  // Here you would typically save the data and move to next step
-  console.log('Form data:', formData);
 
   // Move to next step immediately (remove artificial delay)
   setCurrentStep(2);
   };
 
   const handleStep2Next = () => {
-    console.log('Step 2 completed with data:', formData);
+
   setShowSuccess(true);
   setCurrentStep(3);
   };
@@ -211,7 +209,7 @@ const AddTourPage = () => {
   };
 
   const handleHotelNext = () => {
-    console.log('Hotel step completed with data:', formData);
+
     setShowSuccess(true);
     setCurrentStep(4);
   };
@@ -221,7 +219,7 @@ const AddTourPage = () => {
   };
 
   const handleStep3Next = () => {
-    console.log('Pricing step completed with data:', formData);
+
     setShowSuccess(true);
     setCurrentStep(5);
   };
@@ -231,7 +229,7 @@ const AddTourPage = () => {
   };
 
   const handleStep4Next = () => {
-    console.log('Step 5 completed with data:', formData);
+
   setShowSuccess(true);
   setCurrentStep(6);
   };
@@ -241,7 +239,7 @@ const AddTourPage = () => {
   };
 
   const handleStep5Next = () => {
-    console.log('Form completed with data:', formData);
+
   setShowSuccess(true);
     setCurrentStep(7); // Move to review step
   };

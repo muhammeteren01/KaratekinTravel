@@ -28,16 +28,32 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<ActionResult<List<RefundRequestDto>>> GetAll()
         {
+            // Önceden yalnızca platform admini erişebiliyordu; panelin
+            // "İptal ve İade" ekranı şirket hesaplarında 403 alıyordu.
+            if (!User.IsPlatformAdmin())
+            {
+                var own = User.GetCompanyId();
+                if (own == null) return Forbid();
+                return Ok(await _service.GetByCompanyAsync(own.Value));
+            }
+
             return Ok(await _service.GetAllRefundsAsync());
         }
 
         [HttpPut("{id:guid}/status")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<ActionResult<RefundRequestDto>> UpdateStatus(Guid id, [FromBody] UpdateRefundStatusDto dto)
         {
+            if (!User.IsPlatformAdmin())
+            {
+                var owner = await _service.GetOwnerCompanyIdAsync(id);
+                if (owner == null) return NotFound();
+                if (!User.CanAccessCompany(owner.Value)) return Forbid();
+            }
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var item = await _service.UpdateStatusAsync(id, dto);
             if (item == null) return NotFound();

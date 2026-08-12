@@ -145,7 +145,8 @@ const VehicleList = () => {
   };
 
   const handleDownloadAll = () => {
-    console.log('Download all as PDF');
+    // PDF dışa aktarma henüz uygulanmadı; sessizce log basmak yerine kullanıcıya söyle.
+    alert('PDF dışa aktarma henüz hazır değil.');
   };
 
   const handlePageChange = (page) => {

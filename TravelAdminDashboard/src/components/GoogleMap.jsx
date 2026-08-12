@@ -194,7 +194,7 @@ const GoogleMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
           mapInstanceRef.current.setZoom(15);
         },
         () => {
-          console.log('Konum alınamadı');
+          console.warn('Konum alınamadı; harita varsayılan merkezde açılıyor.');
         }
       );
     }
