@@ -3,7 +3,7 @@ import './CancellationTable.css';
 import searchIcon from '../assets/icons/search-outline.svg';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';
 
-const CancelledTicketsTable = ({ data = [], onDetailsClick }) => {
+const CancelledTicketsTable = ({ data = [] }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 5;
@@ -184,6 +184,16 @@ const CancelledTicketsTable = ({ data = [], onDetailsClick }) => {
           {renderPaginationButtons()}
         </div>
         <div className="pagination-controls">
+          <button
+            className="pagination-nav"
+            onClick={handlePrevPage}
+            disabled={currentPage <= 1}
+          >
+            <svg width="6" height="12" viewBox="0 0 6 12" fill="none">
+              <path d="M5 1L1 6L5 11" stroke="#FF7029" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span>Önceki</span>
+          </button>
           <button 
             className="pagination-nav"
             onClick={handleNextPage}

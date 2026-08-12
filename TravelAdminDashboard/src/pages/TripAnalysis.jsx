@@ -131,21 +131,18 @@ const TripAnalysis = () => {
             label="Gerçekleşen Gezi"
             icon="card-travel"
             bgColor="#C4F5FF"
-            iconColor="#0BB6D9"
           />
           <StatCard
             value={String(tripReport?.totalReservations ?? 0)}
             label="Katılımcı"
             icon="people-alt"
             bgColor="#FEFFBA"
-            iconColor="#B5B807"
           />
           <StatCard
             value={Number(tripReport?.averageRating ?? 0).toFixed(1)}
             label="Ortalama Puanı"
             icon="heart"
             bgColor="#FFBDBD"
-            iconColor="#DE0000"
           />
         </div>
       </div>

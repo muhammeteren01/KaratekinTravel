@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Sidebar.css';
 
 // Import all icons
@@ -7,38 +7,38 @@ import quickAddArrows from '../assets/icons/quick-add-arrows.svg';
 import homeIcon from '../assets/icons/home-icon.svg';
 import carIcon from '../assets/icons/car-icon.svg';
 import tripIcon from '../assets/icons/trip-icon.svg';
-import peopleIcon from '../assets/icons/people-icon.svg';
 import supportIcon from '../assets/icons/support-icon.svg';
 import logoutExitIcon from '../assets/icons/logout-exit-icon.svg';
 // Figma-sourced icons
-import personelIcon from '../assets/icons/personel-islemleri.svg';
 import kullaniciIcon from '../assets/icons/kullanici-islemleri.svg';
+
+// Sabit menü ağacı: bileşen dışında tanımlı, böylece her render'da yeniden
+// oluşup effect bağımlılıklarını tetiklemiyor.
+const submenuItems = {
+  'Gezi İşlemleri': [
+    'Tur Yönetim',
+    'Yeni Tur Ekle',
+    'Otel Taslakları',
+    'İptal ve İade İşlemleri',
+    'Finans',
+    'Analizler'
+  ],
+  'Araç İşlemleri': [
+    'Araç Listesi',
+    'Yeni Araç Tasarla',
+    'Yeni Araç Tanımla',
+    'Geçmiş İşlemler'
+  ],
+  'Kullanıcı İşlemleri': [
+    'Tur Değerlendirmeleri',
+    'Kullanıcı İletişim'
+  ]
+};
 
 const Sidebar = ({ onToggle, isMobile, onMobileClose, onPageChange, currentPage, currentSection, onLogout }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState({});
   const [activeSubmenu, setActiveSubmenu] = useState('Tur Yönetim');
-
-  const submenuItems = {
-    'Gezi İşlemleri': [
-      'Tur Yönetim',
-      'Yeni Tur Ekle',
-  'Otel Taslakları',
-      'İptal ve İade İşlemleri',
-      'Finans',
-      'Analizler'
-    ],
-    'Araç İşlemleri': [
-      'Araç Listesi',
-      'Yeni Araç Tasarla',
-      'Yeni Araç Tanımla',
-      'Geçmiş İşlemler'
-    ],
-    'Kullanıcı İşlemleri': [
-      'Tur Değerlendirmeleri',
-      'Kullanıcı İletişim'
-    ]
-  };
 
   const toggleSidebar = () => {
     if (isMobile) {
@@ -122,10 +122,14 @@ const Sidebar = ({ onToggle, isMobile, onMobileClose, onPageChange, currentPage,
     }
   };
 
+  // Yalnızca mount'ta: başlangıçtaki daraltma durumunu üst bileşene bildir.
+  // toggleSidebar zaten her değişimde onToggle çağırıyor; bağımlılık eklemek
+  // aynı bildirimi iki kez tetiklerdi.
+  const onToggleRef = useRef(onToggle);
+  onToggleRef.current = onToggle;
+
   useEffect(() => {
-    if (onToggle) {
-      onToggle(isCollapsed);
-    }
+    onToggleRef.current?.(false);
   }, []);
 
   // Sync expanded menus with current section

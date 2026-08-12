@@ -6,6 +6,7 @@ import {
   fetchTripByIdApi,
   uploadGalleryImageApi,
 } from '../services/adminApi';
+import { getSelectedSubTour, getSelectedTripId } from '../utils/selectionStorage';
 
 const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -14,19 +15,8 @@ const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
   reader.readAsDataURL(file);
 });
 
-const getTripId = () => {
-  try {
-    const raw = localStorage.getItem('selectedTour');
-    if (raw) {
-      const tour = JSON.parse(raw);
-      return tour?.raw?.id || tour?.id || null;
-    }
-  } catch {}
-  return null;
-};
-
 const PostTourImages = ({ isSidebarCollapsed }) => {
-  const [tripId, setTripId] = useState(getTripId());
+  const [tripId, setTripId] = useState(getSelectedTripId());
   const [tourName, setTourName] = useState('');
   const [subTourDate, setSubTourDate] = useState('');
   const [images, setImages] = useState([]);
@@ -43,16 +33,13 @@ const PostTourImages = ({ isSidebarCollapsed }) => {
     let alive = true;
 
     const load = async () => {
-      const id = getTripId();
+      const id = getSelectedTripId();
       setTripId(id);
 
-      try {
-        const rawSub = localStorage.getItem('selectedSubTour');
-        if (rawSub) {
-          const sub = JSON.parse(rawSub);
-          setSubTourDate(sub?.date || '');
-        }
-      } catch {}
+      const sub = getSelectedSubTour();
+      if (sub) {
+        setSubTourDate(sub.date || '');
+      }
 
       if (!id) {
         setError('Tur seçimi bulunamadı. Lütfen tur detaylarından tekrar deneyin.');

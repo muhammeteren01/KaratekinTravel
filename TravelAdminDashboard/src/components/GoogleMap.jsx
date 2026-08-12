@@ -1,13 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+// Google Maps API key - Gerçek kullanım için .env dosyasında VITE_GOOGLE_MAPS_API_KEY olarak tanımlayın
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_GOOGLE_MAPS_API_KEY';
+
 const GoogleMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
-  // Google Maps API key - Gerçek kullanım için .env dosyasında VITE_GOOGLE_MAPS_API_KEY olarak tanımlayın
-  const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_GOOGLE_MAPS_API_KEY';
+  // Harita/marker effect'leri mount'ta veya duraklar değiştiğinde çalışıyor.
+  // Callback prop'ları bağımlılığa eklemek haritayı yeniden kurardı; bunun
+  // yerine en güncel referansı ref üzerinden okuyoruz (stale closure olmaz).
+  const onLocationAddRef = useRef(onLocationAdd);
+  const onStopRemoveRef = useRef(onStopRemove);
+  onLocationAddRef.current = onLocationAdd;
+  onStopRemoveRef.current = onStopRemove;
 
   useEffect(() => {
     // Google Maps script'ini yükle
@@ -88,8 +96,8 @@ const GoogleMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
             const address = results[0].formatted_address;
             const locationName = results[0].address_components[0]?.long_name || 'Yeni Konum';
             
-            if (onLocationAdd) {
-              onLocationAdd({
+            if (onLocationAddRef.current) {
+              onLocationAddRef.current({
                 id: Date.now(),
                 name: locationName,
                 address: address,
@@ -136,8 +144,8 @@ const GoogleMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
 
         // Marker'a tıklama olayı
         marker.addListener('click', () => {
-          if (onStopRemove) {
-            onStopRemove(stop.id);
+          if (onStopRemoveRef.current) {
+            onStopRemoveRef.current(stop.id);
           }
         });
 

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './AddTourStep4.css';
 import ProgressSteps from './ProgressSteps';
 import imagePictureIcon from '../assets/icons/image-picture-icon.svg';
-import deleteIcon from '../assets/icons/delete-icon.svg';
 import MediaThumbCard from './media/MediaThumbCard';
 import ChipTag from './pricing/ChipTag';
 import helpCircleIcon from '../assets/icons/help-circle-icon.svg';

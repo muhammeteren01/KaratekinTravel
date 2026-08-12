@@ -58,11 +58,15 @@ const AddTourPage = () => {
         const normalized = Array.isArray(list) ? list : [];
         setCompanies(normalized);
 
-        if (!formData.companyId && normalized[0]?.id) {
-          setFormData((prev) => ({
-            ...prev,
-            companyId: String(normalized[0].id),
-          }));
+        // Varsayılan şirketi yalnızca kullanıcı henüz seçim yapmadıysa ata.
+        // formData.companyId'yi doğrudan okumak effect'i şirket her değiştiğinde
+        // yeniden çalıştırırdı; güncel değeri updater içinden okuyoruz.
+        if (normalized[0]?.id) {
+          setFormData((prev) =>
+            prev.companyId
+              ? prev
+              : { ...prev, companyId: String(normalized[0].id) },
+          );
         }
       } catch (error) {
         if (!active) return;

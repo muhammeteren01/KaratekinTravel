@@ -6,7 +6,7 @@ import cardTravelIcon from '../assets/icons/card-travel-outlined.svg';
 import peopleAltIcon from '../assets/icons/people-alt-filled.svg';
 import heartIcon from '../assets/icons/heart-outlined.svg';
 
-const StatCard = ({ value, label, icon, bgColor, iconColor }) => {
+const StatCard = ({ value, label, icon, bgColor }) => {
   // Map icon names to the actual SVG imports
   const iconMap = {
     'card-travel': cardTravelIcon,

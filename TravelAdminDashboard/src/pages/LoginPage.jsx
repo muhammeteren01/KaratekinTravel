@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { loginApi, registerApi, setAdminToken } from '../services/adminApi';
+import { fetchMeApi, loginApi, registerApi, setAdminToken } from '../services/adminApi';
 import './LoginPage.css';
 
 const emptyForm = {
@@ -68,7 +68,9 @@ function LoginPage({ onAuthenticated }) {
         setSuccess('Kayıt başarılı. Oturum açıldı.');
       }
 
-      onAuthenticated?.();
+      // Rol kapısı için profil gerekli; login/register cevabı taşımıyorsa /me ile tamamla.
+      const profile = response?.user || response?.data?.user || (await fetchMeApi());
+      onAuthenticated?.(profile);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'İşlem başarısız oldu.');
     } finally {
@@ -90,6 +92,7 @@ function LoginPage({ onAuthenticated }) {
             className={`auth-mode-button ${authMode === 'admin' ? 'active' : ''}`}
             onClick={() => {
               setAuthMode('admin');
+              setView('login');
               setError('');
               setSuccess('');
             }}
@@ -112,30 +115,40 @@ function LoginPage({ onAuthenticated }) {
         <h1>{title}</h1>
         <p>{subtitle}</p>
 
-        <div className="auth-toggle-row">
-          <button
-            type="button"
-            className={`auth-toggle ${view === 'login' ? 'active' : ''}`}
-            onClick={() => {
-              setView('login');
-              setError('');
-              setSuccess('');
-            }}
-          >
-            Giriş Yap
-          </button>
-          <button
-            type="button"
-            className={`auth-toggle ${view === 'register' ? 'active' : ''}`}
-            onClick={() => {
-              setView('register');
-              setError('');
-              setSuccess('');
-            }}
-          >
-            Kayıt Ol
-          </button>
-        </div>
+        {/*
+          Admin rolü self-service kayıtla verilmiyor (API tarafında accountType='admin'
+          yok sayılıp rol 'User' atanıyor), bu yüzden kayıt yalnızca şirket modunda açık.
+        */}
+        {authMode === 'company' ? (
+          <div className="auth-toggle-row">
+            <button
+              type="button"
+              className={`auth-toggle ${view === 'login' ? 'active' : ''}`}
+              onClick={() => {
+                setView('login');
+                setError('');
+                setSuccess('');
+              }}
+            >
+              Giriş Yap
+            </button>
+            <button
+              type="button"
+              className={`auth-toggle ${view === 'register' ? 'active' : ''}`}
+              onClick={() => {
+                setView('register');
+                setError('');
+                setSuccess('');
+              }}
+            >
+              Kayıt Ol
+            </button>
+          </div>
+        ) : (
+          <p className="login-note">
+            Admin hesapları sistem yöneticisi tarafından tanımlanır.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="login-form">
           {view === 'register' && authMode === 'company' && (
@@ -185,17 +198,21 @@ function LoginPage({ onAuthenticated }) {
             required
           />
 
-          <label className="login-label" htmlFor="phone">
-            Telefon (İsteğe bağlı)
-          </label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            value={form.phone}
-            onChange={handleChange}
-            placeholder="05xx xxx xx xx"
-          />
+          {view === 'register' && (
+            <>
+              <label className="login-label" htmlFor="phone">
+                Telefon (İsteğe bağlı)
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="05xx xxx xx xx"
+              />
+            </>
+          )}
 
           <label className="login-label" htmlFor="password">
             Şifre

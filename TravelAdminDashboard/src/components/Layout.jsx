@@ -2,48 +2,44 @@ import React, { useState, useEffect, useReducer } from 'react';
 import './Layout.css';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import { readJson, writeJson } from '../utils/storage';
+
+const ROUTING_STATE_KEY = 'routingState';
+
+const DEFAULT_ROUTING_STATE = {
+  currentPage: 'Anasayfa',
+  currentSection: null
+};
+
+// Sayfa -> üst menü eşlemesi. Sidebar'dan section gelmediğinde (ör. hash ile
+// doğrudan girişte) breadcrumb'ın doğru çıkması için burada çözülür.
+const PAGE_SECTIONS = {
+  'Tur Yönetim': 'Gezi İşlemleri',
+  'Yeni Tur Ekle': 'Gezi İşlemleri',
+  'İptal ve İade İşlemleri': 'Gezi İşlemleri',
+  'Finans': 'Gezi İşlemleri',
+  'Analizler': 'Gezi İşlemleri',
+  'Otel Taslakları': 'Gezi İşlemleri',
+  'Yeni Otel Ekle': 'Gezi İşlemleri',
+  'Araç Listesi': 'Araç İşlemleri',
+  'Yeni Araç Tasarla': 'Araç İşlemleri',
+  'Yeni Araç Tanımla': 'Araç İşlemleri',
+  'Geçmiş İşlemler': 'Araç İşlemleri'
+};
 
 // Routing state reducer
 const routingReducer = (state, action) => {
   switch (action.type) {
-    case 'SET_PAGE':
+    case 'SET_PAGE': {
       const { page, section } = action.payload;
-      // If section is explicitly provided (from sidebar submenu), honor it directly
-      if (section) {
-        const newState = {
-          currentPage: page,
-          currentSection: section
-        };
-        localStorage.setItem('routingState', JSON.stringify(newState));
-        return newState;
-      }
-      // Gezi İşlemleri submenu sayfaları için section'ı otomatik set et
-  if (page === 'Tur Yönetim' || page === 'Yeni Tur Ekle' || page === 'İptal ve İade İşlemleri' || page === 'Finans' || page === 'Analizler' || page === 'Otel Taslakları' || page === 'Yeni Otel Ekle') {
-        const newState = {
-          currentPage: page,
-          currentSection: 'Gezi İşlemleri'
-        };
-        // Persist to localStorage
-        localStorage.setItem('routingState', JSON.stringify(newState));
-        return newState;
-      }
-      // Araç İşlemleri submenu sayfaları için section'ı otomatik set et
-      if (page === 'Araç Listesi' || page === 'Yeni Araç Tasarla' || page === 'Yeni Araç Tanımla' || page === 'Geçmiş İşlemler') {
-        const newState = {
-          currentPage: page,
-          currentSection: 'Araç İşlemleri'
-        };
-        // Persist to localStorage
-        localStorage.setItem('routingState', JSON.stringify(newState));
-        return newState;
-      }
       const newState = {
         currentPage: page,
-        currentSection: section || null
+        // Sidebar açıkça section verdiyse ona uy, yoksa eşlemeden çöz.
+        currentSection: section || PAGE_SECTIONS[page] || null
       };
-      // Persist to localStorage
-      localStorage.setItem('routingState', JSON.stringify(newState));
+      writeJson(ROUTING_STATE_KEY, newState);
       return newState;
+    }
     case 'LOAD_FROM_STORAGE':
       return action.payload;
     default:
@@ -52,20 +48,7 @@ const routingReducer = (state, action) => {
 };
 
 // Initial state loader
-const getInitialRoutingState = () => {
-  try {
-    const stored = localStorage.getItem('routingState');
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch (error) {
-    console.error('Error loading routing state from localStorage:', error);
-  }
-  return {
-    currentPage: 'Anasayfa',
-    currentSection: null
-  };
-};
+const getInitialRoutingState = () => readJson(ROUTING_STATE_KEY, DEFAULT_ROUTING_STATE) || DEFAULT_ROUTING_STATE;
 
 const Layout = ({ children, onLogout }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

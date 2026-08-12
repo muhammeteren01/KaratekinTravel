@@ -3,17 +3,7 @@ import DateTimePicker from '../components/DateTimePicker';
 import VehicleSeatPreview from '../components/VehicleSeatPreview';
 import './NewSubDate.css';
 import { createTripDepartureApi, fetchTripByIdApi, fetchVehiclesApi } from '../services/adminApi';
-
-const getTripId = () => {
-  try {
-    const raw = localStorage.getItem('selectedTour');
-    if (raw) {
-      const tour = JSON.parse(raw);
-      return tour?.raw?.id || tour?.id || null;
-    }
-  } catch {}
-  return null;
-};
+import { getSelectedTripId } from '../utils/selectionStorage';
 
 const parseDisplayDate = (value) => {
   if (!value) return null;
@@ -33,7 +23,7 @@ const NewSubDate = ({ isSidebarCollapsed }) => {
     return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} - ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }, []);
 
-  const tripId = useMemo(() => getTripId(), []);
+  const tripId = useMemo(() => getSelectedTripId(), []);
   const [tourName, setTourName] = useState('Tur');
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);

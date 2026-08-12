@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import ProgressSteps from './ProgressSteps';
 import OpenStreetMap from './OpenStreetMap';
 import OpenStreetMapSearch from './OpenStreetMapSearch';
@@ -7,47 +7,15 @@ import RouteStops from './RouteStops';
 import TimeInput from './TimeInput';
 
 const AddTourStep2 = ({ onNext, onBack, formData, setFormData, updateMode = false, updatedStep = null }) => {
-  // Get current date for default values (always today or future)
-  const getCurrentDate = () => {
-    const today = new Date();
-    const day = today.getDate();
-    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 
-                   'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
-    const month = months[today.getMonth()];
-    const year = today.getFullYear();
-    return `${day} ${month} ${year}`;
-  };
-
-  // Check if a date string is in the past
-  const isDateInPast = (dateString) => {
-    const parts = dateString.split(' ');
-    if (parts.length === 3) {
-      const day = parseInt(parts[0]);
-      const monthNames = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 
-                         'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
-      const month = monthNames.indexOf(parts[1]);
-      const year = parseInt(parts[2]);
-      
-      const selectedDate = new Date(year, month, day);
-      const today = new Date();
-      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      
-      return selectedDate < todayDate;
-    }
-    return false;
-  };
-
-  // Step 2 (Rota Oluşturma) no longer manages dates per Figma
-  
-  // Calendar navigation state
-  const [calendarDate, setCalendarDate] = useState(new Date());
+  // Step 2 (Rota Oluşturma) artık tarih yönetmiyor; takvim state'i ve
+  // yardımcıları kaldırıldı.
   const [addedStops, setAddedStops] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragOverItem, setDragOverItem] = useState(null);
   const [pendingStop, setPendingStop] = useState(null);
   const [pendingTime, setPendingTime] = useState('');
   // No time selection in this step
-  const [subPendingTimes, setSubPendingTimes] = useState({});
+  const [subPendingTimes] = useState({});
 
   // Date pickers removed in this step
 
@@ -100,25 +68,6 @@ const AddTourStep2 = ({ onNext, onBack, formData, setFormData, updateMode = fals
     setFormData({ ...formData, ...step2Data });
     onNext();
   };
-
-  // Calendar navigation functions
-  const navigateCalendar = (direction) => {
-    const newDate = new Date(calendarDate);
-    if (direction === 'prev') {
-      newDate.setMonth(newDate.getMonth() - 1);
-    } else {
-      newDate.setMonth(newDate.getMonth() + 1);
-    }
-    setCalendarDate(newDate);
-  };
-
-  const formatDateString = (day, month, year) => {
-    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 
-                   'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
-    return `${day} ${months[month]} ${year}`;
-  };
-
-  // Calendar rendering removed
 
   // Drag & Drop handlers
   const handleDragStart = (e, index) => {
@@ -181,7 +130,7 @@ const AddTourStep2 = ({ onNext, onBack, formData, setFormData, updateMode = fals
     }
   };
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = () => {
     if (draggedItem !== null && dragOverItem !== null && draggedItem !== dragOverItem) {
       // Swap the two items
       const newStops = [...addedStops];

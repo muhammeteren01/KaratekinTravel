@@ -16,6 +16,14 @@ const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
   const markersRef = useRef([]);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
+  // Harita/marker effect'leri mount'ta veya duraklar değiştiğinde çalışıyor.
+  // Callback prop'ları bağımlılığa eklemek haritayı yeniden kurardı; bunun
+  // yerine en güncel referansı ref üzerinden okuyoruz (stale closure olmaz).
+  const onLocationAddRef = useRef(onLocationAdd);
+  const onStopRemoveRef = useRef(onStopRemove);
+  onLocationAddRef.current = onLocationAdd;
+  onStopRemoveRef.current = onStopRemove;
+
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -51,8 +59,8 @@ const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
         const locationName = data.name || data.display_name?.split(',')[0] || 'Yeni Konum';
         const address = data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
         
-        if (onLocationAdd) {
-          onLocationAdd({
+        if (onLocationAddRef.current) {
+          onLocationAddRef.current({
             id: Date.now(),
             name: locationName,
             address: address,
@@ -63,8 +71,8 @@ const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
       } catch (error) {
         console.error('Adres bilgisi alınamadı:', error);
         // Hata durumunda koordinatları kullan
-        if (onLocationAdd) {
-          onLocationAdd({
+        if (onLocationAddRef.current) {
+          onLocationAddRef.current({
             id: Date.now(),
             name: 'Yeni Konum',
             address: `${lat.toFixed(4)}, ${lng.toFixed(4)}`,
@@ -153,8 +161,8 @@ const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
 
     // Global remove function
     window.removeStop = (stopId) => {
-      if (onStopRemove) {
-        onStopRemove(stopId);
+      if (onStopRemoveRef.current) {
+        onStopRemoveRef.current(stopId);
       }
     };
 

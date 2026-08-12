@@ -2,6 +2,7 @@ import React, { useMemo, useState, useRef, useEffect } from 'react';
 import './TourManagement.css';
 import './HotelDrafts.css';
 import { deleteHotelApi, fetchHotelsApi } from '../services/adminApi';
+import { clearSelectedHotel, setSelectedHotel } from '../utils/selectionStorage';
 
 const PLACEHOLDER_IMAGE = '/icons/image-picture-icon.svg';
 
@@ -29,7 +30,7 @@ const HotelCard = ({ hotel, onEdit, onDelete }) => {
   );
 };
 
-const HotelDrafts = ({ isSidebarCollapsed }) => {
+const HotelDrafts = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [province, setProvince] = useState('Tümü');
@@ -120,9 +121,7 @@ const HotelDrafts = ({ isSidebarCollapsed }) => {
   const goto = (p) => setPage(Math.min(Math.max(1, p), pageCount));
 
   const handleEdit = (hotel) => {
-    try {
-      localStorage.setItem('selectedHotel', JSON.stringify(hotel.raw || hotel));
-    } catch {}
+    setSelectedHotel(hotel.raw || hotel);
     window.location.hash = encodeURIComponent('Yeni Otel Ekle');
   };
 
@@ -201,7 +200,7 @@ const HotelDrafts = ({ isSidebarCollapsed }) => {
             <button
               className="hd-add-btn"
               onClick={() => {
-                try { localStorage.removeItem('selectedHotel'); } catch {}
+                clearSelectedHotel();
                 window.location.hash = encodeURIComponent('Yeni Otel Ekle');
               }}
             >

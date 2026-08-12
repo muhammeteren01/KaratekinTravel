@@ -9,28 +9,7 @@ import {
   fetchVehiclesApi,
   updateTripDepartureApi,
 } from '../services/adminApi';
-
-const getTripId = () => {
-  try {
-    const raw = localStorage.getItem('selectedTour');
-    if (raw) {
-      const tour = JSON.parse(raw);
-      return tour?.raw?.id || tour?.id || null;
-    }
-  } catch {}
-  return null;
-};
-
-const getDepartureId = () => {
-  try {
-    const raw = localStorage.getItem('selectedSubTour');
-    if (raw) {
-      const sub = JSON.parse(raw);
-      return sub?.id || sub?.raw?.id || null;
-    }
-  } catch {}
-  return null;
-};
+import { clearSelectedSubTour, getSelectedDepartureId, getSelectedTripId, setSelectedSubTour } from '../utils/selectionStorage';
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -65,8 +44,8 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
     return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} - ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }, []);
 
-  const tripId = useMemo(() => getTripId(), []);
-  const departureId = useMemo(() => getDepartureId(), []);
+  const tripId = useMemo(() => getSelectedTripId(), []);
+  const departureId = useMemo(() => getSelectedDepartureId(), []);
   const [tourName, setTourName] = useState('Tur');
   const [titleDate, setTitleDate] = useState('');
   const [vehicles, setVehicles] = useState([]);
@@ -162,17 +141,15 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
         notes: form.note || null,
       });
 
-      try {
-        localStorage.setItem('selectedSubTour', JSON.stringify({
-          id: updated.id,
-          date: formatDateTR(updated.departureDate),
-          time: formatTimeTR(updated.departureTime),
-          status: updated.status,
-          bus: selectedVehicle ? formatVehicleOption(selectedVehicle) : form.capacity,
-          note: updated.notes || '',
-          raw: updated,
-        }));
-      } catch {}
+      setSelectedSubTour({
+        id: updated.id,
+        date: formatDateTR(updated.departureDate),
+        time: formatTimeTR(updated.departureTime),
+        status: updated.status,
+        bus: selectedVehicle ? formatVehicleOption(selectedVehicle) : form.capacity,
+        note: updated.notes || '',
+        raw: updated,
+      });
 
       window.location.hash = encodeURIComponent('Alt Tur Detayları');
     } catch (err) {
@@ -191,7 +168,7 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
     setError('');
     try {
       await deleteTripDepartureApi(departureId);
-      try { localStorage.removeItem('selectedSubTour'); } catch {}
+      clearSelectedSubTour();
       window.location.hash = encodeURIComponent('Tur Detayları');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.');

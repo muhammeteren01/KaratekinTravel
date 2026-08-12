@@ -3,6 +3,19 @@ const DEFAULT_API_BASE_URL =
 
 const ADMIN_TOKEN_KEY = 'travelAdminDashboard.apiToken';
 
+/**
+ * Panelin çağırdığı uçların çoğu API tarafında [Authorize(Roles = "Admin,CompanyAdmin")]
+ * ile korunuyor. Bu iki rol dışındaki bir hesap panele girerse her ekran 403 döner,
+ * bu yüzden girişi bu listeye göre kapatıyoruz.
+ */
+export const DASHBOARD_ROLES = ['Admin', 'CompanyAdmin'];
+
+export function canAccessDashboard(role) {
+  return DASHBOARD_ROLES.some(
+    (allowed) => allowed.toLowerCase() === String(role || '').toLowerCase(),
+  );
+}
+
 export const API_ENDPOINTS = {
   bootstrap: `${DEFAULT_API_BASE_URL}/api/bootstrap`,
   authLogin: `${DEFAULT_API_BASE_URL}/api/auth/login`,
