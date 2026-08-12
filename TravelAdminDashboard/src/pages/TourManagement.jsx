@@ -4,6 +4,7 @@ import DownloadIcon from '../assets/icons/download-cloud-02.svg';
 import DeleteIcon from '../assets/icons/delete-icon.svg';
 import { deleteTripApi, fetchTripsApi } from '../services/adminApi';
 import { formatTurkishDate, normalizeSelectedTour } from '../utils/tripPayload';
+import { setSelectedTour } from '../utils/selectionStorage';
 
 const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
   const [selectedTours, setSelectedTours] = useState([]);
@@ -287,7 +288,7 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                       <td>
                         <button className="details-btn" onClick={() => {
                           const normalized = normalizeSelectedTour(tour);
-                          try { localStorage.setItem('selectedTour', JSON.stringify(normalized)); } catch {}
+                          setSelectedTour(normalized);
                           if (typeof goToTourDetails === 'function') goToTourDetails();
                           else window.location.hash = encodeURIComponent('Tur Detayları');
                         }}>
@@ -361,7 +362,7 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                   className="details-btn"
                   onClick={() => {
                     const normalized = normalizeSelectedTour(tour);
-                    try { localStorage.setItem('selectedTour', JSON.stringify(normalized)); } catch {}
+                    setSelectedTour(normalized);
                     if (typeof goToTourDetails === 'function') goToTourDetails();
                     else window.location.hash = encodeURIComponent('Tur Detayları');
                   }}

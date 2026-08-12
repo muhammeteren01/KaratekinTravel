@@ -1,0 +1,57 @@
+.eb-container {
+  display: flex;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.eb-card {
+  max-width: 560px;
+  width: 100%;
+  background: var(--color-white, #ffffff);
+  border: 1px solid var(--color-bg-divider, #dfe5ee);
+  border-radius: var(--radius-md, 16px);
+  padding: 32px;
+  font-family: var(--font-inter, 'Inter', sans-serif);
+}
+
+.eb-title {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #333b69);
+}
+
+.eb-text {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-light-gray, #718ebf);
+}
+
+.eb-detail {
+  margin: 0 0 24px;
+  padding: 12px;
+  background: var(--color-bg-light, #f5f7fa);
+  border-radius: var(--radius-sm, 8px);
+  font-size: 12px;
+  color: var(--color-danger, #c80509);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+}
+
+.eb-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-sm, 8px);
+  background: var(--color-primary-blue, #24baec);
+  color: var(--color-white, #ffffff);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.eb-button:hover {
+  filter: brightness(0.95);
+}

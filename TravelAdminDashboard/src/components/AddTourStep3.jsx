@@ -397,7 +397,7 @@ const AddTourStep3 = ({ onNext, onBack, formData, setFormData, updateMode = fals
                       ).toLocaleString('tr-TR')}TL` }
                     ]}
                   />
-                  {differentPrices.map((p,idx)=> {
+                  {differentPrices.map((p)=> {
                     const subtotal = (Number(p.amount)||0) + extraCharges.reduce((s,c)=> s + (Number(c.amount)||0), 0);
                     return (
                       <SummaryCard

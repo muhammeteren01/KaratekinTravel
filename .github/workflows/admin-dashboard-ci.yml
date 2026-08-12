@@ -1,0 +1,38 @@
+name: Admin Dashboard CI
+
+on:
+  push:
+    paths:
+      - 'TravelAdminDashboard/**'
+      - '.github/workflows/admin-dashboard-ci.yml'
+  pull_request:
+    paths:
+      - 'TravelAdminDashboard/**'
+      - '.github/workflows/admin-dashboard-ci.yml'
+
+defaults:
+  run:
+    working-directory: TravelAdminDashboard
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: TravelAdminDashboard/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Lint, no-undef gibi runtime'da ReferenceError'a dönüşen hataları yakalar;
+      # bu yüzden uyarılar da build'i kırsın istiyoruz.
+      - name: Lint
+        run: npm run lint -- --max-warnings=0
+
+      - name: Build
+        run: npm run build

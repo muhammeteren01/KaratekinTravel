@@ -21,10 +21,12 @@ import SubTourDetails from './pages/SubTourDetails';
 import HotelDrafts from './pages/HotelDrafts';
 import NewHotelDraft from './pages/NewHotelDraft';
 import LoginPage from './pages/LoginPage';
-import { ApiError, clearAdminToken, fetchMeApi, getAdminToken } from './services/adminApi';
+import ErrorBoundary from './components/ErrorBoundary';
+import UnauthorizedPage from './pages/UnauthorizedPage';
+import { ApiError, canAccessDashboard, clearAdminToken, fetchMeApi, getAdminToken } from './services/adminApi';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getAdminToken()));
+  const [profile, setProfile] = useState(null);
   const [booting, setBooting] = useState(() => Boolean(getAdminToken()));
 
   useEffect(() => {
@@ -36,15 +38,15 @@ function App() {
     let alive = true;
 
     fetchMeApi()
-      .then(() => {
-        if (alive) setIsAuthenticated(true);
+      .then((me) => {
+        if (alive) setProfile(me);
       })
       .catch((err) => {
         if (!alive) return;
         if (err instanceof ApiError && err.status === 401) {
           clearAdminToken();
         }
-        setIsAuthenticated(false);
+        setProfile(null);
       })
       .finally(() => {
         if (alive) setBooting(false);
@@ -57,7 +59,7 @@ function App() {
 
   const handleLogout = () => {
     clearAdminToken();
-    setIsAuthenticated(false);
+    setProfile(null);
   };
 
   if (booting) {
@@ -69,8 +71,13 @@ function App() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <LoginPage onAuthenticated={() => setIsAuthenticated(true)} />;
+  if (!profile) {
+    return <LoginPage onAuthenticated={setProfile} />;
+  }
+
+  // Yetkisiz rollerde panel açılırsa her ekran 403 döner; net bir uyarı göster.
+  if (!canAccessDashboard(profile.role)) {
+    return <UnauthorizedPage profile={profile} onLogout={handleLogout} />;
   }
 
   return (
@@ -146,7 +153,8 @@ const AppContent = ({ currentPage = 'Anasayfa', isSidebarCollapsed }) => {
     }
   };
 
-  return renderPage();
+  // resetKey: sayfa değişince çöken ekranın hata durumu temizlensin.
+  return <ErrorBoundary resetKey={currentPage}>{renderPage()}</ErrorBoundary>;
 };
 
 export default App;

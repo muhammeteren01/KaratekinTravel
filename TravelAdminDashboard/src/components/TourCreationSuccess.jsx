@@ -2,7 +2,7 @@ import React from 'react';
 import './TourCreationSuccess.css';
 import ProgressSteps from './ProgressSteps';
 
-const TourCreationSuccess = ({ onGoToTours }) => {
+const TourCreationSuccess = () => {
   return (
     <div className="success-container">
       <div className="success-content">

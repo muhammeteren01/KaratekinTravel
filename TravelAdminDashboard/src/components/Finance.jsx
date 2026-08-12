@@ -6,7 +6,10 @@ import attachMoneyNewIcon from '../assets/icons/attach-money-new.svg';
 import searchIcon from '../assets/icons/search-icon.svg';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';
 import { fetchFinanceReportApi } from '../services/adminApi';
+import { formatCurrency } from '../utils/reportDates';
 // removed unused download icon
+
+const MAX_PAGE_BUTTONS = 5;
 
 const Finance = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,33 +23,6 @@ const Finance = () => {
 
   // Filter options
   const filterOptions = ['Günlük', 'Haftalık', 'Aylık', 'Yıllık'];
-
-  // Mock statistics data based on filter period
-  const getStatisticsData = (period) => {
-    const statisticsData = {
-      'Günlük': {
-        totalRevenue: '$5,200',
-        refundAmount: '$320',
-        netProfit: '$4,880'
-      },
-      'Haftalık': {
-        totalRevenue: '$35,500',
-        refundAmount: '$2,100',
-        netProfit: '$33,400'
-      },
-      'Aylık': {
-        totalRevenue: '$150,000',
-        refundAmount: '$10,000',
-        netProfit: '$140,000'
-      },
-      'Yıllık': {
-        totalRevenue: '$1,800,000',
-        refundAmount: '$120,000',
-        netProfit: '$1,680,000'
-      }
-    };
-    return statisticsData[period] || statisticsData['Aylık'];
-  };
 
   useEffect(() => {
     let alive = true;
@@ -89,15 +65,18 @@ const Finance = () => {
     };
   }, [filterPeriod]);
 
+  // Rapor yoksa uydurma rakam gösterme; tutar yerine "—" bas.
   const currentStats = useMemo(() => {
-    if (!report) return getStatisticsData(filterPeriod);
+    if (!report) {
+      return { totalRevenue: '—', refundAmount: '—', netProfit: '—' };
+    }
 
     return {
-      totalRevenue: `${Number(report.totalRevenue || 0).toLocaleString('tr-TR')} TL`,
-      refundAmount: `${Number(report.refundAmount || 0).toLocaleString('tr-TR')} TL`,
-      netProfit: `${Number(report.netProfit || 0).toLocaleString('tr-TR')} TL`,
+      totalRevenue: formatCurrency(report.totalRevenue),
+      refundAmount: formatCurrency(report.refundAmount),
+      netProfit: formatCurrency(report.netProfit),
     };
-  }, [report, filterPeriod]);
+  }, [report]);
 
   const completedTours = useMemo(() => {
     if (!report?.completedTripEarnings?.length) return [];
@@ -106,7 +85,7 @@ const Finance = () => {
       tourCode: item.tourCode,
       tourName: item.tourName,
       tourDate: item.tourDate ? new Date(item.tourDate).toLocaleString('tr-TR') : '-',
-      netEarning: `${Number(item.netEarning || 0).toLocaleString('tr-TR')} TL`,
+      netEarning: formatCurrency(item.netEarning),
     }));
   }, [report]);
 
@@ -157,6 +136,19 @@ const Finance = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Aktif sayfanın çevresinde en fazla MAX_PAGE_BUTTONS kadar sayfa numarası göster
+  const getPageNumbers = () => {
+    const start = Math.max(1, Math.min(currentPage - Math.floor(MAX_PAGE_BUTTONS / 2), totalPages - MAX_PAGE_BUTTONS + 1));
+    const end = Math.min(totalPages, start + MAX_PAGE_BUTTONS - 1);
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
   };
 
   // removed details handler as buttons are removed

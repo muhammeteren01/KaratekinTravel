@@ -14,7 +14,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 // Custom plugin to display text outside the pie slices
 const dataLabelsPlugin = {
   id: 'dataLabels',
-  afterDatasetsDraw(chart, args, options) {
+  afterDatasetsDraw(chart) {
     const { ctx } = chart;
     const meta = chart.getDatasetMeta(0);
     

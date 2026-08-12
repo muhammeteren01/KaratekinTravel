@@ -34,6 +34,7 @@
 .pp-upload-btn img { width:18px; height:18px; }
 
 .pp-hint { margin: 0; font-size: 12px; color:#6B7280; text-align:center; }
+.pp-hint-warning { margin-top: 8px; color:#B45309; }
 
 @media (max-width: 768px) {
   .pp-avatar-wrap { width: 128px; height: 128px; }

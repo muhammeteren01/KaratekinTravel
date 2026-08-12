@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './NewHotelDraft.css';
 import { createHotelApi, deleteHotelApi, fetchHotelByIdApi, updateHotelApi } from '../services/adminApi';
+import { clearSelectedHotel, getSelectedHotel, setSelectedHotel } from '../utils/selectionStorage';
 
 const Checkbox = ({ label, checked, onChange }) => (
   <label className="nhd-checkbox">
@@ -36,7 +37,7 @@ const defaultForm = () => ({
   features: { klima: true, tv: false, wifi: false, balkon: false, minibar: true },
 });
 
-const NewHotelDraft = ({ currentSection = 'Gezi İşlemleri' }) => {
+const NewHotelDraft = () => {
   const [hotelId, setHotelId] = useState(null);
   const [form, setForm] = useState(defaultForm());
   const [images, setImages] = useState([]);
@@ -59,11 +60,7 @@ const NewHotelDraft = ({ currentSection = 'Gezi İşlemleri' }) => {
       try {
         setInitialLoading(true);
         setError('');
-        let selected = null;
-        try {
-          const raw = localStorage.getItem('selectedHotel');
-          if (raw) selected = JSON.parse(raw);
-        } catch {}
+        const selected = getSelectedHotel();
 
         const id = selected?.id;
         if (!id) {
@@ -157,7 +154,7 @@ const NewHotelDraft = ({ currentSection = 'Gezi İşlemleri' }) => {
       } else {
         const created = await createHotelApi(payload);
         setHotelId(created.id);
-        try { localStorage.setItem('selectedHotel', JSON.stringify(created)); } catch {}
+        setSelectedHotel(created);
       }
       alert('Taslak kaydedildi.');
     } catch (err) {
@@ -175,7 +172,7 @@ const NewHotelDraft = ({ currentSection = 'Gezi İşlemleri' }) => {
     setError('');
     try {
       await deleteHotelApi(hotelId);
-      try { localStorage.removeItem('selectedHotel'); } catch {}
+      clearSelectedHotel();
       window.location.hash = encodeURIComponent('Otel Taslakları');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.');

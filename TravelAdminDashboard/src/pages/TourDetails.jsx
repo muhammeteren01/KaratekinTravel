@@ -6,6 +6,7 @@ import {
   fetchVehiclesApi,
   updateTripDepartureApi,
 } from '../services/adminApi';
+import { getSelectedTour, getSelectedTripId, setSelectedSubTour, setSelectedTour } from '../utils/selectionStorage';
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -20,17 +21,6 @@ const StatusBadge = ({ status }) => {
       {cfg.text}
     </span>
   );
-};
-
-const getTripId = () => {
-  try {
-    const raw = localStorage.getItem('selectedTour');
-    if (raw) {
-      const tour = JSON.parse(raw);
-      return tour?.raw?.id || tour?.id || null;
-    }
-  } catch {}
-  return null;
 };
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -98,7 +88,7 @@ const TourDetails = ({ isSidebarCollapsed }) => {
   const [activeTab, setActiveTab] = useState('route');
   const [bulkUpdating, setBulkUpdating] = useState(false);
 
-  const tripId = useMemo(() => getTripId(), []);
+  const tripId = useMemo(() => getSelectedTripId(), []);
 
   const selectedTour = useMemo(() => {
     if (trip) {
@@ -111,11 +101,7 @@ const TourDetails = ({ isSidebarCollapsed }) => {
         raw: trip,
       };
     }
-    try {
-      const raw = localStorage.getItem('selectedTour');
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return { id: null, code: '-', name: 'Tur', status: 'active' };
+    return getSelectedTour() || { id: null, code: '-', name: 'Tur', status: 'active' };
   }, [trip]);
 
   useEffect(() => {
@@ -147,15 +133,13 @@ const TourDetails = ({ isSidebarCollapsed }) => {
           (Array.isArray(departures) ? departures : []).map((d) => mapDepartureRow(d, vehicleMap))
         );
 
-        try {
-          localStorage.setItem('selectedTour', JSON.stringify({
-            id: tripData.id,
-            name: tripData.title,
-            code: `TR-${String(tripData.id || '').slice(0, 4).toUpperCase()}`,
-            companyId: tripData.companyId,
-            raw: tripData,
-          }));
-        } catch {}
+        setSelectedTour({
+          id: tripData.id,
+          name: tripData.title,
+          code: `TR-${String(tripData.id || '').slice(0, 4).toUpperCase()}`,
+          companyId: tripData.companyId,
+          raw: tripData,
+        });
       } catch (err) {
         if (!alive) return;
         setError(err instanceof Error ? err.message : 'Tur detayları yüklenemedi.');
@@ -265,12 +249,10 @@ const TourDetails = ({ isSidebarCollapsed }) => {
   };
 
   const openSubTourDetails = (row) => {
-    try {
-      localStorage.setItem('selectedSubTour', JSON.stringify({
-        ...row,
-        tripId: tripId || trip?.id || selectedTour?.id,
-      }));
-    } catch {}
+    setSelectedSubTour({
+      ...row,
+      tripId: tripId || trip?.id || selectedTour?.id,
+    });
     window.location.hash = encodeURIComponent('Alt Tur Detayları');
   };
 

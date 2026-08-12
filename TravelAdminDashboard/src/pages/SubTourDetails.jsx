@@ -9,6 +9,7 @@ import {
   fetchUsersApi,
   updateTripDepartureApi,
 } from '../services/adminApi';
+import { clearSelectedSubTour, getSelectedDepartureId, getSelectedTripId, setSelectedSubTour } from '../utils/selectionStorage';
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -23,28 +24,6 @@ const StatusBadge = ({ status }) => {
       {cfg.text}
     </span>
   );
-};
-
-const getTripId = () => {
-  try {
-    const raw = localStorage.getItem('selectedTour');
-    if (raw) {
-      const tour = JSON.parse(raw);
-      return tour?.raw?.id || tour?.id || null;
-    }
-  } catch {}
-  return null;
-};
-
-const getDepartureId = () => {
-  try {
-    const raw = localStorage.getItem('selectedSubTour');
-    if (raw) {
-      const sub = JSON.parse(raw);
-      return sub?.id || sub?.raw?.id || null;
-    }
-  } catch {}
-  return null;
 };
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -71,8 +50,8 @@ const formatTimeTR = (value) => {
 };
 
 const SubTourDetails = ({ isSidebarCollapsed }) => {
-  const tripId = useMemo(() => getTripId(), []);
-  const departureId = useMemo(() => getDepartureId(), []);
+  const tripId = useMemo(() => getSelectedTripId(), []);
+  const departureId = useMemo(() => getSelectedDepartureId(), []);
 
   const [tourName, setTourName] = useState('Tur');
   const [subTour, setSubTour] = useState(null);
@@ -131,9 +110,7 @@ const SubTourDetails = ({ isSidebarCollapsed }) => {
         setSubStatus(mappedSubTour.status);
         setTourName(trip?.title || 'Tur');
 
-        try {
-          localStorage.setItem('selectedSubTour', JSON.stringify(mappedSubTour));
-        } catch {}
+        setSelectedSubTour(mappedSubTour);
 
         const filteredReservations = (Array.isArray(reservations) ? reservations : [])
           .filter((reservation) => {
@@ -219,13 +196,11 @@ const SubTourDetails = ({ isSidebarCollapsed }) => {
         status: next,
         raw: updated,
       }));
-      try {
-        localStorage.setItem('selectedSubTour', JSON.stringify({
-          ...subTour,
-          status: next,
-          raw: updated,
-        }));
-      } catch {}
+      setSelectedSubTour({
+        ...subTour,
+        status: next,
+        raw: updated,
+      });
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Durum güncellenemedi.');
     } finally {
@@ -240,7 +215,7 @@ const SubTourDetails = ({ isSidebarCollapsed }) => {
 
     try {
       await deleteTripDepartureApi(departureId);
-      try { localStorage.removeItem('selectedSubTour'); } catch {}
+      clearSelectedSubTour();
       window.location.hash = encodeURIComponent('Tur Detayları');
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.');

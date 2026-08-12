@@ -162,6 +162,16 @@ const CancellationTable = ({ data = [], onDetailsClick }) => {
           {renderPaginationButtons()}
         </div>
         <div className="pagination-controls">
+          <button
+            className="pagination-nav"
+            onClick={handlePrevPage}
+            disabled={currentPage <= 1}
+          >
+            <svg width="6" height="12" viewBox="0 0 6 12" fill="none">
+              <path d="M5 1L1 6L5 11" stroke="#FF7029" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span>Önceki</span>
+          </button>
           <button 
             className="pagination-nav"
             onClick={handleNextPage}

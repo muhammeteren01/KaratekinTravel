@@ -7,7 +7,9 @@ import PaymentHistory from '../components/Settings/Payment/PaymentHistory';
 import PendingPayments from '../components/Settings/Payment/PendingPayments';
 import {
   changePasswordApi,
+  fetchCompanyByIdApi,
   fetchMeApi,
+  updateCompanyApi,
   updateUserProfileApi,
 } from '../services/adminApi';
 
@@ -34,28 +36,36 @@ const TabNav = ({ active, onChange }) => {
   );
 };
 
-const CompanyInfoForm = ({ profile, loading, saving, error, success, onSave }) => {
-  const [form, setForm] = useState({
-    companyName: '',
-    email: '',
-    phone: '',
-    website: '',
-    taxNumber: '',
-    taxOffice: '',
-    address: '',
-    about: '',
+const emptyCompanyForm = {
+  companyName: '',
+  phone: '',
+  address: '',
+  about: '',
+};
+
+/**
+ * Not: Form yalnızca API'nin gerçekten kaydettiği alanları içerir.
+ * - companyName / address / about → PUT /api/companies/{id} (UpdateCompanyDto)
+ * - phone / address → PUT /api/users/{id} (UpdateUserDto)
+ * Web sitesi, vergi no ve vergi dairesi alanları kaldırıldı: ne User ne de Company
+ * modelinde karşılıkları var, doldurulduğunda sessizce kayboluyorlardı.
+ * E-posta salt okunur; UpdateUserDto e-posta alanını yok sayıyor.
+ */
+const CompanyInfoForm = ({ profile, company, loading, saving, error, success, onSave }) => {
+  const [form, setForm] = useState(emptyCompanyForm);
+
+  const buildFormState = () => ({
+    companyName: company?.name || profile?.name || '',
+    phone: profile?.phone || '',
+    address: company?.location || profile?.location || '',
+    about: company?.about || '',
   });
 
   useEffect(() => {
     if (!profile) return;
-    setForm((prev) => ({
-      ...prev,
-      companyName: profile.name || '',
-      email: profile.email || '',
-      phone: profile.phone || '',
-      address: profile.location || '',
-    }));
-  }, [profile]);
+    setForm(buildFormState());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile, company]);
 
   const onChange = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -67,22 +77,29 @@ const CompanyInfoForm = ({ profile, loading, saving, error, success, onSave }) =
 
       <div className="settings-grid">
         <div className="settings-col left">
-          <ProfilePhotoUploader />
+          <ProfilePhotoUploader
+            initialSrc={profile?.avatar || undefined}
+            disabledReason="Görsel yükleme ucu henüz hazır değil; seçtiğiniz fotoğraf yalnızca önizlemede görünür."
+          />
         </div>
         <div className="settings-col right">
           <div className="settings-form-grid">
             <FormField label="Firma Adı" placeholder="Örn. Karatekin Travel" value={form.companyName} onChange={onChange('companyName')} required />
-            <FormField label="E-posta" type="email" placeholder="mail@firma.com" value={form.email} onChange={onChange('email')} required />
+            <FormField
+              label="E-posta"
+              type="email"
+              value={profile?.email || ''}
+              onChange={() => {}}
+              disabled
+              helperText="E-posta adresi panelden değiştirilemez."
+            />
             <FormField label="Telefon" placeholder="(5XX) XXX XX XX" value={form.phone} onChange={onChange('phone')} />
-            <FormField label="Web Sitesi" placeholder="https://" value={form.website} onChange={onChange('website')} />
-            <FormField label="Vergi No" placeholder="Vergi numarası" value={form.taxNumber} onChange={onChange('taxNumber')} />
-            <FormField label="Vergi Dairesi" placeholder="Vergi dairesi" value={form.taxOffice} onChange={onChange('taxOffice')} />
             <FormField label="Adres" type="textarea" placeholder="Firmanın açık adresi" value={form.address} onChange={onChange('address')} />
-            <FormField 
-              label="Hakkında" 
-              type="textarea" 
-              placeholder="Firma hakkında kısa açıklama" 
-              value={form.about} 
+            <FormField
+              label="Hakkında"
+              type="textarea"
+              placeholder="Firma hakkında kısa açıklama"
+              value={form.about}
               onChange={onChange('about')}
               helperText="Bu alan kullanıcılar firmanızın profilini ziyaret ettiğinde görünecektir. Firmanız ile ilgili bilgiler verebilirsiniz."
             />
@@ -90,16 +107,7 @@ const CompanyInfoForm = ({ profile, loading, saving, error, success, onSave }) =
         </div>
       </div>
       <div className="settings-actions">
-        <button className="btn btn-secondary" type="button" onClick={() => profile && setForm({
-          companyName: profile.name || '',
-          email: profile.email || '',
-          phone: profile.phone || '',
-          website: '',
-          taxNumber: '',
-          taxOffice: '',
-          address: profile.location || '',
-          about: '',
-        })}>İptal</button>
+        <button className="btn btn-secondary" type="button" onClick={() => setForm(buildFormState())}>İptal</button>
         <button className="btn btn-primary" type="button" disabled={saving || loading || !profile?.id} onClick={() => onSave(form)}>
           {saving ? 'Kaydediliyor...' : 'Kaydet'}
         </button>
@@ -113,11 +121,9 @@ const AccountSecurityForm = ({ profile, loading, saving, error, success, onSaveP
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
-    twoFA: false,
-    loginAlerts: false,
   });
 
-  const onChange = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+  const onChange = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleSave = () => {
     if (!form.currentPassword || !form.newPassword) {
@@ -155,29 +161,12 @@ const AccountSecurityForm = ({ profile, loading, saving, error, success, onSaveP
         <p className="settings-group-hint">Güçlü bir şifre en az 8 karakter, bir büyük harf ve bir rakam içermelidir.</p>
       </div>
 
-      <div className="settings-group">
-        <h4 className="settings-group-title">Güvenlik</h4>
-        <div className="settings-toggle-row">
-          <div className="settings-toggle-texts">
-            <span className="settings-toggle-title">İki Aşamalı Doğrulama</span>
-            <span className="settings-toggle-desc">Hesabınızı ek bir doğrulama yöntemi ile koruyun.</span>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" checked={form.twoFA} onChange={onChange('twoFA')} />
-            <span className="toggle-slider" />
-          </label>
-        </div>
-        <div className="settings-toggle-row">
-          <div className="settings-toggle-texts">
-            <span className="settings-toggle-title">Giriş Bildirimleri</span>
-            <span className="settings-toggle-desc">Yeni bir cihazdan oturum açıldığında e‑posta gönder.</span>
-          </div>
-          <label className="toggle">
-            <input type="checkbox" checked={form.loginAlerts} onChange={onChange('loginAlerts')} />
-            <span className="toggle-slider" />
-          </label>
-        </div>
-      </div>
+      {/*
+        "İki Aşamalı Doğrulama" ve "Giriş Bildirimleri" anahtarları kaldırıldı:
+        yalnızca lokal state'i değiştiriyorlardı, hiçbir uca yazılmıyorlardı.
+        API bu ayarları desteklediğinde (User modelinde karşılık alanlar + uç)
+        geri eklenmeli.
+      */}
 
       <div className="settings-actions">
         <button className="btn btn-secondary" type="button" onClick={() => setForm((prev) => ({
@@ -207,6 +196,7 @@ const PaymentInfoForm = () => {
 const Settings = () => {
   const [activeTab, setActiveTab] = useState(Tabs.COMPANY);
   const [profile, setProfile] = useState(null);
+  const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -215,17 +205,26 @@ const Settings = () => {
   useEffect(() => {
     let alive = true;
 
-    fetchMeApi()
-      .then((response) => {
-        if (alive) setProfile(response);
-      })
-      .catch((err) => {
+    const loadProfile = async () => {
+      try {
+        const me = await fetchMeApi();
+        if (!alive) return;
+        setProfile(me);
+
+        if (me?.companyId) {
+          // Firma alanları (ad, adres, hakkında) User değil Company kaydında tutuluyor.
+          const companyRecord = await fetchCompanyByIdApi(me.companyId).catch(() => null);
+          if (alive) setCompany(companyRecord);
+        }
+      } catch (err) {
         if (!alive) return;
         setError(err instanceof Error ? err.message : 'Profil yüklenemedi.');
-      })
-      .finally(() => {
+      } finally {
         if (alive) setLoading(false);
-      });
+      }
+    };
+
+    loadProfile();
 
     return () => {
       alive = false;
@@ -239,16 +238,27 @@ const Settings = () => {
       setSaving(true);
       setError('');
       setSuccess('');
-      const updated = await updateUserProfileApi(profile.id, {
-        id: profile.id,
+
+      const updatedUser = await updateUserProfileApi(profile.id, {
         name: form.companyName,
-        email: form.email,
         phone: form.phone || null,
         location: form.address || null,
         avatar: profile.avatar || null,
       });
-      setProfile(updated);
-      setSuccess('Profil bilgileri kaydedildi.');
+      setProfile((prev) => ({ ...prev, ...updatedUser }));
+
+      // Firma kaydı varsa ad/adres/hakkında oraya da yazılmalı; aksi halde
+      // kullanıcı profilinde kalır ve firma profilinde görünmez.
+      if (profile.companyId) {
+        const updatedCompany = await updateCompanyApi(profile.companyId, {
+          name: form.companyName,
+          location: form.address || null,
+          about: form.about || null,
+        });
+        setCompany((prev) => ({ ...prev, ...updatedCompany }));
+      }
+
+      setSuccess('Firma bilgileri kaydedildi.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Profil kaydedilemedi.');
     } finally {
@@ -278,6 +288,7 @@ const Settings = () => {
         return (
           <CompanyInfoForm
             profile={profile}
+            company={company}
             loading={loading}
             saving={saving}
             error={error}

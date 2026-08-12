@@ -24,16 +24,11 @@ ChartJS.register(
 import arrowLineDownIcon from '../assets/icons/arrow-line-down.svg';
 import magnifyingGlassIcon from '../assets/icons/magnifying-glass-search.svg';
 import calendarIcon from '../assets/icons/calendar-icon.svg';
-import userIcon from '../assets/icons/user-profile.svg';
-import carIcon from '../assets/icons/car-icon.svg';
-import dropdownArrowIcon from '../assets/icons/dropdown-arrow.svg';
 import arrowBackIcon from '../assets/icons/arrow-back-left.svg';
 import arrowForwardIcon from '../assets/icons/arrow-forward-right.svg';
-import gearIcon from '../assets/icons/gear-settings.svg';
-import notificationIcon from '../assets/icons/notification-bell.svg';
 
 // Özel Tarih Seçici Bileşeni
-const DatePicker = ({ value, onChange, placeholder, label }) => {
+const DatePicker = ({ value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(() => {
     if (value) {
@@ -239,21 +234,22 @@ const DatePicker = ({ value, onChange, placeholder, label }) => {
 const VehicleHistory = () => {
   // State yönetimi
   const [selectedPeriod, setSelectedPeriod] = useState('Yıllık');
-  const [selectedStatus, setSelectedStatus] = useState('Tümü');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isPeriodDropdownOpen, setIsPeriodDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [operationCurrentPage, setOperationCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState('date');
-  const [sortOrder, setSortOrder] = useState('desc');
-  const [filters, setFilters] = useState({
+  // Bu ekranda filtre/sıralama arayüzü hiç bağlanmadı: aşağıdaki değerleri
+  // değiştiren bir kontrol yok, bu yüzden state yerine sabit tutuluyorlar.
+  // Filtre UI'ı eklenirken tekrar useState'e çevrilmeli.
+  const sortBy = 'date';
+  const sortOrder = 'desc';
+  const filters = {
     startDate: '',
     endDate: '',
     driverName: '',
     plateNumber: '',
     operationType: ''
-  });
+  };
 
   // Sayfa başına kayıt sayısı
   const ITEMS_PER_PAGE = 4;
@@ -261,9 +257,6 @@ const VehicleHistory = () => {
 
   // Dönem seçenekleri
   const periodOptions = ['Günlük', 'Haftalık', 'Aylık', 'Yıllık'];
-
-  // İşlem türü seçenekleri
-  const operationTypes = ['Tümü', 'Sefer', 'Bakım', 'Yakıt', 'Temizlik'];
 
   // Genişletilmiş araç durumu verisi
   const allVehicleStatusData = [
@@ -540,31 +533,6 @@ const VehicleHistory = () => {
   );
 
   // Event handler'lar
-  const handleFilterChange = (field, value) => {
-    console.log('Filter güncelleniyor:', field, value);
-    setFilters(prev => {
-      const newFilters = {
-        ...prev,
-        [field]: value
-      };
-      console.log('Yeni filters:', newFilters);
-      return newFilters;
-    });
-    // Filtreleme sonrası ilk sayfaya dön
-    setOperationCurrentPage(1);
-  };
-
-  const handleClearFilters = () => {
-    setFilters({
-      startDate: '',
-      endDate: '',
-      driverName: '',
-      plateNumber: '',
-      operationType: ''
-    });
-    setOperationCurrentPage(1);
-  };
-
   const handlePeriodChange = (period) => {
     setSelectedPeriod(period);
     setIsPeriodDropdownOpen(false);
@@ -573,16 +541,6 @@ const VehicleHistory = () => {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1); // Arama sonrası ilk sayfaya dön
-  };
-
-  const handleSortChange = (field) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(field);
-      setSortOrder('desc');
-    }
-    setOperationCurrentPage(1);
   };
 
   const handlePageChange = (page) => {

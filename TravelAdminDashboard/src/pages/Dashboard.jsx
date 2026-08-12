@@ -120,9 +120,11 @@ const Dashboard = ({ isSidebarCollapsed }) => {
       return FALLBACK_REVENUE.map((item) => ({ ...item, value: 0 }));
     }
 
+    // Grafik "Profil Ziyaretleri" başlıklı; katılımcı sayısına düşmek veriyi
+    // yanlış etiketler, bu yüzden yalnızca viewCount kullanılıyor.
     return topTrips.slice(0, 6).map((trip, index) => ({
       month: trip.title?.slice(0, 8) || `Tur ${index + 1}`,
-      value: Number(trip.viewCount ?? trip.joinedCount ?? trip.totalReservations ?? 0),
+      value: Number(trip.viewCount ?? 0),
     }));
   }, [tripReport]);
 
@@ -141,8 +143,10 @@ const Dashboard = ({ isSidebarCollapsed }) => {
         icon: TRIP_ICONS[index % TRIP_ICONS.length],
         iconBg: TRIP_ICON_BGS[index % TRIP_ICON_BGS.length],
         name: trip.title || 'Tur',
-        revenue: formatCurrency(trip.totalReservations * 100),
-        participation: trip.capacity ? `${Math.round((trip.joinedCount / trip.capacity) * 100)}%` : '—',
+        // API tur bazında gelir döndürmüyor; uydurma tutar yerine "—" göster.
+        revenue: '—',
+        participation:
+          trip.capacity > 0 ? `${Math.round((trip.joinedCount / trip.capacity) * 100)}%` : '—',
       }));
     }
 
@@ -150,12 +154,13 @@ const Dashboard = ({ isSidebarCollapsed }) => {
       const capacity = Number(trip.capacity || 0);
       const joined = Number(trip.joinedCount || 0);
       const participation = capacity > 0 ? `${Math.round((joined / capacity) * 100)}%` : '—';
+      const price = trip.pricing?.basePrice;
 
       return {
         icon: TRIP_ICONS[index % TRIP_ICONS.length],
         iconBg: TRIP_ICON_BGS[index % TRIP_ICON_BGS.length],
         name: trip.title || 'Tur',
-        revenue: trip.price ? String(trip.price) : formatCurrency(trip.pricing?.basePrice),
+        revenue: price != null ? formatCurrency(price, trip.pricing?.currency) : '—',
         participation,
       };
     });
@@ -166,17 +171,20 @@ const Dashboard = ({ isSidebarCollapsed }) => {
       ? tripReport.topTrips
       : (trips || []).slice(0, 5);
 
-    return source.slice(0, 5).map((trip, index) => ({
-      id: `${String(index + 1).padStart(2, '0')}.`,
-      name: trip.title || 'Tur',
-      price: formatCurrency(trip.totalReservations ? trip.totalReservations * 100 : trip.joinedCount * 50),
-      return: trip.avgReviewRating
-        ? `+${Number(trip.avgReviewRating).toFixed(1)}`
-        : trip.rating
-          ? `+${Number(trip.rating).toFixed(1)}`
-          : '—',
-      isPositive: Number(trip.avgReviewRating ?? trip.rating ?? 0) >= 3,
-    }));
+    return source.slice(0, 5).map((trip, index) => {
+      const rating = trip.avgReviewRating ?? trip.rating;
+      const price = trip.pricing?.basePrice;
+
+      return {
+        id: `${String(index + 1).padStart(2, '0')}.`,
+        name: trip.title || 'Tur',
+        // Gelir alanı API'de yok (TripStaticsDto fiyat taşımıyor); rezervasyon sayısını
+        // çarpıp tutar uydurmak yerine gerçek fiyat varsa onu, yoksa "—" göster.
+        price: price != null ? formatCurrency(price, trip.pricing?.currency) : '—',
+        return: rating != null ? `+${Number(rating).toFixed(1)}` : '—',
+        isPositive: Number(rating ?? 0) >= 3,
+      };
+    });
   }, [tripReport, trips]);
 
   return (

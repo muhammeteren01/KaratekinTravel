@@ -9,47 +9,16 @@ import { getStep3Data } from '../utils/tripPayload';
 import './AddTourStep3Hotel.css';
 import './RouteStops.css';
 
-const AddTourStep6 = ({ onNext, onBack, formData, setFormData, submitLabel = 'Formu Kaydet', isSubmitting = false, updateMode = false, updatedStep = null }) => {
-  // Debug: Log formData to see what's available
-  console.log('=== STEP 6 RENDER DEBUG ===');
-  console.log('AddTourStep6 formData:', formData);
-  console.log('AddTourStep6 step4 data:', formData.step4);
-  console.log('AddTourStep6 coverImage:', formData.step4?.coverImage);
-  console.log('AddTourStep6 coverImage preview length:', formData.step4?.coverImage?.preview?.length);
-  console.log('AddTourStep6 additionalImages count:', formData.step4?.additionalImages?.length);
-  console.log('AddTourStep6 additionalImages:', formData.step4?.additionalImages);
-  if (formData.step4?.additionalImages) {
-    formData.step4.additionalImages.forEach((img, index) => {
-      console.log(`Step6 Image ${index + 1} preview length:`, img.preview?.length);
-    });
-  }
-  console.log('=== END STEP 6 DEBUG ===');
-  
+const AddTourStep6 = ({ onNext, onBack, formData, submitLabel = 'Formu Kaydet', isSubmitting = false, updateMode = false, updatedStep = null }) => {
   const step3 = getStep3Data(formData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Final form data:', formData);
-    // Here you would typically send the data to the server
-    onNext(); // Navigate to success page
+    // Asıl kayıt AddTourPage.handleCreateTour içinde yapılıyor.
+    onNext();
   };
 
   const has = (arr) => Array.isArray(arr) && arr.length > 0;
-
-  const formatPriceTypes = (priceTypes) => {
-    if (!priceTypes || priceTypes.length === 0) return 'Belirtilmemiş';
-    return priceTypes.map(pt => `${pt.type}: ${pt.amount}TL`).join(' - ');
-  };
-
-  const formatExtraFees = (extraFees) => {
-    if (!extraFees || extraFees.length === 0) return 'Belirtilmemiş';
-    return extraFees.map(ef => `${ef.type}: ${ef.amount}TL`).join(' - ');
-  };
-
-  const formatVehicles = (vehicles) => {
-    if (!vehicles || vehicles.length === 0) return 'Belirtilmemiş';
-    return vehicles.map(v => `${v.plate} (${v.capacity} kişi)`).join(' - ');
-  };
 
   const safeStops = (stops) => Array.isArray(stops) ? stops : [];
 
