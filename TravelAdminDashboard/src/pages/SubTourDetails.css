@@ -1,7 +1,7 @@
 .std-page{padding:20px;background:#ffffff;min-height:100vh}
 .std-info{background:#faf9ff;border-radius:16px;padding:16px 24px;margin-bottom:16px}
 .std-info-title{margin:0 0 6px 0;font-weight:700;font-size:24px;color:#343C6A}
-.std-info-desc{color:#9291A5;font:500 14px 'DM Sans',system-ui,sans-serif;margin-bottom:12px}
+.std-info-desc{color:#9291A5;font:500 14px 'Inter',system-ui,sans-serif;margin-bottom:12px}
 
 .std-info-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .std-info-card{display:flex;align-items:center;gap:12px;background:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
@@ -24,7 +24,7 @@
 /* Hızlı işlemler already styled via TourDetails.css classes (hi-*) */
 
 .std-participants{background:#faf9ff;border-radius:16px;padding:16px 24px;margin-top:12px}
-.std-part-title{font:700 20px 'DM Sans',system-ui,sans-serif;color:#1D1C2B}
+.std-part-title{font:700 20px 'Inter',system-ui,sans-serif;color:#1D1C2B}
 
 .std-table-card{border:1px solid #F0F0F2;border-radius:20px;overflow:hidden;background:#fff;margin-top:12px}
 .std-table-wrap{overflow:auto}
@@ -34,7 +34,7 @@
 .std-table tbody tr:nth-child(odd){background:#FFFFFF}
 .std-table tbody tr:nth-child(even){background:#FBFBFB}
 .std-table tbody td{color:#232323}
-.std-th{font:500 12px/20px 'DM Sans',system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#9291A5;white-space:nowrap}
+.std-th{font:500 12px/20px 'Inter',system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#9291A5;white-space:nowrap}
 .std-th .th-cell{display:inline-flex;align-items:center;gap:8px}
 .std-th img{width:18px;height:18px}
 
@@ -46,7 +46,7 @@
 
 /* Pagination - reuse existing td- styles from TourDetails */
 .td-pagination{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:12px}
-.td-page-chip{width:25px;height:25px;display:inline-flex;align-items:center;justify-content:center;border-radius:4px;background:#DDEBFF;color:#004FCF;border:none;font:500 11px/17px 'DM Sans',system-ui,sans-serif;cursor:pointer}
+.td-page-chip{width:25px;height:25px;display:inline-flex;align-items:center;justify-content:center;border-radius:4px;background:#DDEBFF;color:#004FCF;border:none;font:500 11px/17px 'Inter',system-ui,sans-serif;cursor:pointer}
 .td-page-chip:not(.active){background:#EEF4FD;border:0.25px solid #DDEBFF;color:#004FCF}
 .td-page-chip.active{background:#DDEBFF;color:#004FCF}
 .td-page-next{width:15px;height:15px;padding:4px;display:inline-flex;align-items:center;justify-content:center;background:#DDEBFF;border-radius:3px;border:none;cursor:pointer}

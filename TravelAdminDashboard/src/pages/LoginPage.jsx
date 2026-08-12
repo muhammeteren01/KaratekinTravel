@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { fetchMeApi, loginApi, registerApi, setAdminToken } from '../services/adminApi';
+import { DEMO_MODE, fetchMeApi, loginApi, registerApi, setAdminToken } from '../services/adminApi';
 import './LoginPage.css';
 
 const emptyForm = {
@@ -114,6 +114,20 @@ function LoginPage({ onAuthenticated }) {
 
         <h1>{title}</h1>
         <p>{subtitle}</p>
+
+        {DEMO_MODE && (
+          <div className="login-demo-hint">
+            <strong>Demo modu açık.</strong> Backend gerekmez.<br />
+            E-posta: <code>demo@karatekin.test</code> — Şifre: <code>demo1234</code>
+            <button
+              type="button"
+              className="login-demo-fill"
+              onClick={() => setForm((prev) => ({ ...prev, email: 'demo@karatekin.test', password: 'demo1234' }))}
+            >
+              Otomatik doldur
+            </button>
+          </div>
+        )}
 
         {/*
           Admin rolü self-service kayıtla verilmiyor (API tarafında accountType='admin'

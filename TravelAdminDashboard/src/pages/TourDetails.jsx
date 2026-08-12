@@ -4,6 +4,7 @@ import {
   fetchTripByIdApi,
   fetchTripDeparturesApi,
   fetchVehiclesApi,
+  updateTripApi,
   updateTripDepartureApi,
 } from '../services/adminApi';
 import { getSelectedTour, getSelectedTripId, setSelectedSubTour, setSelectedTour } from '../utils/selectionStorage';
@@ -225,17 +226,48 @@ const TourDetails = ({ isSidebarCollapsed }) => {
   const activeCount = subDates.filter((row) => row.status === 'active').length;
 
   const confirmAndMakeInactive = async () => {
-    const ok = window.confirm('Tüm alt turların durumunu pasif yapmak istediğinize emin misiniz?');
+    const ok = window.confirm(
+      'Tur yayından kaldırılacak ve tüm alt turların durumu pasif yapılacak. Emin misiniz?',
+    );
     if (!ok) return;
 
     setBulkUpdating(true);
     try {
-      await Promise.all(
-        subDates.map((row) => updateTripDepartureApi(row.id, { status: 'inactive' }))
-      );
+      // Alt turları pasife çekmek turu kullanıcılardan gizlemiyordu; asıl
+      // görünürlük turun kendi isPublished alanında. İkisini birlikte güncelle.
+      await Promise.all([
+        updateTripApi(tripId, { isPublished: false }),
+        ...subDates.map((row) => updateTripDepartureApi(row.id, { status: 'inactive' })),
+      ]);
+      setTrip((prev) => (prev ? { ...prev, isPublished: false } : prev));
       setSubDates((prev) => prev.map((row) => ({ ...row, status: 'inactive' })));
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Durum güncellenemedi.');
+    } finally {
+      setBulkUpdating(false);
+    }
+  };
+
+  const publishTour = async () => {
+    setBulkUpdating(true);
+    try {
+      await updateTripApi(tripId, { isPublished: true });
+      setTrip((prev) => (prev ? { ...prev, isPublished: true } : prev));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Tur yayınlanamadı.');
+    } finally {
+      setBulkUpdating(false);
+    }
+  };
+
+  const toggleFeatured = async () => {
+    const next = !trip?.isFeatured;
+    setBulkUpdating(true);
+    try {
+      await updateTripApi(tripId, { isFeatured: next });
+      setTrip((prev) => (prev ? { ...prev, isFeatured: next } : prev));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Öne çıkarma durumu güncellenemedi.');
     } finally {
       setBulkUpdating(false);
     }
@@ -314,13 +346,23 @@ const TourDetails = ({ isSidebarCollapsed }) => {
               <div className="hi-desc">Tüm alt turlarınızda silinecektir!</div>
             </div>
           </button>
-          <button className="hi-card hi-yellow" onClick={confirmAndMakeInactive} disabled={bulkUpdating || !subDates.length}>
-            <div className="hi-icon hi-yellow-ic"><img src="/icons/hi-pasif.svg" alt="Durumu Pasif Yap" /></div>
-            <div className="hi-texts">
-              <div className="hi-chip">Durumu “Pasif” Yap</div>
-              <div className="hi-desc">Tüm alt turlarınızda durumu değişir!</div>
-            </div>
-          </button>
+          {selectedTour.status === 'inactive' ? (
+            <button className="hi-card hi-teal" onClick={publishTour} disabled={bulkUpdating}>
+              <div className="hi-icon hi-teal-ic"><img src="/icons/td-check.svg" alt="Yayınla" /></div>
+              <div className="hi-texts">
+                <div className="hi-chip">Yayınla</div>
+                <div className="hi-desc">Tur kullanıcılara görünür olur.</div>
+              </div>
+            </button>
+          ) : (
+            <button className="hi-card hi-yellow" onClick={confirmAndMakeInactive} disabled={bulkUpdating}>
+              <div className="hi-icon hi-yellow-ic"><img src="/icons/hi-pasif.svg" alt="Yayından Kaldır" /></div>
+              <div className="hi-texts">
+                <div className="hi-chip">Yayından Kaldır</div>
+                <div className="hi-desc">Tur kullanıcılara görünmez, alt turlar pasife alınır.</div>
+              </div>
+            </button>
+          )}
           <button className="hi-card hi-green" onClick={() => { window.location.hash = encodeURIComponent('Kupon Yönetimi'); }}>
             <div className="hi-icon hi-green-ic"><img src="/icons/hi-kupon.svg" alt="Kupon Yönetim" /></div>
             <div className="hi-texts">
@@ -328,11 +370,13 @@ const TourDetails = ({ isSidebarCollapsed }) => {
               <div className="hi-desc">Tüm alt turlarınız için kupon kullanılır.</div>
             </div>
           </button>
-          <button className="hi-card hi-gray" disabled>
+          <button className="hi-card hi-purple" onClick={toggleFeatured} disabled={bulkUpdating}>
             <div className="hi-icon hi-purple-ic"><img src="/icons/hi-onecikar.svg" alt="Öne Çıkar" /></div>
             <div className="hi-texts">
-              <div className="hi-name">Öne Çıkar</div>
-              <div className="hi-desc">Çok Yakında!</div>
+              <div className="hi-name">{trip?.isFeatured ? 'Öne Çıkarmayı Kaldır' : 'Öne Çıkar'}</div>
+              <div className="hi-desc">
+                {trip?.isFeatured ? 'Şu an listelerde üstte gösteriliyor.' : 'Listelerde üstte gösterilir.'}
+              </div>
             </div>
           </button>
         </div>

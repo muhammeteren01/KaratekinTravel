@@ -14,4 +14,12 @@ public class CreateTripDto
     public string? HeaderImage { get; set; }
     public string? Description { get; set; }
     public bool IsFeatured { get; set; }
+
+    // Tur fiyatı. Bu alan olmadan panelin sihirbazında girilen fiyatın
+    // gidecek yeri yoktu ve serbest metin olarak Description'a gömülüyordu;
+    // sonuçta listelerde her tur "0 TRY" görünüyordu.
+    public CreateTripPricingDto? Pricing { get; set; }
+
+    // Yeni turlar taslak olarak açılabilsin diye; verilmezse yayında başlar.
+    public bool? IsPublished { get; set; }
 }

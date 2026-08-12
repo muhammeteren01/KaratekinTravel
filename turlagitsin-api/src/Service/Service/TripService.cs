@@ -246,10 +246,22 @@ namespace Service.Service
                 HeaderImage = dto.HeaderImage,
                 Description = dto.Description,
                 IsFeatured = dto.IsFeatured,
-                IsPublished = true,
+                IsPublished = dto.IsPublished ?? true,
                 JoinedCount = 0,
                 ViewCount = 0
             };
+
+            if (dto.Pricing != null)
+            {
+                trip.Pricing = new TripPricing
+                {
+                    TripId = trip.Id,
+                    Currency = string.IsNullOrWhiteSpace(dto.Pricing.Currency) ? "TRY" : dto.Pricing.Currency,
+                    BasePrice = dto.Pricing.BasePrice,
+                    DiscountLabel = dto.Pricing.DiscountLabel,
+                    DiscountAmount = dto.Pricing.DiscountAmount
+                };
+            }
 
             await AddAsync(trip);
             return MapToResponseDto(trip);
@@ -257,7 +269,11 @@ namespace Service.Service
 
         public async Task<TripResponseDto?> UpdateTripAsync(Guid id, TripInputDtos.UpdateTripDto dto)
         {
-            var trip = await _repository.Where(t => t.Id == id).FirstOrDefaultAsync();
+            // Pricing include edilmezse mevcut fiyat satırı null görünür ve
+            // aşağıdaki ??= her güncellemede yeni bir satır oluşturur.
+            var trip = await _repository.Where(t => t.Id == id)
+                .Include(t => t.Pricing)
+                .FirstOrDefaultAsync();
             if (trip == null) return null;
 
             if (dto.Title != null) trip.Title = dto.Title;
@@ -269,7 +285,19 @@ namespace Service.Service
             if (dto.Capacity.HasValue) trip.Capacity = dto.Capacity.Value;
             if (dto.Image != null) trip.Image = dto.Image;
             if (dto.Description != null) trip.Description = dto.Description;
+            if (dto.HeaderImage != null) trip.HeaderImage = dto.HeaderImage;
             if (dto.IsFeatured.HasValue) trip.IsFeatured = dto.IsFeatured.Value;
+            if (dto.IsPublished.HasValue) trip.IsPublished = dto.IsPublished.Value;
+
+            if (dto.Pricing != null)
+            {
+                trip.Pricing ??= new TripPricing { TripId = trip.Id };
+                trip.Pricing.Currency = string.IsNullOrWhiteSpace(dto.Pricing.Currency) ? "TRY" : dto.Pricing.Currency;
+                trip.Pricing.BasePrice = dto.Pricing.BasePrice;
+                trip.Pricing.DiscountLabel = dto.Pricing.DiscountLabel;
+                trip.Pricing.DiscountAmount = dto.Pricing.DiscountAmount;
+            }
+
             trip.UpdatedAt = DateTime.UtcNow;
 
             await UpdateAsync(trip);
