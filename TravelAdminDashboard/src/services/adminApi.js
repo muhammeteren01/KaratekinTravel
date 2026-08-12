@@ -189,8 +189,20 @@ export function fetchMeApi() {
 }
 
 // Trips
+/**
+ * Herkese açık katalog: yalnızca yayındaki turlar.
+ * Panel listeleri için fetchManagedTripsApi kullanın.
+ */
 export function fetchTripsApi() {
   return request(API_ENDPOINTS.trips, publicOptions());
+}
+
+/**
+ * Panel listesi: oturum açan hesabın şirketine ait turlar, taslaklar dahil.
+ * Şirket kapsamını API token'daki companyId claim'inden çözüyor.
+ */
+export function fetchManagedTripsApi() {
+  return request(`${API_ENDPOINTS.trips}/manage`, authOptions());
 }
 
 export function searchTripsApi(params = {}) {

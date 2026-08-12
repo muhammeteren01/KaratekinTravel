@@ -4,6 +4,7 @@ using Core.DTOs.ResponseDto;
 using Core.DTOs.Trip;
 using Core.DTOs.TripSeatch;
 using Core.Services;
+using Api.Helpers;
 
 namespace Api.Controllers
 {
@@ -24,6 +25,23 @@ namespace Api.Controllers
         {
             var trips = await _tripService.GetAllTripsAsync();
             return Ok(trips);
+        }
+
+        /// <summary>
+        /// Panel listesi: çağıranın şirketine ait turlar, taslaklar dahil.
+        /// Herkese açık GET /api/trips yalnızca yayındakileri döndürür.
+        /// </summary>
+        [HttpGet("manage")]
+        [Authorize(Roles = "Admin,CompanyAdmin")]
+        public async Task<ActionResult<List<TripResponseDto>>> GetManaged()
+        {
+            // Platform admini için companyId null → tüm şirketler.
+            var companyId = User.IsPlatformAdmin() ? null : User.GetCompanyId();
+
+            if (!User.IsPlatformAdmin() && companyId == null)
+                return Forbid();
+
+            return Ok(await _tripService.GetManagedTripsAsync(companyId));
         }
 
         [HttpGet("search")]
@@ -52,6 +70,15 @@ namespace Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // CompanyAdmin başka şirket adına tur açamaz; gövdedeki değer
+            // ne olursa olsun kendi şirketine sabitlenir.
+            if (!User.IsPlatformAdmin())
+            {
+                var own = User.GetCompanyId();
+                if (own == null) return Forbid();
+                dto.CompanyId = own.Value;
+            }
+
             var trip = await _tripService.CreateTripAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = trip.Id }, trip);
         }
@@ -62,6 +89,10 @@ namespace Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var owner = await _tripService.GetOwnerCompanyIdAsync(id);
+            if (owner == null) return NotFound();
+            if (!User.CanAccessCompany(owner.Value)) return Forbid();
 
             var trip = await _tripService.UpdateTripAsync(id, dto);
             if (trip == null)
@@ -74,6 +105,10 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<IActionResult> Delete(Guid id)
         {
+            var owner = await _tripService.GetOwnerCompanyIdAsync(id);
+            if (owner == null) return NotFound();
+            if (!User.CanAccessCompany(owner.Value)) return Forbid();
+
             var deleted = await _tripService.DeleteTripAsync(id);
             if (!deleted)
                 return NotFound();

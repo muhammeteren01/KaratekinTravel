@@ -11,7 +11,7 @@ import documentFileSharingIcon from '../assets/icons/document-file-sharing.svg';
 import {
   fetchReservationsApi,
   fetchTripReportApi,
-  fetchTripsApi,
+  fetchManagedTripsApi,
 } from '../services/adminApi';
 import { formatDisplayDateTime, getRangeForFilter, toApiDate } from '../utils/reportDates';
 
@@ -37,7 +37,7 @@ const CancellationRefunds = ({ isSidebarCollapsed }) => {
         const [report, reservationList, tripList] = await Promise.all([
           fetchTripReportApi(toApiDate(start), toApiDate(end)),
           fetchReservationsApi(),
-          fetchTripsApi(),
+          fetchManagedTripsApi(),
         ]);
 
         if (!alive) return;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './TourCancellationForm.css';
-import { deleteTripApi, fetchTripsApi } from '../services/adminApi';
+import { deleteTripApi, fetchManagedTripsApi } from '../services/adminApi';
 
 const TourCancellationForm = ({ onCancel }) => {
   const [selectedTour, setSelectedTour] = useState('');
@@ -17,7 +17,7 @@ const TourCancellationForm = ({ onCancel }) => {
   useEffect(() => {
     let alive = true;
 
-    fetchTripsApi()
+    fetchManagedTripsApi()
       .then((response) => {
         if (!alive) return;
         const normalized = (Array.isArray(response) ? response : []).map((trip) => ({

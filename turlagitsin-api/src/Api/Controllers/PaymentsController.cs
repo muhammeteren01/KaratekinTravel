@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Core.DTOs.Payment;
 using Core.Services;
+using Api.Helpers;
 
 namespace Api.Controllers
 {
@@ -28,6 +29,13 @@ namespace Api.Controllers
             [FromQuery] Guid companyId,
             [FromQuery] string? status)
         {
+            if (!User.IsPlatformAdmin())
+            {
+                var own = User.GetCompanyId();
+                if (own == null) return Forbid();
+                companyId = own.Value;
+            }
+
             if (companyId == Guid.Empty)
                 return BadRequest(new { message = "companyId zorunludur." });
 

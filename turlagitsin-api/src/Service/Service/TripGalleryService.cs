@@ -41,6 +41,15 @@ namespace Service.Service
             return MapToDto(entity);
         }
 
+        public async Task<Guid?> GetTripIdAsync(Guid imageId)
+        {
+            var item = await _repository.Where(g => g.Id == imageId)
+                .Select(g => new { g.TripId })
+                .FirstOrDefaultAsync();
+
+            return item?.TripId;
+        }
+
         public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _repository.Where(g => g.Id == id).FirstOrDefaultAsync();

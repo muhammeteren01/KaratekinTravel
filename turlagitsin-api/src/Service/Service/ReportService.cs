@@ -35,17 +35,28 @@ namespace Service.Service
             _userRepository = userRepository;
         }
 
-        public async Task<TripReportDto> GetTripReportAsync(DateTime start, DateTime end)
+        public async Task<TripReportDto> GetTripReportAsync(DateTime start, DateTime end, Guid? companyId = null)
         {
-            var trips = await _tripRepository
-                .Where(t => t.CreatedAt >= start && t.CreatedAt <= end)
+            // companyId verilirse rapor o şirketle sınırlanır; CompanyAdmin
+            // hesapları platform geneli rakamları görmemeli.
+            var tripQuery = _tripRepository
+                .Where(t => t.CreatedAt >= start && t.CreatedAt <= end);
+
+            if (companyId.HasValue)
+                tripQuery = tripQuery.Where(t => t.CompanyId == companyId.Value);
+
+            var trips = await tripQuery
                 .Include(t => t.Reservations)
                 .Include(t => t.Reviews)
                 .ToListAsync();
 
-            var reservations = await _reservationRepository
-                .Where(r => r.CreatedAt >= start && r.CreatedAt <= end)
-                .ToListAsync();
+            var reservationQuery = _reservationRepository
+                .Where(r => r.CreatedAt >= start && r.CreatedAt <= end);
+
+            if (companyId.HasValue)
+                reservationQuery = reservationQuery.Where(r => r.Trip.CompanyId == companyId.Value);
+
+            var reservations = await reservationQuery.ToListAsync();
 
             var completedStatuses = new[] { "completed", "confirmed", "paid" };
             var totalRevenue = reservations

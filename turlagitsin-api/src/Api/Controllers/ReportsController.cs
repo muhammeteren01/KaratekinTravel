@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Core.DTOs.Report;
 using Core.Services;
+using Api.Helpers;
 
 namespace Api.Controllers
 {
@@ -22,10 +23,17 @@ namespace Api.Controllers
             [FromQuery] DateTime start,
             [FromQuery] DateTime end)
         {
-            return Ok(await _service.GetTripReportAsync(start, end));
+            // Platform admini geneli görür; CompanyAdmin yalnızca kendi şirketini.
+            var companyId = User.IsPlatformAdmin() ? null : User.GetCompanyId();
+            return Ok(await _service.GetTripReportAsync(start, end, companyId));
         }
 
+        /// <summary>
+        /// Platform geneli şirket istatistikleri. CompanyAdmin'e kapalı:
+        /// rakip şirketlerin puan ve tur sayılarını içeriyor.
+        /// </summary>
         [HttpGet("companies")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<CompanyReportDto>> GetCompanyReport(
             [FromQuery] DateTime? start = null,
             [FromQuery] DateTime? end = null)
@@ -39,6 +47,13 @@ namespace Api.Controllers
             [FromQuery] DateTime end,
             [FromQuery] Guid? companyId = null)
         {
+            if (!User.IsPlatformAdmin())
+            {
+                var own = User.GetCompanyId();
+                if (own == null) return Forbid();
+                companyId = own.Value;
+            }
+
             return Ok(await _service.GetFinanceReportAsync(companyId, start, end));
         }
 

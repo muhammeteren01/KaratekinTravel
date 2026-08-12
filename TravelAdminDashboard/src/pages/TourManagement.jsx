@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './TourManagement.css';
 import DownloadIcon from '../assets/icons/download-cloud-02.svg';
 import DeleteIcon from '../assets/icons/delete-icon.svg';
-import { deleteTripApi, fetchTripsApi } from '../services/adminApi';
+import { deleteTripApi, fetchManagedTripsApi } from '../services/adminApi';
 import { formatTurkishDate, normalizeSelectedTour } from '../utils/tripPayload';
 import { setSelectedTour } from '../utils/selectionStorage';
 
@@ -23,7 +23,7 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
       try {
         setLoading(true);
         setError('');
-        const result = await fetchTripsApi();
+        const result = await fetchManagedTripsApi();
         if (!alive) return;
         setTours(Array.isArray(result) ? result : []);
       } catch (err) {

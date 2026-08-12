@@ -19,8 +19,28 @@ namespace Service.Service
 
         public async Task<List<TripResponseDto>> GetAllTripsAsync()
         {
-            var trips = await QueryTrips().ToListAsync();
+            // Herkese açık uç: yayınlanmamış taslaklar buradan sızmamalı.
+            var trips = await QueryTrips().Where(t => t.IsPublished).ToListAsync();
             return trips.Select(MapToResponseDto).ToList();
+        }
+
+        public async Task<List<TripResponseDto>> GetManagedTripsAsync(Guid? companyId)
+        {
+            var query = QueryTrips();
+            if (companyId.HasValue)
+                query = query.Where(t => t.CompanyId == companyId.Value);
+
+            var trips = await query.OrderByDescending(t => t.CreatedAt).ToListAsync();
+            return trips.Select(MapToResponseDto).ToList();
+        }
+
+        public async Task<Guid?> GetOwnerCompanyIdAsync(Guid tripId)
+        {
+            var trip = await _repository.Where(t => t.Id == tripId)
+                .Select(t => new { t.CompanyId })
+                .FirstOrDefaultAsync();
+
+            return trip?.CompanyId;
         }
 
         public async Task<PagedResultDto<TripResponseDto>> SearchTripsAsync(TripSearchDto search)
