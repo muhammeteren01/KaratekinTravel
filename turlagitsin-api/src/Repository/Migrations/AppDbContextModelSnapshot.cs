@@ -1783,6 +1783,64 @@ namespace Repository.Migrations
                     b.ToTable("vehicles", "public");
                 });
 
+            modelBuilder.Entity("Core.Entities.VehicleOperation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("Cost")
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DriverName")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<DateTime>("OccurredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OperationType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("OccurredAt");
+
+                    b.HasIndex("OperationType");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("vehicle_operations", "public");
+                });
+
             modelBuilder.Entity("Core.Entities.CalendarTrip", b =>
                 {
                     b.HasOne("Core.Entities.Trip", "Trip")
@@ -2199,6 +2257,17 @@ namespace Repository.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Core.Entities.VehicleOperation", b =>
+                {
+                    b.HasOne("Core.Entities.Vehicle", "Vehicle")
+                        .WithMany("Operations")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vehicle");
+                });
+
             modelBuilder.Entity("Core.Entities.Vehicle", b =>
                 {
                     b.HasOne("Core.Entities.Company", "Company")
@@ -2310,6 +2379,8 @@ namespace Repository.Migrations
             modelBuilder.Entity("Core.Entities.Vehicle", b =>
                 {
                     b.Navigation("Departures");
+
+                    b.Navigation("Operations");
                 });
 #pragma warning restore 612, 618
         }

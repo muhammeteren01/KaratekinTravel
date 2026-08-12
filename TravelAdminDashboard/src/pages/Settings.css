@@ -567,3 +567,15 @@
 .pending-type { font-family: Inter, sans-serif; font-size:15px; color:#718EBF; }
 .pending-download { display:flex; align-items:center; gap:8px; padding:4px 12px; background:#DDEBFF; color:#004FCF; border:none; border-radius:30px; font-weight:700; cursor:pointer; }
 .pending-download img{ width:8px; height:9px; }
+
+.pay-empty {
+  margin: 0;
+  padding: 24px 8px;
+  text-align: center;
+  color: #718EBF;
+  font-size: 14px;
+}
+
+.pay-empty-error {
+  color: #C80509;
+}

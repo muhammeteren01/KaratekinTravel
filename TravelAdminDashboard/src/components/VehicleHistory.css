@@ -1413,3 +1413,13 @@
   justify-content: center;
   font-size: 16px;
 } 
+.vh-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: #718EBF;
+  font-size: 14px;
+}
+
+.vh-empty-error {
+  color: #C80509;
+}

@@ -7,9 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "dev:demo": "vite --mode demo",
-    "build:demo": "vite build --mode demo"
+    "preview": "vite preview"
   },
   "dependencies": {
     "chart.js": "^4.5.0",

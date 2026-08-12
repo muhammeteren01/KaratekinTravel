@@ -22,7 +22,6 @@ import HotelDrafts from './pages/HotelDrafts';
 import NewHotelDraft from './pages/NewHotelDraft';
 import LoginPage from './pages/LoginPage';
 import ErrorBoundary from './components/ErrorBoundary';
-import DemoBanner from './components/DemoBanner';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import { ApiError, canAccessDashboard, clearAdminToken, fetchMeApi, getAdminToken } from './services/adminApi';
 
@@ -83,7 +82,6 @@ function App() {
 
   return (
     <div className="App">
-      <DemoBanner />
       <Layout onLogout={handleLogout}>
         <AppContent />
       </Layout>

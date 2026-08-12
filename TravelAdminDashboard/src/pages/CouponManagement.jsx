@@ -3,12 +3,11 @@ import './CouponManagement.css';
 import CouponBarChart from '../components/CouponBarChart';
 import DateTimePicker from '../components/DateTimePicker';
 import { createCouponApi, deleteCouponApi, fetchCouponsApi, updateCouponApi } from '../services/adminApi';
+import { getSelectedTour } from '../utils/selectionStorage';
 
 const CouponManagement = ({ isSidebarCollapsed }) => {
-  const selectedTour = useMemo(() => {
-    try { const raw = localStorage.getItem('selectedTour'); if (raw) return JSON.parse(raw); } catch (storageError) { console.warn('Failed to read selected tour:', storageError); }
-    return { name: 'Kastamonu Turu' };
-  }, []);
+  // Tur seçili değilse örnek bir tur adı uydurmak yerine boş bırakılıyor.
+  const selectedTour = useMemo(() => getSelectedTour() || { name: '' }, []);
 
   const [form, setForm] = useState({ code: '', type: 'percent', value: '', start: '', end: '' });
   const [loading, setLoading] = useState(true);
@@ -233,7 +232,7 @@ const CouponManagement = ({ isSidebarCollapsed }) => {
   return (
     <div className={`coupon-page ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <div className="coupon-wrap">
-        <h2 className="cp-title">“{selectedTour.name}” Kupon Tanımlama İşlemi</h2>
+        <h2 className="cp-title">{selectedTour.name ? `“${selectedTour.name}” ` : ''}Kupon Tanımlama İşlemi</h2>
         <div className="cp-sub">Bu alanda seçili tura özel indirim kuponu tanımlayabilirsiniz.</div>
         {error && <div className="table-error">{error}</div>}
 
@@ -248,7 +247,7 @@ const CouponManagement = ({ isSidebarCollapsed }) => {
             <div className="cp-grid">
               <div className="cp-field">
                 <label>Tur Adı</label>
-                <input value={selectedTour.name} readOnly />
+                <input value={selectedTour.name} readOnly placeholder="Tur seçilmedi" />
               </div>
               <div className="cp-field">
                 <label>İndirim Tipi</label>
@@ -311,7 +310,7 @@ const CouponManagement = ({ isSidebarCollapsed }) => {
 
         {/* Coupons Table */}
         <div className="cp-section">
-          <div className="cp-section-title">“{selectedTour.name}” için Mevcut Kuponlar</div>
+          <div className="cp-section-title">{selectedTour.name ? `“${selectedTour.name}” için ` : ''}Mevcut Kuponlar</div>
           <div className="cp-table-card">
             <table className="cp-table">
               <thead>

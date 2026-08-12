@@ -50,6 +50,21 @@ namespace Service.Service
             return MapToDto(entity);
         }
 
+        public async Task<List<PaymentDto>> GetByCompanyAsync(Guid companyId, string? status)
+        {
+            // Ödeme -> Rezervasyon -> Tur -> Şirket zinciriyle kapsamlanıyor.
+            var query = _repository.Where(p => p.Reservation.Trip.CompanyId == companyId);
+
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(p => p.Status == status);
+
+            var items = await query
+                .OrderByDescending(p => p.PaidAt ?? p.CreatedAt)
+                .ToListAsync();
+
+            return items.Select(MapToDto).ToList();
+        }
+
         private static PaymentDto MapToDto(Payment p) => new()
         {
             Id = p.Id,

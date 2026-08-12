@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './VehicleHistory.css';
 import {
   Chart as ChartJS,
@@ -26,6 +26,21 @@ import magnifyingGlassIcon from '../assets/icons/magnifying-glass-search.svg';
 import calendarIcon from '../assets/icons/calendar-icon.svg';
 import arrowBackIcon from '../assets/icons/arrow-back-left.svg';
 import arrowForwardIcon from '../assets/icons/arrow-forward-right.svg';
+import { fetchMeApi, fetchVehicleOperationsApi, fetchVehiclesApi } from '../services/adminApi';
+
+const MONTHS_TR = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+
+/** "21 Oca, 14.30" (tablo) veya "17/05/2025" (kart) biçimi. */
+function formatOperationDate(value, variant = 'long') {
+  if (!value) return '—';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return '—';
+  const pad = (n) => String(n).padStart(2, '0');
+  if (variant === 'short') {
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  }
+  return `${d.getDate()} ${MONTHS_TR[d.getMonth()]}, ${pad(d.getHours())}.${pad(d.getMinutes())}`;
+}
 
 // Özel Tarih Seçici Bileşeni
 const DatePicker = ({ value, onChange, placeholder }) => {
@@ -232,6 +247,12 @@ const DatePicker = ({ value, onChange, placeholder }) => {
 };
 
 const VehicleHistory = () => {
+  // API verisi
+  const [operations, setOperations] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
   // State yönetimi
   const [selectedPeriod, setSelectedPeriod] = useState('Yıllık');
   const [isPeriodDropdownOpen, setIsPeriodDropdownOpen] = useState(false);
@@ -258,153 +279,79 @@ const VehicleHistory = () => {
   // Dönem seçenekleri
   const periodOptions = ['Günlük', 'Haftalık', 'Aylık', 'Yıllık'];
 
-  // Genişletilmiş araç durumu verisi
-  const allVehicleStatusData = [
-    {
-      plate: '06 AAT 180',
-      updateDate: '17/05/2025',
-      status: 'Bakımda',
-      statusColor: '#FFBB38',
-      bgColor: '#FFF5D9',
-      iconType: 'maintenance'
-    },
-    {
-      plate: '18 TTG 185',
-      updateDate: '17/05/2025',
-      status: 'Seferde',
-      statusColor: '#FF3939',
-      bgColor: '#FFE7E7',
-      iconType: 'trip'
-    },
-    {
-      plate: '67 TS 1967',
-      updateDate: '17/05/2025',
-      status: 'Müsait',
-      statusColor: '#16DBCC',
-      bgColor: '#DCFAF8',
-      iconType: 'available'
-    },
-    {
-      plate: '34 ABC 123',
-      updateDate: '16/05/2025',
-      status: 'Müsait',
-      statusColor: '#16DBCC',
-      bgColor: '#DCFAF8',
-      iconType: 'available'
-    },
-    {
-      plate: '35 DEF 456',
-      updateDate: '16/05/2025',
-      status: 'Bakımda',
-      statusColor: '#FFBB38',
-      bgColor: '#FFF5D9',
-      iconType: 'maintenance'
-    },
-    {
-      plate: '41 GHI 789',
-      updateDate: '15/05/2025',
-      status: 'Seferde',
-      statusColor: '#FF3939',
-      bgColor: '#FFE7E7',
-      iconType: 'trip'
-    },
-    {
-      plate: '06 JKL 012',
-      updateDate: '15/05/2025',
-      status: 'Müsait',
-      statusColor: '#16DBCC',
-      bgColor: '#DCFAF8',
-      iconType: 'available'
-    },
-    {
-      plate: '07 MNO 345',
-      updateDate: '14/05/2025',
-      status: 'Bakımda',
-      statusColor: '#FFBB38',
-      bgColor: '#FFF5D9',
-      iconType: 'maintenance'
-    }
-  ];
+  // Veriyi API'den yükle: araçlar durum kartları için, işlemler geçmiş tablosu için.
+  useEffect(() => {
+    let alive = true;
 
-  // Genişletilmiş işlem geçmişi verisi
-  const allOperationHistoryData = [
-    {
-      driverName: 'Ahmet Yılmaz',
-      date: '21 Oca, 14.30',
-      operationType: 'Sefer',
-      plate: '06 AAT 180'
-    },
-    {
-      driverName: 'Mehmet Kaya',
-      date: '21 Oca, 12.15',
-      operationType: 'Bakım',
-      plate: '18 TTG 185'
-    },
-    {
-      driverName: 'Ali Demir',
-      date: '21 Oca, 10.45',
-      operationType: 'Yakıt',
-      plate: '67 TS 1967'
-    },
-    {
-      driverName: 'Fatma Şahin',
-      date: '20 Oca, 16.20',
-      operationType: 'Temizlik',
-      plate: '34 ABC 123'
-    },
-    {
-      driverName: 'Ayşe Özkan',
-      date: '20 Oca, 14.10',
-      operationType: 'Sefer',
-      plate: '35 DEF 456'
-    },
-    {
-      driverName: 'Mustafa Çelik',
-      date: '20 Oca, 11.30',
-      operationType: 'Bakım',
-      plate: '41 GHI 789'
-    },
-    {
-      driverName: 'Zeynep Arslan',
-      date: '19 Oca, 15.45',
-      operationType: 'Sefer',
-      plate: '06 JKL 012'
-    },
-    {
-      driverName: 'Hasan Polat',
-      date: '19 Oca, 13.20',
-      operationType: 'Yakıt',
-      plate: '07 MNO 345'
-    },
-    {
-      driverName: 'Elif Yıldız',
-      date: '19 Oca, 09.15',
-      operationType: 'Temizlik',
-      plate: '06 AAT 180'
-    },
-    {
-      driverName: 'Osman Koç',
-      date: '18 Oca, 17.30',
-      operationType: 'Sefer',
-      plate: '18 TTG 185'
-    },
-    {
-      driverName: 'Seda Aydın',
-      date: '18 Oca, 14.45',
-      operationType: 'Bakım',
-      plate: '67 TS 1967'
-    },
-    {
-      driverName: 'Kemal Öztürk',
-      date: '18 Oca, 11.20',
-      operationType: 'Yakıt',
-      plate: '34 ABC 123'
-    }
-  ];
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError('');
+
+        const me = await fetchMeApi();
+        const companyId = me?.companyId || null;
+
+        const [vehicleList, operationList] = await Promise.all([
+          fetchVehiclesApi(companyId),
+          fetchVehicleOperationsApi({ companyId }),
+        ]);
+
+        if (!alive) return;
+        setVehicles(Array.isArray(vehicleList) ? vehicleList : []);
+        setOperations(Array.isArray(operationList) ? operationList : []);
+      } catch (err) {
+        if (!alive) return;
+        setError(err instanceof Error ? err.message : 'Araç işlem geçmişi yüklenemedi.');
+        setVehicles([]);
+        setOperations([]);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    };
+
+    load();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // Araç kayıtlarını durum kartı biçimine çevir. Renkler status alanından geliyor.
+  const vehicleStatusData = useMemo(() => {
+    const styleByStatus = {
+      maintenance: { status: 'Bakımda', statusColor: '#FFBB38', bgColor: '#FFF5D9', iconType: 'maintenance' },
+      'on-trip': { status: 'Seferde', statusColor: '#FF3939', bgColor: '#FFE7E7', iconType: 'trip' },
+      active: { status: 'Müsait', statusColor: '#16DBCC', bgColor: '#DCFAF8', iconType: 'available' },
+    };
+
+    return vehicles.map((vehicle) => {
+      const style = styleByStatus[vehicle.status] || styleByStatus.active;
+      const lastOperation = operations.find((op) => String(op.vehicleId) === String(vehicle.id));
+
+      return {
+        plate: vehicle.plate,
+        updateDate: formatOperationDate(lastOperation?.occurredAt || vehicle.createdAt, 'short'),
+        ...style,
+      };
+    });
+  }, [vehicles, operations]);
+
+  // Tablo satırları: API alan adlarını ekranın beklediği isimlere eşle.
+  const operationRows = useMemo(
+    () =>
+      operations.map((op) => ({
+        id: op.id,
+        driverName: op.driverName || '—',
+        date: formatOperationDate(op.occurredAt),
+        operationType: op.operationType,
+        plate: op.plate || '—',
+      })),
+    [operations],
+  );
 
   // Filtrelenmiş araç durumu verisi
   const getFilteredVehicleData = () => {
-    let filtered = [...allVehicleStatusData];
+    let filtered = [...vehicleStatusData];
 
     // Arama filtresi
     if (searchTerm) {
@@ -418,7 +365,7 @@ const VehicleHistory = () => {
 
   // Filtrelenmiş ve sıralanmış işlem geçmişi verisi
   const getFilteredOperationData = () => {
-    let filtered = [...allOperationHistoryData];
+    let filtered = [...operationRows];
 
     // Filtreleme
     if (filters.driverName) {
@@ -749,6 +696,11 @@ const VehicleHistory = () => {
           </div>
           
           <div className="vh-status-list">
+            {loading && <div className="vh-empty">Araçlar yükleniyor...</div>}
+            {!loading && error && <div className="vh-empty vh-empty-error">{error}</div>}
+            {!loading && !error && !paginatedVehicleData.length && (
+              <div className="vh-empty">Kayıtlı araç bulunmuyor.</div>
+            )}
             {paginatedVehicleData.map((vehicle, index) => (
               <div key={index} className="vh-status-item">
                 <div className="vh-status-icon-container">
@@ -829,6 +781,11 @@ const VehicleHistory = () => {
             </div>
             
             <div className="vh-table-body">
+              {loading && <div className="vh-empty">İşlem geçmişi yükleniyor...</div>}
+              {!loading && error && <div className="vh-empty vh-empty-error">{error}</div>}
+              {!loading && !error && !paginatedOperationData.length && (
+                <div className="vh-empty">Henüz işlem kaydı yok.</div>
+              )}
               {paginatedOperationData.map((operation, index) => (
                 <div key={index} className="vh-table-row">
                   <span className="vh-driver-name">{operation.driverName}</span>

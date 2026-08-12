@@ -9,6 +9,7 @@ import {
   changePasswordApi,
   fetchCompanyByIdApi,
   fetchMeApi,
+  fetchPaymentsApi,
   updateCompanyApi,
   updateUserProfileApi,
 } from '../services/adminApi';
@@ -183,12 +184,47 @@ const AccountSecurityForm = ({ profile, loading, saving, error, success, onSaveP
   );
 };
 
-const PaymentInfoForm = () => {
+const PaymentInfoForm = ({ companyId }) => {
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(Boolean(companyId));
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!companyId) {
+      setLoading(false);
+      setError('Bu hesap bir şirkete bağlı değil; ödeme kaydı listelenemiyor.');
+      return undefined;
+    }
+
+    let alive = true;
+
+    fetchPaymentsApi(companyId)
+      .then((list) => {
+        if (alive) setPayments(Array.isArray(list) ? list : []);
+      })
+      .catch((err) => {
+        if (!alive) return;
+        setError(err instanceof Error ? err.message : 'Ödeme kayıtları yüklenemedi.');
+        setPayments([]);
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, [companyId]);
+
+  // Tamamlanan ödemeler geçmişe, tamamlanmayanlar bekleyenlere düşer.
+  const completed = payments.filter((p) => p.status === 'completed');
+  const pending = payments.filter((p) => p.status !== 'completed');
+
   return (
     <div className="settings-section">
       <BankInfoNotice />
-      <PaymentHistory />
-      <PendingPayments />
+      <PaymentHistory payments={completed} loading={loading} error={error} />
+      <PendingPayments payments={pending} loading={loading} error={error} />
     </div>
   );
 };
@@ -308,7 +344,7 @@ const Settings = () => {
           />
         );
       case Tabs.PAYMENT:
-        return <PaymentInfoForm />;
+        return <PaymentInfoForm companyId={profile?.companyId} />;
       default:
         return null;
     }

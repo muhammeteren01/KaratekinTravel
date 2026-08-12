@@ -79,6 +79,7 @@ namespace Api.Autofac
             builder.RegisterType<UserSavedTripService>().As<IUserSavedTripService>().InstancePerLifetimeScope();
             builder.RegisterType<TripDepartureService>().As<ITripDepartureService>().InstancePerLifetimeScope();
             builder.RegisterType<VehicleService>().As<IVehicleService>().InstancePerLifetimeScope();
+            builder.RegisterType<VehicleOperationService>().As<IVehicleOperationService>().InstancePerLifetimeScope();
             builder.RegisterType<CouponService>().As<ICouponService>().InstancePerLifetimeScope();
             builder.RegisterType<RefundService>().As<IRefundService>().InstancePerLifetimeScope();
             builder.RegisterType<PaymentService>().As<IPaymentService>().InstancePerLifetimeScope();
