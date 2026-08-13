@@ -281,6 +281,34 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    // Swashbuckle şema kimliğini varsayılan olarak type.Name ile üretiyor.
+    // Aynı kısa ada sahip iki DTO farklı ad alanlarında bulunduğu için
+    // /swagger/v1/swagger.json 500 dönüyordu ve Swagger UI hiç açılmıyordu:
+    //   TripHotelDto        → DTOs/ResponseDto  +  DTOs/TripHotel
+    //   TripPolicyDto       → DTOs/ResponseDto  +  DTOs/TripPolicy
+    //   TripPricingDto      → DTOs/ResponseDto  +  DTOs/Trip
+    //   ItineraryActivityDto→ DTOs/ResponseDto  +  DTOs/TripItinarary
+    // Kimlik tam addan türetiliyor; "Core.DTOs." ön eki gürültü olduğu için
+    // atılıyor. Panelin API tipleri bu şemadan üretiliyor (npm run types:api),
+    // bu yüzden kimliklerin kararlı ve benzersiz olması gerekiyor.
+    options.CustomSchemaIds(type =>
+    {
+        // Jenerik tiplerde FullName derleme nitelikli çöp üretir
+        // (List`1[[Core.DTOs...., Core, Version=...]]); bunlarda kısa ada düş.
+        var name = type.IsGenericType || type.FullName is null
+            ? type.Name
+            : type.FullName.Replace('+', '.');
+
+        const string prefix = "Core.DTOs.";
+        if (name.StartsWith(prefix, StringComparison.Ordinal))
+        {
+            name = name[prefix.Length..];
+        }
+
+        // Şema kimliği yalnızca harf, rakam ve alt çizgi içermeli.
+        return new string(name.Select(c => char.IsLetterOrDigit(c) ? c : '_').ToArray());
+    });
+
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Bitur API",
