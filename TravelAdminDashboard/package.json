@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "types:api": "openapi-typescript ${API_URL:-http://localhost:5076}/swagger/v1/swagger.json -o src/types/api.d.ts"
+    "types:api": "node scripts/generate-api-types.mjs"
   },
   "dependencies": {
     "chart.js": "^4.5.0",
