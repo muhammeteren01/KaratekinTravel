@@ -3598,7 +3598,7 @@ export interface components {
             userId: string;
         };
         Api_Controllers_CreateChatRequest: {
-            groupName: string | null;
+            groupName: string;
             avatar?: string | null;
             /** Format: uuid */
             tripId?: string | null;
@@ -3608,40 +3608,40 @@ export interface components {
         Api_Controllers_CreateReviewReportRequest: {
             /** Format: uuid */
             reviewId?: string;
-            category: string | null;
+            category: string;
             details?: string | null;
         };
         Api_Controllers_ForgotPasswordRequest: {
-            email: string | null;
+            email: string;
         };
         Api_Controllers_LoginRequest: {
-            email: string | null;
-            password: string | null;
+            email: string;
+            password: string;
         };
         Api_Controllers_RegisterRequest: {
-            name: string | null;
-            email: string | null;
-            password: string | null;
+            name: string;
+            email: string;
+            password: string;
             phone?: string | null;
             accountType?: string | null;
             companyName?: string | null;
         };
         Api_Controllers_ResetPasswordRequest: {
-            token: string | null;
-            newPassword: string | null;
+            token: string;
+            newPassword: string;
         };
         Api_Controllers_SendMessageRequest: {
-            text: string | null;
+            text: string;
             attachmentUrl?: string | null;
             attachmentType?: string | null;
         };
         Api_Controllers_UpdateReviewReportStatusRequest: {
-            status: string | null;
+            status: string;
         };
         CalendarTrip_CalendarTripDto: {
             /** Format: uuid */
             id?: string;
-            date?: string | null;
+            date: string;
             /** Format: uuid */
             userId?: string | null;
             /** Format: uuid */
@@ -3660,14 +3660,14 @@ export interface components {
             id?: string;
             /** Format: uuid */
             companyId?: string;
-            bankName?: string | null;
-            accountHolder?: string | null;
-            iban?: string | null;
+            bankName: string;
+            accountHolder: string;
+            iban: string;
             taxOffice?: string | null;
             taxNumber?: string | null;
             billingAddress?: string | null;
             reason?: string | null;
-            status?: string | null;
+            status: string;
             reviewNote?: string | null;
             /** Format: date-time */
             reviewedAt?: string | null;
@@ -3699,7 +3699,7 @@ export interface components {
             taxCertificate?: string | null;
         };
         Company_CreateCompanyDto: {
-            name?: string | null;
+            name: string;
             logo?: string | null;
             location?: string | null;
             about?: string | null;
@@ -3719,10 +3719,10 @@ export interface components {
         Coupon_CouponDto: {
             /** Format: uuid */
             id?: string;
-            code?: string | null;
+            code: string;
             /** Format: uuid */
             companyId?: string | null;
-            type?: string | null;
+            type: string;
             /** Format: double */
             value?: number;
             /** Format: date-time */
@@ -3783,7 +3783,7 @@ export interface components {
         Gallery_GalleryImageDto: {
             /** Format: uuid */
             id?: string;
-            imageUrl?: string | null;
+            imageUrl: string;
             caption?: string | null;
             /** Format: int32 */
             displayOrder?: number;
@@ -3791,7 +3791,7 @@ export interface components {
         Gallery_UploadImageDto: {
             /** Format: uuid */
             tripId?: string;
-            imageUrl?: string | null;
+            imageUrl: string;
             caption?: string | null;
         };
         Hotel_CreateHotelDto: {
@@ -3812,7 +3812,7 @@ export interface components {
             id?: string;
             /** Format: uuid */
             companyId?: string | null;
-            name?: string | null;
+            name: string;
             website?: string | null;
             city?: string | null;
             district?: string | null;
@@ -3840,28 +3840,28 @@ export interface components {
         Notification_CreateNotificationDto: {
             /** Format: uuid */
             userId?: string;
-            title?: string | null;
-            message?: string | null;
-            type?: string | null;
+            title: string;
+            message: string;
+            type: string;
             actionUrl?: string | null;
             actionLabel?: string | null;
         };
         Notification_NotificationDto: {
             /** Format: uuid */
             id?: string;
-            title?: string | null;
-            message?: string | null;
-            type?: string | null;
+            title: string;
+            message: string;
+            type: string;
             isRead?: boolean;
             isArchived?: boolean;
             actionUrl?: string | null;
             actionLabel?: string | null;
-            time?: string | null;
+            time: string;
             /** Format: date-time */
             createdAt?: string;
         };
         PagedResultDto_1: {
-            items?: components["schemas"]["ResponseDto_TripResponseDto"][] | null;
+            items: components["schemas"]["ResponseDto_TripResponseDto"][];
             /** Format: int32 */
             totalCount?: number;
             /** Format: int32 */
@@ -3882,9 +3882,9 @@ export interface components {
             userId?: string;
             /** Format: double */
             amount?: number;
-            currency?: string | null;
-            method?: string | null;
-            status?: string | null;
+            currency: string;
+            method: string;
+            status: string;
             transactionId?: string | null;
             /** Format: date-time */
             paidAt?: string | null;
@@ -3896,7 +3896,7 @@ export interface components {
             reservationId: string;
             /** Format: double */
             amount?: number;
-            currency?: string | null;
+            currency: string;
             reason?: string | null;
         };
         Refund_RefundRequestDto: {
@@ -3908,8 +3908,8 @@ export interface components {
             userId?: string;
             /** Format: double */
             amount?: number;
-            currency?: string | null;
-            status?: string | null;
+            currency: string;
+            status: string;
             reason?: string | null;
             adminNote?: string | null;
             /** Format: date-time */
@@ -3932,11 +3932,11 @@ export interface components {
             activeCompanies?: number;
             /** Format: double */
             averageCompanyRating?: number;
-            topCompanies?: components["schemas"]["TripStatics_CompanyStaticsDto"][] | null;
+            topCompanies: components["schemas"]["TripStatics_CompanyStaticsDto"][];
         };
         Report_CompletedTripEarningDto: {
-            tourCode?: string | null;
-            tourName?: string | null;
+            tourCode: string;
+            tourName: string;
             /** Format: date-time */
             tourDate?: string;
             /** Format: double */
@@ -3953,7 +3953,7 @@ export interface components {
             periodStart?: string;
             /** Format: date-time */
             periodEnd?: string;
-            completedTripEarnings?: components["schemas"]["Report_CompletedTripEarningDto"][] | null;
+            completedTripEarnings: components["schemas"]["Report_CompletedTripEarningDto"][];
         };
         Report_TripReportDto: {
             /** Format: date-time */
@@ -3972,12 +3972,12 @@ export interface components {
             totalReservations?: number;
             /** Format: double */
             averageRating?: number;
-            topTrips?: components["schemas"]["TripStatics_TripStaticsDto"][] | null;
+            topTrips: components["schemas"]["TripStatics_TripStaticsDto"][];
         };
         Report_UserActivityDto: {
             /** Format: uuid */
             userId?: string;
-            name?: string | null;
+            name: string;
             /** Format: int32 */
             totalReservations?: number;
             /** Format: int32 */
@@ -3990,32 +3990,32 @@ export interface components {
             tripId?: string;
             /** Format: uuid */
             departureId?: string | null;
-            seatNumbers?: number[] | null;
+            seatNumbers: number[];
             notes?: string | null;
             couponCode?: string | null;
         };
         Reservation_ProcessPaymentDto: {
             /** Format: uuid */
             reservationId?: string;
-            paymentMethod?: string | null;
-            transactionId?: string | null;
+            paymentMethod: string;
+            transactionId: string;
         };
         Reservation_UpdateReservationStatusDto: {
-            status?: string | null;
+            status: string;
             reason?: string | null;
         };
         ResponseDto_AvatarDto: {
-            uri?: string | null;
+            uri: string;
         };
         ResponseDto_BootstrapResponseDto: {
             /** Format: int32 */
             version?: number;
-            companies?: components["schemas"]["ResponseDto_CompanyResponseDto"][] | null;
-            trips?: components["schemas"]["ResponseDto_TripResponseDto"][] | null;
-            users?: components["schemas"]["ResponseDto_UserResponseDto"][] | null;
-            reservations?: components["schemas"]["ResponseDto_ReservationResponseDto"][] | null;
-            reviews?: components["schemas"]["ResponseDto_ReviewResponseDto"][] | null;
-            supportingData?: components["schemas"]["ResponseDto_SupportingDataDto"];
+            companies: components["schemas"]["ResponseDto_CompanyResponseDto"][];
+            trips: components["schemas"]["ResponseDto_TripResponseDto"][];
+            users: components["schemas"]["ResponseDto_UserResponseDto"][];
+            reservations: components["schemas"]["ResponseDto_ReservationResponseDto"][];
+            reviews: components["schemas"]["ResponseDto_ReviewResponseDto"][];
+            supportingData: components["schemas"]["ResponseDto_SupportingDataDto"];
         };
         ResponseDto_BusLayoutDto: {
             /** Format: int32 */
@@ -4028,280 +4028,280 @@ export interface components {
             totalSeats?: number;
         };
         ResponseDto_CalendarTripDto: {
-            id?: string | null;
-            title?: string | null;
-            location?: string | null;
-            date?: string | null;
-            time?: string | null;
-            image?: string | null;
+            id: string;
+            title: string;
+            location: string;
+            date: string;
+            time: string;
+            image: string;
         };
         ResponseDto_ChatGroupDto: {
-            id?: string | null;
-            groupName?: string | null;
-            lastMessage?: string | null;
-            time?: string | null;
+            id: string;
+            groupName: string;
+            lastMessage: string;
+            time: string;
             isActive?: boolean;
-            avatar?: string | null;
+            avatar: string;
         };
         ResponseDto_ChatMessageDto: {
-            id?: string | null;
-            text?: string | null;
-            time?: string | null;
+            id: string;
+            text: string;
+            time: string;
             isOwn?: boolean;
-            avatar?: string | null;
+            avatar: string;
             isDelivered?: boolean;
             isRead?: boolean;
         };
         ResponseDto_ChatsDto: {
-            groups?: components["schemas"]["ResponseDto_ChatGroupDto"][] | null;
-            groupMemberAvatars?: {
+            groups: components["schemas"]["ResponseDto_ChatGroupDto"][];
+            groupMemberAvatars: {
                 [key: string]: string[];
-            } | null;
-            groupMessages?: {
+            };
+            groupMessages: {
                 [key: string]: components["schemas"]["ResponseDto_ChatMessageDto"][];
-            } | null;
-            companyContact?: components["schemas"]["ResponseDto_CompanyContactMessageDto"][] | null;
+            };
+            companyContact: components["schemas"]["ResponseDto_CompanyContactMessageDto"][];
         };
         ResponseDto_CompanyContactMessageDto: {
-            id?: string | null;
-            text?: string | null;
-            time?: string | null;
+            id: string;
+            text: string;
+            time: string;
             isSent?: boolean;
             isRead?: boolean;
         };
         ResponseDto_CompanyResponseDto: {
-            id?: string | null;
-            name?: string | null;
-            logo?: string | null;
-            phone?: string | null;
-            email?: string | null;
-            website?: string | null;
+            id: string;
+            name: string;
+            logo: string;
+            phone: string;
+            email: string;
+            website: string;
             /** Format: double */
             rating?: number;
             /** Format: int32 */
             reviewCount?: number;
-            about?: string | null;
-            fullAbout?: string | null;
-            tripsLabel?: string | null;
-            participantsLabel?: string | null;
-            location?: string | null;
+            about: string;
+            fullAbout: string;
+            tripsLabel: string;
+            participantsLabel: string;
+            location: string;
         };
         ResponseDto_CompanyReviewItemDto: {
-            id?: string | null;
-            companyId?: string | null;
-            name?: string | null;
-            trip?: string | null;
-            date?: string | null;
+            id: string;
+            companyId: string;
+            name: string;
+            trip: string;
+            date: string;
             /** Format: int32 */
             rating?: number;
-            comment?: string | null;
-            avatar?: string | null;
+            comment: string;
+            avatar: string;
         };
         ResponseDto_ItineraryActivityDto: {
-            time?: string | null;
-            label?: string | null;
-            description?: string | null;
+            time: string;
+            label: string;
+            description: string;
         };
         ResponseDto_NotificationItemDto: {
-            id?: string | null;
-            title?: string | null;
-            message?: string | null;
-            time?: string | null;
-            avatarColor?: string | null;
-            avatarEmoji?: string | null;
+            id: string;
+            title: string;
+            message: string;
+            time: string;
+            avatarColor: string;
+            avatarEmoji: string;
         };
         ResponseDto_NotificationsDto: {
-            recent?: components["schemas"]["ResponseDto_NotificationItemDto"][] | null;
-            archived?: components["schemas"]["ResponseDto_NotificationItemDto"][] | null;
+            recent: components["schemas"]["ResponseDto_NotificationItemDto"][];
+            archived: components["schemas"]["ResponseDto_NotificationItemDto"][];
         };
         ResponseDto_OnboardingSlideDto: {
-            id?: string | null;
-            image?: string | null;
-            title?: string | null;
-            highlightText?: string | null;
-            description?: string | null;
-            backgroundColor?: string[] | null;
+            id: string;
+            image: string;
+            title: string;
+            highlightText: string;
+            description: string;
+            backgroundColor: string[];
         };
         ResponseDto_PastTripDto: {
-            id?: string | null;
-            title?: string | null;
-            location?: string | null;
+            id: string;
+            title: string;
+            location: string;
             /** Format: double */
             rating?: number;
-            image?: string | null;
-            date?: string | null;
-            companyId?: string | null;
-            companyName?: string | null;
-            city?: string | null;
+            image: string;
+            date: string;
+            companyId: string;
+            companyName: string;
+            city: string;
             /** Format: int32 */
             reviewCount?: number;
-            priceText?: string | null;
-            headerImage?: string | null;
-            gallery?: string[] | null;
-            about?: string | null;
-            timeline?: components["schemas"]["ResponseDto_TimelineItemDto"][] | null;
-            hotel?: components["schemas"]["ResponseDto_PastTripHotelDto"];
-            reviews?: components["schemas"]["ResponseDto_PastTripReviewDto"][] | null;
+            priceText: string;
+            headerImage: string;
+            gallery: string[];
+            about: string;
+            timeline: components["schemas"]["ResponseDto_TimelineItemDto"][];
+            hotel: components["schemas"]["ResponseDto_PastTripHotelDto"];
+            reviews: components["schemas"]["ResponseDto_PastTripReviewDto"][];
         };
         ResponseDto_PastTripHotelDto: {
-            title?: string | null;
-            durationText?: string | null;
+            title: string;
+            durationText: string;
             /** Format: double */
             rating?: number;
         };
         ResponseDto_PastTripReviewDto: {
-            id?: string | null;
-            name?: string | null;
-            avatar?: components["schemas"]["ResponseDto_AvatarDto"];
+            id: string;
+            name: string;
+            avatar: components["schemas"]["ResponseDto_AvatarDto"];
             /** Format: int32 */
             rating?: number;
-            text?: string | null;
+            text: string;
         };
         ResponseDto_ReservationPresetDto: {
-            id?: string | null;
-            companyName?: string | null;
+            id: string;
+            companyName: string;
             /** Format: int32 */
             durationHours?: number;
-            dateLabel?: string | null;
-            busType?: string | null;
-            amenities?: string[] | null;
-            backgroundImage?: string | null;
-            layout?: components["schemas"]["ResponseDto_BusLayoutDto"];
-            soldSeats?: components["schemas"]["ResponseDto_SoldSeatDto"][] | null;
+            dateLabel: string;
+            busType: string;
+            amenities: string[];
+            backgroundImage: string;
+            layout: components["schemas"]["ResponseDto_BusLayoutDto"];
+            soldSeats: components["schemas"]["ResponseDto_SoldSeatDto"][];
         };
         ResponseDto_ReservationResponseDto: {
-            id?: string | null;
-            userId?: string | null;
-            tripId?: string | null;
+            id: string;
+            userId: string;
+            tripId: string;
             departureId?: string | null;
-            companyId?: string | null;
-            seatNumbers?: number[] | null;
+            companyId: string;
+            seatNumbers: number[];
             /** Format: double */
             totalAmount?: number;
-            currency?: string | null;
-            status?: string | null;
+            currency: string;
+            status: string;
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
             updatedAt?: string;
         };
         ResponseDto_ReviewResponseDto: {
-            id?: string | null;
-            tripId?: string | null;
-            userId?: string | null;
+            id: string;
+            tripId: string;
+            userId: string;
             /** Format: int32 */
             rating?: number;
-            comment?: string | null;
+            comment: string;
             /** Format: date-time */
             createdAt?: string;
         };
         ResponseDto_RouteStopDto: {
-            id?: string | null;
-            title?: string | null;
-            time?: string | null;
-            image?: string | null;
+            id: string;
+            title: string;
+            time: string;
+            image: string;
             /** Format: int32 */
             width?: number;
             /** Format: int32 */
             height?: number;
-            timelineAlign?: string | null;
+            timelineAlign: string;
             /** Format: int32 */
             top?: number;
-            side?: string | null;
+            side: string;
             /** Format: int32 */
             sideOffset?: number;
         };
         ResponseDto_SoldSeatDto: {
             /** Format: int32 */
             number?: number;
-            status?: string | null;
+            status: string;
         };
         ResponseDto_SupportingDataDto: {
-            featuredTripIds?: string[] | null;
-            calendarTrips?: components["schemas"]["ResponseDto_CalendarTripDto"][] | null;
-            notifications?: components["schemas"]["ResponseDto_NotificationsDto"];
-            routeStops?: components["schemas"]["ResponseDto_RouteStopDto"][] | null;
-            reservationPresets?: components["schemas"]["ResponseDto_ReservationPresetDto"][] | null;
-            companyReviews?: components["schemas"]["ResponseDto_CompanyReviewItemDto"][] | null;
-            pastTrips?: components["schemas"]["ResponseDto_PastTripDto"][] | null;
-            onboardingSlides?: components["schemas"]["ResponseDto_OnboardingSlideDto"][] | null;
-            userState?: components["schemas"]["ResponseDto_UserStateDto"][] | null;
-            chats?: components["schemas"]["ResponseDto_ChatsDto"];
+            featuredTripIds: string[];
+            calendarTrips: components["schemas"]["ResponseDto_CalendarTripDto"][];
+            notifications: components["schemas"]["ResponseDto_NotificationsDto"];
+            routeStops: components["schemas"]["ResponseDto_RouteStopDto"][];
+            reservationPresets: components["schemas"]["ResponseDto_ReservationPresetDto"][];
+            companyReviews: components["schemas"]["ResponseDto_CompanyReviewItemDto"][];
+            pastTrips: components["schemas"]["ResponseDto_PastTripDto"][];
+            onboardingSlides: components["schemas"]["ResponseDto_OnboardingSlideDto"][];
+            userState: components["schemas"]["ResponseDto_UserStateDto"][];
+            chats: components["schemas"]["ResponseDto_ChatsDto"];
         };
         ResponseDto_TimelineItemDto: {
-            id?: string | null;
-            title?: string | null;
-            time?: string | null;
-            image?: string | null;
+            id: string;
+            title: string;
+            time: string;
+            image: string;
             isCompleted?: boolean;
         };
         ResponseDto_TripDetailsDto: {
-            included?: string[] | null;
-            excluded?: string[] | null;
-            specialNote?: string | null;
+            included: string[];
+            excluded: string[];
+            specialNote: string;
         };
         ResponseDto_TripDiscountDto: {
-            label?: string | null;
+            label: string;
             /** Format: double */
             amount?: number;
         };
         ResponseDto_TripExtraDto: {
-            label?: string | null;
+            label: string;
             /** Format: double */
             amount?: number;
         };
         ResponseDto_TripHotelDto: {
-            name?: string | null;
+            name: string;
             /** Format: int32 */
             stars?: number;
-            address?: string | null;
-            image?: string | null;
-            gallery?: string[] | null;
-            checkIn?: string | null;
-            checkOut?: string | null;
-            amenities?: string[] | null;
-            description?: string | null;
-            phone?: string | null;
-            website?: string | null;
-            mapLink?: string | null;
+            address: string;
+            image: string;
+            gallery: string[];
+            checkIn: string;
+            checkOut: string;
+            amenities: string[];
+            description: string;
+            phone: string;
+            website: string;
+            mapLink: string;
         };
         ResponseDto_TripItineraryDto: {
             /** Format: int32 */
             day?: number;
-            title?: string | null;
-            dateLabel?: string | null;
-            activities?: components["schemas"]["ResponseDto_ItineraryActivityDto"][] | null;
-            note?: string | null;
+            title: string;
+            dateLabel: string;
+            activities: components["schemas"]["ResponseDto_ItineraryActivityDto"][];
+            note: string;
             /** Format: int32 */
             hotelIndex?: number | null;
         };
         ResponseDto_TripPolicyDto: {
-            title?: string | null;
-            paragraphs?: string[] | null;
+            title: string;
+            paragraphs: string[];
         };
         ResponseDto_TripPricingDto: {
-            currency?: string | null;
+            currency: string;
             /** Format: double */
             basePrice?: number;
             discount?: components["schemas"]["ResponseDto_TripDiscountDto"];
-            extras?: components["schemas"]["ResponseDto_TripExtraDto"][] | null;
+            extras: components["schemas"]["ResponseDto_TripExtraDto"][];
         };
         ResponseDto_TripResponseDto: {
-            id?: string | null;
-            companyId?: string | null;
-            title?: string | null;
-            location?: string | null;
-            city?: string | null;
-            region?: string | null;
+            id: string;
+            companyId: string;
+            title: string;
+            location: string;
+            city: string;
+            region: string;
             /** Format: double */
             rating?: number;
             /** Format: int32 */
             reviewCount?: number;
-            price?: string | null;
-            pricing?: components["schemas"]["ResponseDto_TripPricingDto"];
-            dateRange?: string | null;
-            dateStart?: string | null;
-            dateEnd?: string | null;
+            price: string;
+            pricing: components["schemas"]["ResponseDto_TripPricingDto"];
+            dateRange: string;
+            dateStart: string;
+            dateEnd: string;
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
@@ -4310,42 +4310,42 @@ export interface components {
             capacity?: number;
             /** Format: int32 */
             joinedCount?: number;
-            avatars?: string[] | null;
-            image?: string | null;
-            headerImage?: string | null;
-            gallery?: string[] | null;
-            description?: string | null;
+            avatars: string[];
+            image: string;
+            headerImage: string;
+            gallery: string[];
+            description: string;
             isPublished?: boolean;
             isFeatured?: boolean;
             isDeleted?: boolean;
             purchased?: boolean;
-            details?: components["schemas"]["ResponseDto_TripDetailsDto"];
-            policy?: components["schemas"]["ResponseDto_TripPolicyDto"];
-            itinerary?: components["schemas"]["ResponseDto_TripItineraryDto"][] | null;
-            hotels?: components["schemas"]["ResponseDto_TripHotelDto"][] | null;
+            details: components["schemas"]["ResponseDto_TripDetailsDto"];
+            policy: components["schemas"]["ResponseDto_TripPolicyDto"];
+            itinerary: components["schemas"]["ResponseDto_TripItineraryDto"][];
+            hotels: components["schemas"]["ResponseDto_TripHotelDto"][];
         };
         ResponseDto_UserResponseDto: {
-            id?: string | null;
-            name?: string | null;
-            email?: string | null;
-            phone?: string | null;
-            location?: string | null;
+            id: string;
+            name: string;
+            email: string;
+            phone: string;
+            location: string;
             avatar?: string | null;
-            role?: string | null;
+            role: string;
             companyId?: string | null;
         };
         ResponseDto_UserStateDto: {
-            userId?: string | null;
-            savedTripIds?: string[] | null;
-            purchasedTripIds?: string[] | null;
+            userId: string;
+            savedTripIds: string[];
+            purchasedTripIds: string[];
         };
         Review_CompanyReviewDto: {
             /** Format: uuid */
             id?: string;
-            name?: string | null;
+            name: string;
             avatar?: string | null;
-            tripName?: string | null;
-            date?: string | null;
+            tripName: string;
+            date: string;
             /** Format: int32 */
             rating?: number;
             comment?: string | null;
@@ -4354,7 +4354,7 @@ export interface components {
         Review_CreateCompanyReviewDto: {
             /** Format: uuid */
             companyId?: string;
-            tripName?: string | null;
+            tripName: string;
             /** Format: int32 */
             rating?: number;
             comment?: string | null;
@@ -4375,7 +4375,7 @@ export interface components {
             departureId?: string | null;
             /** Format: uuid */
             tripId?: string | null;
-            soldSeats?: number[] | null;
+            soldSeats: number[];
             /** Format: int32 */
             totalSold?: number;
         };
@@ -4390,10 +4390,10 @@ export interface components {
             departureTime?: string | null;
             /** Format: double */
             price?: number | null;
-            currency?: string | null;
+            currency: string;
             /** Format: int32 */
             capacity?: number;
-            status?: string | null;
+            status: string;
             notes?: string | null;
         };
         TripDeparture_TripDepartureDto: {
@@ -4409,12 +4409,12 @@ export interface components {
             departureTime?: string | null;
             /** Format: double */
             price?: number | null;
-            currency?: string | null;
+            currency: string;
             /** Format: int32 */
             capacity?: number;
             /** Format: int32 */
             soldCount?: number;
-            status?: string | null;
+            status: string;
             notes?: string | null;
             /** Format: date-time */
             createdAt?: string;
@@ -4437,7 +4437,7 @@ export interface components {
         TripStatics_CompanyStaticsDto: {
             /** Format: uuid */
             companyId?: string;
-            name?: string | null;
+            name: string;
             /** Format: double */
             rating?: number;
             /** Format: int32 */
@@ -4454,7 +4454,7 @@ export interface components {
         TripStatics_TripStaticsDto: {
             /** Format: uuid */
             tripId?: string;
-            title?: string | null;
+            title: string;
             /** Format: int32 */
             capacity?: number;
             /** Format: int32 */
@@ -4475,7 +4475,7 @@ export interface components {
         Trip_CreateTripDto: {
             /** Format: uuid */
             companyId?: string;
-            title?: string | null;
+            title: string;
             location?: string | null;
             city?: string | null;
             region?: string | null;
@@ -4499,31 +4499,31 @@ export interface components {
         Trip_CreateTripPricingDto: {
             /** Format: uuid */
             tripId?: string;
-            currency?: string | null;
+            currency: string;
             /** Format: double */
             basePrice?: number;
             discountLabel?: string | null;
             /** Format: double */
             discountAmount?: number | null;
-            extras?: components["schemas"]["Trip_PricingExtraDto"][] | null;
+            extras: components["schemas"]["Trip_PricingExtraDto"][];
         };
         Trip_ItineraryActivityInputDto: {
-            time?: string | null;
-            label?: string | null;
+            time: string;
+            label: string;
             description?: string | null;
         };
         Trip_PricingExtraDto: {
-            label?: string | null;
+            label: string;
             /** Format: double */
             amount?: number;
         };
         Trip_TripDetailsInputDto: {
-            included?: string[] | null;
-            excluded?: string[] | null;
+            included: string[];
+            excluded: string[];
             specialNote?: string | null;
         };
         Trip_TripHotelInputDto: {
-            name?: string | null;
+            name: string;
             /** Format: int32 */
             stars?: number;
             address?: string | null;
@@ -4533,21 +4533,21 @@ export interface components {
             phone?: string | null;
             website?: string | null;
             mapLink?: string | null;
-            amenities?: string[] | null;
+            amenities: string[];
         };
         Trip_TripItineraryInputDto: {
             /** Format: int32 */
             day?: number;
-            title?: string | null;
+            title: string;
             dateLabel?: string | null;
             note?: string | null;
             /** Format: int32 */
             hotelIndex?: number | null;
-            activities?: components["schemas"]["Trip_ItineraryActivityInputDto"][] | null;
+            activities: components["schemas"]["Trip_ItineraryActivityInputDto"][];
         };
         Trip_TripPolicyInputDto: {
             title?: string | null;
-            paragraphs?: string[] | null;
+            paragraphs: string[];
         };
         Trip_UpdateTripDto: {
             title?: string | null;
@@ -4572,8 +4572,8 @@ export interface components {
             hotels?: components["schemas"]["Trip_TripHotelInputDto"][] | null;
         };
         User_ChangePasswordDto: {
-            currentPassword?: string | null;
-            newPassword?: string | null;
+            currentPassword: string;
+            newPassword: string;
         };
         User_UpdateUserDto: {
             name?: string | null;
@@ -4584,7 +4584,7 @@ export interface components {
         VehicleOperation_CreateVehicleOperationDto: {
             /** Format: uuid */
             vehicleId?: string;
-            operationType?: string | null;
+            operationType: string;
             driverName?: string | null;
             /** Format: date-time */
             occurredAt?: string | null;
@@ -4608,14 +4608,14 @@ export interface components {
             id?: string;
             /** Format: uuid */
             vehicleId?: string;
-            plate?: string | null;
-            operationType?: string | null;
+            plate: string;
+            operationType: string;
             driverName?: string | null;
             /** Format: date-time */
             occurredAt?: string;
             /** Format: double */
             cost?: number | null;
-            currency?: string | null;
+            currency: string;
             notes?: string | null;
             /** Format: date-time */
             createdAt?: string;
@@ -4632,21 +4632,21 @@ export interface components {
             seatsRight?: number;
             /** Format: int32 */
             totalSeats?: number;
-            seatMapJson?: string | null;
+            seatMapJson: string;
         };
         Vehicle_CreateVehicleDto: {
             /** Format: uuid */
             companyId: string;
             plate: string;
             model?: string | null;
-            busType?: string | null;
+            busType: string;
             /** Format: int32 */
             capacity?: number;
             hasWifi?: boolean;
             hasAirCondition?: boolean;
             hasPowerOutlet?: boolean;
             coverImage?: string | null;
-            status?: string | null;
+            status: string;
             /** Format: uuid */
             seatLayoutId?: string | null;
         };
@@ -4655,7 +4655,7 @@ export interface components {
             id?: string;
             /** Format: uuid */
             companyId?: string;
-            name?: string | null;
+            name: string;
             /** Format: int32 */
             rows?: number;
             /** Format: int32 */
@@ -4664,7 +4664,7 @@ export interface components {
             seatsRight?: number;
             /** Format: int32 */
             totalSeats?: number;
-            seatMapJson?: string | null;
+            seatMapJson: string;
             /** Format: date-time */
             createdAt?: string;
         };
@@ -4687,16 +4687,16 @@ export interface components {
             id?: string;
             /** Format: uuid */
             companyId?: string;
-            plate?: string | null;
+            plate: string;
             model?: string | null;
-            busType?: string | null;
+            busType: string;
             /** Format: int32 */
             capacity?: number;
             hasWifi?: boolean;
             hasAirCondition?: boolean;
             hasPowerOutlet?: boolean;
             coverImage?: string | null;
-            status?: string | null;
+            status: string;
             /** Format: uuid */
             seatLayoutId?: string | null;
             /** Format: date-time */
