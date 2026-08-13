@@ -291,6 +291,16 @@ builder.Services.AddSwaggerGen(options =>
     // Kimlik tam addan türetiliyor; "Core.DTOs." ön eki gürültü olduğu için
     // atılıyor. Panelin API tipleri bu şemadan üretiliyor (npm run types:api),
     // bu yüzden kimliklerin kararlı ve benzersiz olması gerekiyor.
+    // C#'ın nullable reference types bilgisini şemaya taşı.
+    //
+    // Bu olmadan Swashbuckle "string Name" (null olamaz) ile "string? Phone"
+    // (olabilir) arasındaki farkı siliyor ve her alanı opsiyonel yazıyordu.
+    // Üretilen TS tiplerinde her alan "?" oluyor, dolayısıyla eksik zorunlu
+    // alan göndermek tip hatası vermiyordu — tipleri üretmenin asıl amacı
+    // buydu. (PUT /api/users/{id}, zorunlu Email gönderilmediği için 400
+    // dönüyordu ve panel bunu derleme zamanında göremiyordu.)
+    options.SupportNonNullableReferenceTypes();
+
     options.CustomSchemaIds(type =>
     {
         // Jenerik tiplerde FullName derleme nitelikli çöp üretir
