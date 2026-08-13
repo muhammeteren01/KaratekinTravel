@@ -6,6 +6,19 @@ import type { components } from '../types/api';
  */
 type Schemas = components['schemas'];
 type CreateTripPayload = Schemas['Trip_CreateTripDto'];
+type UpdateTripPayload = Schemas['Trip_UpdateTripDto'];
+type UpdateUserPayload = Schemas['User_UpdateUserDto'];
+type ChangePasswordPayload = Schemas['User_ChangePasswordDto'];
+type UpdateCompanyPayload = Schemas['Company_UpdateCompanyDto'];
+type CreateBankChangeRequestPayload = Schemas['Company_CreateBankChangeRequestDto'];
+
+type User = Schemas['ResponseDto_UserResponseDto'];
+type Company = Schemas['ResponseDto_CompanyResponseDto'];
+type Trip = Schemas['ResponseDto_TripResponseDto'];
+type CompanyBankInfo = Schemas['Company_CompanyBankInfoDto'];
+type BankChangeRequest = Schemas['Company_BankChangeRequestDto'];
+type NotificationItem = Schemas['Notification_NotificationDto'];
+type Payment = Schemas['Payment_PaymentDto'];
 
 const DEFAULT_API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:5076';
@@ -211,7 +224,7 @@ export function resetPasswordApi(payload: unknown) {
 }
 
 export function fetchMeApi() {
-  return request(API_ENDPOINTS.authMe, authOptions());
+  return request<User>(API_ENDPOINTS.authMe, authOptions());
 }
 
 // Trips
@@ -228,7 +241,7 @@ export function fetchTripsApi() {
  * Şirket kapsamını API token'daki companyId claim'inden çözüyor.
  */
 export function fetchManagedTripsApi() {
-  return request(`${API_ENDPOINTS.trips}/manage`, authOptions());
+  return request<Trip[]>(`${API_ENDPOINTS.trips}/manage`, authOptions());
 }
 
 export function searchTripsApi(params = {}) {
@@ -243,7 +256,7 @@ export function searchTripsApi(params = {}) {
 }
 
 export function fetchTripByIdApi(id: string) {
-  return request(`${API_ENDPOINTS.trips}/${id}`, publicOptions());
+  return request<Trip>(`${API_ENDPOINTS.trips}/${id}`, publicOptions());
 }
 
 export function createTripApi(payload: CreateTripPayload) {
@@ -273,8 +286,8 @@ export function createTripApi(payload: CreateTripPayload) {
   }));
 }
 
-export function updateTripApi(id: string, payload: unknown) {
-  return request(`${API_ENDPOINTS.trips}/${id}`, authOptions({
+export function updateTripApi(id: string, payload: UpdateTripPayload) {
+  return request<Trip>(`${API_ENDPOINTS.trips}/${id}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
@@ -290,7 +303,7 @@ export function fetchCompaniesApi() {
 }
 
 export function fetchCompanyByIdApi(id: string) {
-  return request(`${API_ENDPOINTS.companies}/${id}`, publicOptions());
+  return request<Company>(`${API_ENDPOINTS.companies}/${id}`, publicOptions());
 }
 
 export function createCompanyApi(payload: unknown) {
@@ -300,8 +313,8 @@ export function createCompanyApi(payload: unknown) {
   }));
 }
 
-export function updateCompanyApi(id: string, payload: unknown) {
-  return request(`${API_ENDPOINTS.companies}/${id}`, authOptions({
+export function updateCompanyApi(id: string, payload: UpdateCompanyPayload) {
+  return request<Company>(`${API_ENDPOINTS.companies}/${id}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
@@ -392,14 +405,14 @@ export function fetchUserByIdApi(id: string) {
   return request(`${API_ENDPOINTS.users}/${id}`, authOptions());
 }
 
-export function updateUserProfileApi(userId: string, payload: unknown) {
-  return request(`${API_ENDPOINTS.users}/${userId}`, authOptions({
+export function updateUserProfileApi(userId: string, payload: UpdateUserPayload) {
+  return request<User>(`${API_ENDPOINTS.users}/${userId}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function changePasswordApi(userId: string, payload: unknown) {
+export function changePasswordApi(userId: string, payload: ChangePasswordPayload) {
   return request(`${API_ENDPOINTS.users}/${userId}/change-password`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
@@ -465,7 +478,7 @@ export function removeChatMemberApi(groupId: string, userId: string) {
 
 // Notifications
 export function fetchMyNotificationsApi() {
-  return request(`${API_ENDPOINTS.notifications}/my`, authOptions());
+  return request<NotificationItem[]>(`${API_ENDPOINTS.notifications}/my`, authOptions());
 }
 
 export function markNotificationReadApi(id: string) {
@@ -669,7 +682,7 @@ export function createVehicleLayoutApi(payload: unknown) {
 // Banka / tahsilat bilgisi değişiklik talepleri
 export function fetchCompanyBankInfoApi(companyId: string | null = null) {
   const suffix = companyId ? `?companyId=${encodeURIComponent(companyId)}` : '';
-  return request(`${API_ENDPOINTS.bankChangeRequests}/current${suffix}`, authOptions());
+  return request<CompanyBankInfo>(`${API_ENDPOINTS.bankChangeRequests}/current${suffix}`, authOptions());
 }
 
 export function fetchBankChangeRequestsApi(status: string | null = null) {
@@ -677,8 +690,8 @@ export function fetchBankChangeRequestsApi(status: string | null = null) {
   return request(`${API_ENDPOINTS.bankChangeRequests}${suffix}`, authOptions());
 }
 
-export function createBankChangeRequestApi(payload: unknown) {
-  return request(API_ENDPOINTS.bankChangeRequests, authOptions({
+export function createBankChangeRequestApi(payload: CreateBankChangeRequestPayload) {
+  return request<BankChangeRequest>(API_ENDPOINTS.bankChangeRequests, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
@@ -717,7 +730,7 @@ export function deleteVehicleOperationApi(id: string) {
 export function fetchPaymentsApi(companyId: string, status: string | null = null) {
   const query = new URLSearchParams({ companyId });
   if (status) query.set('status', status);
-  return request(`${API_ENDPOINTS.payments}?${query.toString()}`, authOptions());
+  return request<Payment[]>(`${API_ENDPOINTS.payments}?${query.toString()}`, authOptions());
 }
 
 // Trip departures
