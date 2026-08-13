@@ -53,7 +53,7 @@ const emptyCompanyForm = {
  * modelinde karşılıkları var, doldurulduğunda sessizce kayboluyorlardı.
  * E-posta salt okunur; UpdateUserDto e-posta alanını yok sayıyor.
  */
-const CompanyInfoForm = ({ profile, company, loading, saving, error, success, onSave }) => {
+const CompanyInfoForm = ({ profile, company, loading, saving, error, success, onSave, onSaveAvatar }) => {
   const [form, setForm] = useState(emptyCompanyForm);
 
   const buildFormState = () => ({
@@ -81,7 +81,8 @@ const CompanyInfoForm = ({ profile, company, loading, saving, error, success, on
         <div className="settings-col left">
           <ProfilePhotoUploader
             initialSrc={profile?.avatar || undefined}
-            disabledReason="Görsel yükleme ucu henüz hazır değil; seçtiğiniz fotoğraf yalnızca önizlemede görünür."
+            onSave={onSaveAvatar}
+            saving={saving}
           />
         </div>
         <div className="settings-col right">
@@ -281,7 +282,8 @@ const Settings = () => {
         name: form.companyName,
         phone: form.phone || null,
         location: form.address || null,
-        avatar: profile.avatar || null,
+        // avatar gönderilmiyor: kendi "Kaydet" düğmesi var ve API artık
+        // yalnızca gönderilen alanları yazıyor, atlanınca mevcut değer kalıyor.
       });
       setProfile((prev) => ({ ...prev, ...updatedUser }));
 
@@ -299,6 +301,27 @@ const Settings = () => {
       setSuccess('Firma bilgileri kaydedildi.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Profil kaydedilemedi.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  /**
+   * Profil fotoğrafını kaydeder. Avatar kolonu text'e genişletildiği için
+   * base64 veri URL'i doğrudan yazılabiliyor.
+   */
+  const handleSaveAvatar = async (dataUrl) => {
+    if (!profile?.id) return;
+
+    try {
+      setSaving(true);
+      setError('');
+      setSuccess('');
+      const updated = await updateUserProfileApi(profile.id, { avatar: dataUrl });
+      setProfile((prev) => ({ ...prev, ...updated }));
+      setSuccess('Profil fotoğrafı güncellendi.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Profil fotoğrafı kaydedilemedi.');
     } finally {
       setSaving(false);
     }
@@ -332,6 +355,7 @@ const Settings = () => {
             error={error}
             success={success}
             onSave={handleSaveProfile}
+            onSaveAvatar={handleSaveAvatar}
           />
         );
       case Tabs.ACCOUNT:

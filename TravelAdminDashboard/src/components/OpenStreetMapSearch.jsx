@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './OpenStreetMapSearch.css';
 
 const OpenStreetMapSearch = ({ onLocationSelect }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -162,7 +163,7 @@ const OpenStreetMapSearch = ({ onLocationSelect }) => {
               border: '2px solid #f3f3f3',
               borderTop: '2px solid #24BAEC',
               borderRadius: '50%',
-              animation: 'spin 1s linear infinite'
+              animation: 'osm-search-spin 1s linear infinite'
             }}></div>
           </div>
         )}
@@ -222,13 +223,6 @@ const OpenStreetMapSearch = ({ onLocationSelect }) => {
         </div>
       )}
 
-      {/* Loading animation CSS */}
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: translateY(-50%) rotate(0deg); }
-          100% { transform: translateY(-50%) rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

@@ -1556,8 +1556,7 @@ namespace Repository.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Avatar")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("CompanyId")
                         .HasColumnType("uuid");
