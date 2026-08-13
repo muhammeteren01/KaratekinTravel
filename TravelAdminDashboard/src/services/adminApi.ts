@@ -1,3 +1,12 @@
+import type { components } from '../types/api';
+
+/**
+ * Uç gövdeleri üretilen şemadan geliyor. Elle yazılmış bir ayna değil:
+ * .NET tarafında DTO değişince bu tipler de değişir ve panel derlenmez.
+ */
+type Schemas = components['schemas'];
+type CreateTripPayload = Schemas['Trip_CreateTripDto'];
+
 const DEFAULT_API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:5076';
 
@@ -10,7 +19,7 @@ const ADMIN_TOKEN_KEY = 'travelAdminDashboard.apiToken';
  */
 export const DASHBOARD_ROLES = ['Admin', 'CompanyAdmin'];
 
-export function canAccessDashboard(role) {
+export function canAccessDashboard(role: string) {
   return DASHBOARD_ROLES.some(
     (allowed) => allowed.toLowerCase() === String(role || '').toLowerCase(),
   );
@@ -55,7 +64,7 @@ export function getAdminToken() {
   }
 }
 
-export function setAdminToken(token) {
+export function setAdminToken(token: string | null) {
   try {
     const normalized = token?.trim();
     if (normalized) {
@@ -79,7 +88,10 @@ export function clearAdminToken() {
 }
 
 export class ApiError extends Error {
-  constructor(status, message, body) {
+  readonly status: number;
+  readonly body: unknown;
+
+  constructor(status: number, message: string, body: unknown) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
@@ -87,7 +99,16 @@ export class ApiError extends Error {
   }
 }
 
-async function request(url, options = {}) {
+/** request() seçenekleri: fetch'in kendi seçenekleri + panelin eklediği alanlar. */
+export interface RequestOptions extends Omit<RequestInit, 'signal'> {
+  /** false ise Authorization başlığı eklenmez. */
+  auth?: boolean;
+  /** Varsayılan 12 saniye. */
+  timeoutMs?: number;
+  signal?: AbortSignal | null;
+}
+
+async function request<T>(url: string, options: RequestOptions = {}): Promise<T> {
   const { auth = true, headers, timeoutMs = 12000, signal, ...rest } = options;
 
   const token = auth ? getAdminToken() : null;
@@ -112,7 +133,8 @@ async function request(url, options = {}) {
     });
 
     if (response.status === 204) {
-      return undefined;
+      // İçerik yok; çağıran taraf void ya da undefined bekliyor.
+      return undefined as T;
     }
 
     const text = await response.text();
@@ -128,13 +150,16 @@ async function request(url, options = {}) {
 
     if (!response.ok) {
       const message =
-        body?.message || (typeof body === 'string' ? body : `HTTP ${response.status}`);
+        (body as { message?: string } | null)?.message || (typeof body === 'string' ? body : `HTTP ${response.status}`);
       throw new ApiError(response.status, message, body);
     }
 
-    return body;
+    return body as T;
   } catch (err) {
-    if (err?.name === 'AbortError') {
+    // Ördek tipi kontrol bilinçli: fetch iptalinde atılan DOMException her
+    // çalışma ortamında Error'dan türemiyor. `err instanceof Error` yazmak
+    // tipi memnun ederdi ama zaman aşımı mesajını bazı ortamlarda kaçırırdı.
+    if ((err as { name?: string } | null)?.name === 'AbortError') {
       throw new ApiError(0, 'İstek zaman aşımına uğradı. API çalışıyor mu?', null);
     }
     throw err;
@@ -143,11 +168,11 @@ async function request(url, options = {}) {
   }
 }
 
-function authOptions(overrides = {}) {
+function authOptions(overrides: RequestOptions = {}): RequestOptions {
   return { ...overrides, auth: true };
 }
 
-function publicOptions(overrides = {}) {
+function publicOptions(overrides: RequestOptions = {}): RequestOptions {
   return { ...overrides, auth: false };
 }
 
@@ -157,28 +182,28 @@ export function fetchBootstrapApi() {
 }
 
 // Auth
-export function loginApi(email, password) {
+export function loginApi(email: string, password: string) {
   return request(API_ENDPOINTS.authLogin, publicOptions({
     method: 'POST',
     body: JSON.stringify({ email, password }),
   }));
 }
 
-export function registerApi(payload) {
+export function registerApi(payload: unknown) {
   return request(API_ENDPOINTS.authRegister, publicOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function forgotPasswordApi(email) {
+export function forgotPasswordApi(email: string) {
   return request(API_ENDPOINTS.authForgotPassword, publicOptions({
     method: 'POST',
     body: JSON.stringify({ email }),
   }));
 }
 
-export function resetPasswordApi(payload) {
+export function resetPasswordApi(payload: unknown) {
   return request(API_ENDPOINTS.authResetPassword, publicOptions({
     method: 'POST',
     body: JSON.stringify(payload),
@@ -217,11 +242,11 @@ export function searchTripsApi(params = {}) {
   return request(url, publicOptions());
 }
 
-export function fetchTripByIdApi(id) {
+export function fetchTripByIdApi(id: string) {
   return request(`${API_ENDPOINTS.trips}/${id}`, publicOptions());
 }
 
-export function createTripApi(payload) {
+export function createTripApi(payload: CreateTripPayload) {
   return request(API_ENDPOINTS.trips, authOptions({
     method: 'POST',
     body: JSON.stringify({
@@ -248,14 +273,14 @@ export function createTripApi(payload) {
   }));
 }
 
-export function updateTripApi(id, payload) {
+export function updateTripApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.trips}/${id}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteTripApi(id) {
+export function deleteTripApi(id: string) {
   return request(`${API_ENDPOINTS.trips}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
@@ -264,25 +289,25 @@ export function fetchCompaniesApi() {
   return request(API_ENDPOINTS.companies, publicOptions());
 }
 
-export function fetchCompanyByIdApi(id) {
+export function fetchCompanyByIdApi(id: string) {
   return request(`${API_ENDPOINTS.companies}/${id}`, publicOptions());
 }
 
-export function createCompanyApi(payload) {
+export function createCompanyApi(payload: unknown) {
   return request(API_ENDPOINTS.companies, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function updateCompanyApi(id, payload) {
+export function updateCompanyApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.companies}/${id}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteCompanyApi(id) {
+export function deleteCompanyApi(id: string) {
   return request(`${API_ENDPOINTS.companies}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
@@ -295,36 +320,36 @@ export function fetchMyReservationsApi() {
   return request(`${API_ENDPOINTS.reservations}/my`, authOptions());
 }
 
-export function fetchReservationsByTripApi(tripId) {
+export function fetchReservationsByTripApi(tripId: string) {
   return request(`${API_ENDPOINTS.reservations}/by-trip/${tripId}`, authOptions());
 }
 
-export function fetchReservationByIdApi(id) {
+export function fetchReservationByIdApi(id: string) {
   return request(`${API_ENDPOINTS.reservations}/${id}`, authOptions());
 }
 
-export function createReservationApi(payload) {
+export function createReservationApi(payload: unknown) {
   return request(API_ENDPOINTS.reservations, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function updateReservationStatusApi(id, payload) {
+export function updateReservationStatusApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.reservations}/${id}/status`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function processPaymentApi(payload) {
+export function processPaymentApi(payload: unknown) {
   return request(`${API_ENDPOINTS.reservations}/payment`, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function cancelReservationApi(id, reason = 'User cancelled') {
+export function cancelReservationApi(id: string, reason = 'User cancelled') {
   const query = new URLSearchParams({ reason });
   return request(`${API_ENDPOINTS.reservations}/${id}?${query.toString()}`, authOptions({
     method: 'DELETE',
@@ -343,18 +368,18 @@ export function fetchReviewsApi(params = {}) {
   return request(url, publicOptions());
 }
 
-export function fetchReviewByIdApi(id) {
+export function fetchReviewByIdApi(id: string) {
   return request(`${API_ENDPOINTS.reviews}/${id}`, publicOptions());
 }
 
-export function createReviewApi(payload) {
+export function createReviewApi(payload: unknown) {
   return request(API_ENDPOINTS.reviews, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteReviewApi(id) {
+export function deleteReviewApi(id: string) {
   return request(`${API_ENDPOINTS.reviews}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
@@ -363,18 +388,18 @@ export function fetchUsersApi() {
   return request(API_ENDPOINTS.users, authOptions());
 }
 
-export function fetchUserByIdApi(id) {
+export function fetchUserByIdApi(id: string) {
   return request(`${API_ENDPOINTS.users}/${id}`, authOptions());
 }
 
-export function updateUserProfileApi(userId, payload) {
+export function updateUserProfileApi(userId: string, payload: unknown) {
   return request(`${API_ENDPOINTS.users}/${userId}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function changePasswordApi(userId, payload) {
+export function changePasswordApi(userId: string, payload: unknown) {
   return request(`${API_ENDPOINTS.users}/${userId}/change-password`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
@@ -386,11 +411,11 @@ export function fetchSavedTripIdsApi() {
   return request(`${API_ENDPOINTS.savedTrips}/my`, authOptions());
 }
 
-export function saveTripApi(tripId) {
+export function saveTripApi(tripId: string) {
   return request(`${API_ENDPOINTS.savedTrips}/${tripId}`, authOptions({ method: 'POST' }));
 }
 
-export function unsaveTripApi(tripId) {
+export function unsaveTripApi(tripId: string) {
   return request(`${API_ENDPOINTS.savedTrips}/${tripId}`, authOptions({ method: 'DELETE' }));
 }
 
@@ -399,40 +424,40 @@ export function fetchMyChatsApi() {
   return request(`${API_ENDPOINTS.chats}/my`, authOptions());
 }
 
-export function fetchUserChatsApi(userId) {
+export function fetchUserChatsApi(userId: string) {
   return request(`${API_ENDPOINTS.chats}/user/${userId}`, authOptions());
 }
 
-export function fetchChatApi(groupId) {
+export function fetchChatApi(groupId: string) {
   return request(`${API_ENDPOINTS.chats}/${groupId}`, authOptions());
 }
 
-export function fetchChatMessagesApi(groupId, limit = 50) {
+export function fetchChatMessagesApi(groupId: string, limit = 50) {
   return request(`${API_ENDPOINTS.chats}/${groupId}/messages?limit=${encodeURIComponent(limit)}`, authOptions());
 }
 
-export function createChatApi(payload) {
+export function createChatApi(payload: unknown) {
   return request(API_ENDPOINTS.chats, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function sendChatMessageApi(groupId, payload) {
+export function sendChatMessageApi(groupId: string, payload: unknown) {
   return request(`${API_ENDPOINTS.chats}/${groupId}/messages`, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function addChatMemberApi(groupId, payload) {
+export function addChatMemberApi(groupId: string, payload: unknown) {
   return request(`${API_ENDPOINTS.chats}/${groupId}/members`, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function removeChatMemberApi(groupId, userId) {
+export function removeChatMemberApi(groupId: string, userId: string) {
   return request(`${API_ENDPOINTS.chats}/${groupId}/members/${userId}`, authOptions({
     method: 'DELETE',
   }));
@@ -443,19 +468,19 @@ export function fetchMyNotificationsApi() {
   return request(`${API_ENDPOINTS.notifications}/my`, authOptions());
 }
 
-export function markNotificationReadApi(id) {
+export function markNotificationReadApi(id: string) {
   return request(`${API_ENDPOINTS.notifications}/${id}/read`, authOptions({ method: 'PUT' }));
 }
 
-export function archiveNotificationApi(id) {
+export function archiveNotificationApi(id: string) {
   return request(`${API_ENDPOINTS.notifications}/${id}/archive`, authOptions({ method: 'PUT' }));
 }
 
-export function deleteNotificationApi(id) {
+export function deleteNotificationApi(id: string) {
   return request(`${API_ENDPOINTS.notifications}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
-export function createNotificationApi(payload) {
+export function createNotificationApi(payload: unknown) {
   return request(API_ENDPOINTS.notifications, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
@@ -467,41 +492,41 @@ export function fetchHotelsApi() {
   return request(API_ENDPOINTS.hotels, authOptions());
 }
 
-export function fetchHotelByIdApi(id) {
+export function fetchHotelByIdApi(id: string) {
   return request(`${API_ENDPOINTS.hotels}/${id}`, authOptions());
 }
 
-export function createHotelApi(payload) {
+export function createHotelApi(payload: unknown) {
   return request(API_ENDPOINTS.hotels, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function updateHotelApi(id, payload) {
+export function updateHotelApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.hotels}/${id}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteHotelApi(id) {
+export function deleteHotelApi(id: string) {
   return request(`${API_ENDPOINTS.hotels}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
 // Gallery
-export function fetchGalleryByTripApi(tripId) {
+export function fetchGalleryByTripApi(tripId: string) {
   return request(`${API_ENDPOINTS.gallery}?tripId=${encodeURIComponent(tripId)}`, publicOptions());
 }
 
-export function uploadGalleryImageApi(payload) {
+export function uploadGalleryImageApi(payload: unknown) {
   return request(API_ENDPOINTS.gallery, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteGalleryImageApi(id) {
+export function deleteGalleryImageApi(id: string) {
   return request(`${API_ENDPOINTS.gallery}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
@@ -510,29 +535,29 @@ export function fetchCouponsApi() {
   return request(API_ENDPOINTS.coupons, authOptions());
 }
 
-export function fetchCouponByIdApi(id) {
+export function fetchCouponByIdApi(id: string) {
   return request(`${API_ENDPOINTS.coupons}/${id}`, authOptions());
 }
 
-export function createCouponApi(payload) {
+export function createCouponApi(payload: unknown) {
   return request(API_ENDPOINTS.coupons, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function updateCouponApi(id, payload) {
+export function updateCouponApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.coupons}/${id}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteCouponApi(id) {
+export function deleteCouponApi(id: string) {
   return request(`${API_ENDPOINTS.coupons}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
-export function validateCouponApi(payload) {
+export function validateCouponApi(payload: unknown) {
   return request(`${API_ENDPOINTS.coupons}/validate`, publicOptions({
     method: 'POST',
     body: JSON.stringify(payload),
@@ -540,12 +565,12 @@ export function validateCouponApi(payload) {
 }
 
 // Reports
-export function fetchTripReportApi(start, end) {
+export function fetchTripReportApi(start: string, end: string) {
   const query = new URLSearchParams({ start, end });
   return request(`${API_ENDPOINTS.reports}/trips?${query.toString()}`, authOptions());
 }
 
-export function fetchCompanyReportApi(start = null, end = null) {
+export function fetchCompanyReportApi(start: string | null = null, end: string | null = null) {
   const query = new URLSearchParams();
   if (start) query.set('start', start);
   if (end) query.set('end', end);
@@ -553,7 +578,7 @@ export function fetchCompanyReportApi(start = null, end = null) {
   return request(`${API_ENDPOINTS.reports}/companies${suffix}`, authOptions());
 }
 
-export function fetchFinanceReportApi(start, end, companyId = null) {
+export function fetchFinanceReportApi(start: string, end: string, companyId: string | null = null) {
   const query = new URLSearchParams({ start, end });
   if (companyId) query.set('companyId', companyId);
   return request(`${API_ENDPOINTS.reports}/finance?${query.toString()}`, authOptions());
@@ -564,7 +589,7 @@ export function fetchUserActivityReportApi() {
 }
 
 // Refunds
-export function createRefundRequestApi(payload) {
+export function createRefundRequestApi(payload: unknown) {
   return request(API_ENDPOINTS.refunds, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
@@ -575,7 +600,7 @@ export function fetchRefundsApi() {
   return request(API_ENDPOINTS.refunds, authOptions());
 }
 
-export function updateRefundStatusApi(id, payload) {
+export function updateRefundStatusApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.refunds}/${id}/status`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
@@ -583,19 +608,19 @@ export function updateRefundStatusApi(id, payload) {
 }
 
 // Review reports
-export function fetchReviewReportsApi(status = null) {
+export function fetchReviewReportsApi(status: string | null = null) {
   const suffix = status ? `?status=${encodeURIComponent(status)}` : '';
   return request(`${API_ENDPOINTS.reviewReports}${suffix}`, authOptions());
 }
 
-export function createReviewReportApi(payload) {
+export function createReviewReportApi(payload: unknown) {
   return request(API_ENDPOINTS.reviewReports, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function updateReviewReportStatusApi(id, payload) {
+export function updateReviewReportStatusApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.reviewReports}/${id}/status`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
@@ -603,38 +628,38 @@ export function updateReviewReportStatusApi(id, payload) {
 }
 
 // Vehicles
-export function fetchVehiclesApi(companyId = null) {
+export function fetchVehiclesApi(companyId: string | null = null) {
   const suffix = companyId ? `?companyId=${encodeURIComponent(companyId)}` : '';
   return request(`${API_ENDPOINTS.vehicles}${suffix}`, authOptions());
 }
 
-export function fetchVehicleByIdApi(id) {
+export function fetchVehicleByIdApi(id: string) {
   return request(`${API_ENDPOINTS.vehicles}/${id}`, authOptions());
 }
 
-export function createVehicleApi(payload) {
+export function createVehicleApi(payload: unknown) {
   return request(API_ENDPOINTS.vehicles, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function updateVehicleApi(id, payload) {
+export function updateVehicleApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.vehicles}/${id}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteVehicleApi(id) {
+export function deleteVehicleApi(id: string) {
   return request(`${API_ENDPOINTS.vehicles}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
-export function fetchVehicleLayoutsApi(companyId) {
+export function fetchVehicleLayoutsApi(companyId: string) {
   return request(`${API_ENDPOINTS.vehicles}/layouts?companyId=${encodeURIComponent(companyId)}`, authOptions());
 }
 
-export function createVehicleLayoutApi(payload) {
+export function createVehicleLayoutApi(payload: unknown) {
   return request(`${API_ENDPOINTS.vehicles}/layouts`, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
@@ -642,17 +667,17 @@ export function createVehicleLayoutApi(payload) {
 }
 
 // Banka / tahsilat bilgisi değişiklik talepleri
-export function fetchCompanyBankInfoApi(companyId = null) {
+export function fetchCompanyBankInfoApi(companyId: string | null = null) {
   const suffix = companyId ? `?companyId=${encodeURIComponent(companyId)}` : '';
   return request(`${API_ENDPOINTS.bankChangeRequests}/current${suffix}`, authOptions());
 }
 
-export function fetchBankChangeRequestsApi(status = null) {
+export function fetchBankChangeRequestsApi(status: string | null = null) {
   const suffix = status ? `?status=${encodeURIComponent(status)}` : '';
   return request(`${API_ENDPOINTS.bankChangeRequests}${suffix}`, authOptions());
 }
 
-export function createBankChangeRequestApi(payload) {
+export function createBankChangeRequestApi(payload: unknown) {
   return request(API_ENDPOINTS.bankChangeRequests, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
@@ -660,7 +685,15 @@ export function createBankChangeRequestApi(payload) {
 }
 
 // Vehicle operations (araç işlem geçmişi)
-export function fetchVehicleOperationsApi({ companyId = null, vehicleId = null, operationType = null } = {}) {
+export function fetchVehicleOperationsApi({
+  companyId = null,
+  vehicleId = null,
+  operationType = null,
+}: {
+  companyId?: string | null;
+  vehicleId?: string | null;
+  operationType?: string | null;
+} = {}) {
   const query = new URLSearchParams();
   if (companyId) query.set('companyId', companyId);
   if (vehicleId) query.set('vehicleId', vehicleId);
@@ -669,53 +702,56 @@ export function fetchVehicleOperationsApi({ companyId = null, vehicleId = null, 
   return request(`${API_ENDPOINTS.vehicleOperations}${suffix}`, authOptions());
 }
 
-export function createVehicleOperationApi(payload) {
+export function createVehicleOperationApi(payload: unknown) {
   return request(API_ENDPOINTS.vehicleOperations, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteVehicleOperationApi(id) {
+export function deleteVehicleOperationApi(id: string) {
   return request(`${API_ENDPOINTS.vehicleOperations}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
 // Payments
-export function fetchPaymentsApi(companyId, status = null) {
+export function fetchPaymentsApi(companyId: string, status: string | null = null) {
   const query = new URLSearchParams({ companyId });
   if (status) query.set('status', status);
   return request(`${API_ENDPOINTS.payments}?${query.toString()}`, authOptions());
 }
 
 // Trip departures
-export function fetchTripDeparturesApi(tripId) {
+export function fetchTripDeparturesApi(tripId: string) {
   return request(`${API_ENDPOINTS.tripDepartures}?tripId=${encodeURIComponent(tripId)}`, publicOptions());
 }
 
-export function fetchTripDepartureByIdApi(id) {
+export function fetchTripDepartureByIdApi(id: string) {
   return request(`${API_ENDPOINTS.tripDepartures}/${id}`, publicOptions());
 }
 
-export function createTripDepartureApi(payload) {
+export function createTripDepartureApi(payload: unknown) {
   return request(API_ENDPOINTS.tripDepartures, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
 }
 
-export function updateTripDepartureApi(id, payload) {
+export function updateTripDepartureApi(id: string, payload: unknown) {
   return request(`${API_ENDPOINTS.tripDepartures}/${id}`, authOptions({
     method: 'PUT',
     body: JSON.stringify(payload),
   }));
 }
 
-export function deleteTripDepartureApi(id) {
+export function deleteTripDepartureApi(id: string) {
   return request(`${API_ENDPOINTS.tripDepartures}/${id}`, authOptions({ method: 'DELETE' }));
 }
 
 // Seats
-export function fetchSeatAvailabilityApi({ departureId = null, tripId = null } = {}) {
+export function fetchSeatAvailabilityApi({
+  departureId = null,
+  tripId = null,
+}: { departureId?: string | null; tripId?: string | null } = {}) {
   const query = new URLSearchParams();
   if (departureId) query.set('departureId', departureId);
   if (tripId) query.set('tripId', tripId);
@@ -724,11 +760,11 @@ export function fetchSeatAvailabilityApi({ departureId = null, tripId = null } =
 }
 
 // Company reviews
-export function fetchCompanyReviewsApi(companyId) {
+export function fetchCompanyReviewsApi(companyId: string) {
   return request(`${API_ENDPOINTS.companyReviews}?companyId=${encodeURIComponent(companyId)}`, publicOptions());
 }
 
-export function createCompanyReviewApi(payload) {
+export function createCompanyReviewApi(payload: unknown) {
   return request(API_ENDPOINTS.companyReviews, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
@@ -736,12 +772,12 @@ export function createCompanyReviewApi(payload) {
 }
 
 // Calendar trips
-export function fetchCalendarTripsApi(userId = null) {
+export function fetchCalendarTripsApi(userId: string | null = null) {
   const suffix = userId ? `?userId=${encodeURIComponent(userId)}` : '';
   return request(`${API_ENDPOINTS.calendarTrips}${suffix}`, authOptions());
 }
 
-export function createCalendarTripApi(payload) {
+export function createCalendarTripApi(payload: unknown) {
   return request(API_ENDPOINTS.calendarTrips, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
