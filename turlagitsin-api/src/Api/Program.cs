@@ -301,6 +301,11 @@ builder.Services.AddSwaggerGen(options =>
     // dönüyordu ve panel bunu derleme zamanında göremiyordu.)
     options.SupportNonNullableReferenceTypes();
 
+    // SupportNonNullableReferenceTypes tek başına yetmiyor: alanın null
+    // olamayacağını yazıyor ama zorunlu işaretlemiyor. Filtre olmadan
+    // üretilen TS tiplerinde her alan opsiyonel kalıyor.
+    options.SchemaFilter<Api.Swagger.RequireNonNullablePropertiesSchemaFilter>();
+
     options.CustomSchemaIds(type =>
     {
         // Jenerik tiplerde FullName derleme nitelikli çöp üretir
