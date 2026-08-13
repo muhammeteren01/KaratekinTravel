@@ -182,6 +182,9 @@ export function buildHotelsPayload(formData) {
   const mapped = hotels
     .filter((hotel) => hotel?.name)
     .map((hotel) => ({
+      // Not: hotelId gönderilmiyor — TripHotelInputDto'da karşılığı yok,
+      // gönderilse sessizce yok sayılırdı. Kaynak otel kaydına bağ kurmak
+      // için TripHotel entity'sine HotelId alanı eklenmeli.
       name: hotel.name,
       stars: Number(hotel.stars) || 0,
       address: hotel.address || null,
