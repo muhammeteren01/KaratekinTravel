@@ -3,7 +3,6 @@ import { normalizeText, sortByDate } from '../utils/sorting';
 import './CancellationTable.css';
 import searchIcon from '../assets/icons/search-outline.svg';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';
-import { normalizeText } from '../utils/text';
 
 const CancellationTable = ({ data = [], onDetailsClick }) => {
   const [currentPage, setCurrentPage] = useState(1);

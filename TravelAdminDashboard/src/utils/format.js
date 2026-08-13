@@ -1,5 +1,6 @@
 /**
- * Panel genelinde ortak biçimlendirme yardımcıları.
+ * Para birimi biçimlendirme ve tablo dışa aktarma.
+ * Tarih/metin sıralama yardımcıları için utils/sorting.js'e bakın.
  */
 
 const CURRENCY_SYMBOLS = {
@@ -31,66 +32,6 @@ export function formatPrice(value, currency = 'TRY') {
 
   const symbol = CURRENCY_SYMBOLS[String(currency).toUpperCase()] || currency;
   return `${num.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ${symbol}`;
-}
-
-/** Fiyatı sıralama için sayıya çevirir; çözülemezse null. */
-export function parsePriceValue(value) {
-  if (value === null || value === undefined || value === '') return null;
-  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
-
-  const cleaned = String(value).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.');
-  const num = Number(cleaned);
-  return Number.isFinite(num) ? num : null;
-}
-
-/**
- * "GG.AA.YYYY" ya da ISO biçimindeki tarihi sıralanabilir zaman damgasına
- * çevirir. Çözülemeyen değerler null döner; çağıran taraf bunları listenin
- * sonuna atmalı.
- */
-export function parseSortableDate(value) {
-  if (!value) return null;
-  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value.getTime();
-
-  const str = String(value).trim();
-
-  const tr = str.match(/^(\d{2})\.(\d{2})\.(\d{4})(?:\s*[-\s]\s*(\d{2}):(\d{2}))?/);
-  if (tr) {
-    const [, d, m, y, hh = '0', mm = '0'] = tr;
-    return new Date(Number(y), Number(m) - 1, Number(d), Number(hh), Number(mm)).getTime();
-  }
-
-  const parsed = new Date(str);
-  return Number.isNaN(parsed.getTime()) ? null : parsed.getTime();
-}
-
-/**
- * Verilen alana göre sıralar. Çözülemeyen değerler yön ne olursa olsun
- * listenin sonunda kalır; aksi halde boş tarihler listenin başını dolduruyor.
- */
-export function sortRows(rows, { key, direction = 'asc', type = 'text' }) {
-  if (!key) return rows;
-
-  const toComparable = (row) => {
-    const raw = typeof key === 'function' ? key(row) : row[key];
-    if (type === 'date') return parseSortableDate(raw);
-    if (type === 'number') return parsePriceValue(raw);
-    return raw === null || raw === undefined || raw === '' ? null : String(raw);
-  };
-
-  const factor = direction === 'desc' ? -1 : 1;
-
-  return [...rows].sort((a, b) => {
-    const av = toComparable(a);
-    const bv = toComparable(b);
-
-    if (av === null && bv === null) return 0;
-    if (av === null) return 1;
-    if (bv === null) return -1;
-
-    if (type === 'text') return av.localeCompare(bv, 'tr') * factor;
-    return (av - bv) * factor;
-  });
 }
 
 /**

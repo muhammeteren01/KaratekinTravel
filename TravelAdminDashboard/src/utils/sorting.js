@@ -54,3 +54,46 @@ export function normalizeText(value) {
     .replace(/ö/g, 'o')
     .replace(/ç/g, 'c');
 }
+
+/** Arama terimi verilen alanlardan herhangi birinde geçiyor mu? */
+export function matchesSearch(term, ...fields) {
+  const needle = normalizeText(term).trim();
+  if (!needle) return true;
+  return fields.some((field) => normalizeText(field).includes(needle));
+}
+
+/**
+ * Genel amaçlı sıralama: metin (Türkçe alfabe), sayı ya da tarih.
+ * Çözülemeyen değerler yön ne olursa olsun sona gider; aksi halde boş
+ * hücreler listenin başını dolduruyor.
+ */
+export function sortRows(rows, { key, direction = 'asc', type = 'text' }) {
+  if (!key) return rows;
+
+  const toComparable = (row) => {
+    const raw = typeof key === 'function' ? key(row) : row?.[key];
+    if (type === 'date') return parseSortableDate(raw);
+    if (type === 'number') {
+      if (raw === null || raw === undefined || raw === '') return null;
+      const num = typeof raw === 'number'
+        ? raw
+        : Number(String(raw).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
+      return Number.isFinite(num) ? num : null;
+    }
+    return raw === null || raw === undefined || raw === '' ? null : String(raw);
+  };
+
+  const factor = direction === 'desc' ? -1 : 1;
+
+  return [...rows].sort((a, b) => {
+    const left = toComparable(a);
+    const right = toComparable(b);
+
+    if (left === null && right === null) return 0;
+    if (left === null) return 1;
+    if (right === null) return -1;
+
+    if (type === 'text') return left.localeCompare(right, 'tr') * factor;
+    return (left - right) * factor;
+  });
+}

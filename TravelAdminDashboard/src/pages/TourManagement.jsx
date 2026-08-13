@@ -6,8 +6,8 @@ import { deleteTripApi, fetchManagedTripsApi } from '../services/adminApi';
 import { formatTurkishDate, normalizeSelectedTour } from '../utils/tripPayload';
 import { setSelectedTour } from '../utils/selectionStorage';
 import { useFeedback } from '../components/feedback/feedbackContext';
-import { downloadCsv, formatPrice, sortRows } from '../utils/format';
-import { matchesSearch } from '../utils/text';
+import { downloadCsv, formatPrice } from '../utils/format';
+import { matchesSearch, sortRows } from '../utils/sorting';
 
 const STATUS_LABELS = {
   active: 'Yayında',

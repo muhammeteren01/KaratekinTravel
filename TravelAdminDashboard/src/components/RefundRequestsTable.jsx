@@ -5,7 +5,6 @@ import arrowDownIcon from '../assets/icons/arrow-down.svg';
 import { fetchRefundsApi, updateRefundStatusApi } from '../services/adminApi';
 import { normalizeText, sortByDate } from '../utils/sorting';
 import { useFeedback } from './feedback/feedbackContext';
-import { normalizeText } from '../utils/text';
 
 const RefundRequestsTable = () => {
   const { notify } = useFeedback();

@@ -8,7 +8,6 @@ import searchIcon from '../assets/icons/search-icon.svg';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';
 import { fetchFinanceReportApi } from '../services/adminApi';
 import { formatCurrency } from '../utils/reportDates';
-import { normalizeText } from '../utils/text';
 // removed unused download icon
 
 const MAX_PAGE_BUTTONS = 5;
