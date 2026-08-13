@@ -73,6 +73,43 @@ export function buildSeatGrid(template, capacity) {
   return { rows, cols, seatsLeft, seatsRight, grid };
 }
 
+/**
+ * Hücre tipleri: koltuk, koridor, kapı/merdiven boşluğu, boş.
+ *
+ * "kapi" tipi sonradan eklendi: orta kapı ve merdiven boşluğu
+ * tanımlanamıyordu, düzende o alan da koltukmuş gibi görünüyordu.
+ * API'ye Türkçe anahtarlarla gidiyor; eski kayıtlarla uyum için
+ * İngilizce karşılıklar da okunuyor.
+ */
+export const CELL_TYPES = {
+  seat: 'koltuk',
+  aisle: 'koridor',
+  door: 'kapi',
+  empty: 'empty',
+};
+
+export function encodeCellType(type) {
+  return CELL_TYPES[type] || 'empty';
+}
+
+export function decodeCellType(raw) {
+  switch (raw) {
+    case 'koltuk':
+    case 'seat':
+      return 'seat';
+    case 'koridor':
+    case 'aisle':
+      return 'aisle';
+    case 'kapi':
+    case 'kapı':
+    case 'door':
+    case 'merdiven':
+      return 'door';
+    default:
+      return 'empty';
+  }
+}
+
 export function parseLayoutGrid(layout) {
   if (!layout) return null;
   let seatMap = [];
@@ -94,12 +131,7 @@ export function parseLayoutGrid(layout) {
       const r = Number(cell.row);
       const c = Number(cell.col);
       if (r >= 0 && r < rows && c >= 0 && c < cols) {
-        const t = cell.type === 'koltuk' || cell.type === 'seat'
-          ? 'seat'
-          : cell.type === 'koridor' || cell.type === 'aisle'
-            ? 'aisle'
-            : 'empty';
-        grid[r][c] = t;
+        grid[r][c] = decodeCellType(cell.type);
       }
     });
     return { rows, cols, seatsLeft, seatsRight, grid, capacity: capacity || grid.flat().filter((x) => x === 'seat').length };

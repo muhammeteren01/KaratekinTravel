@@ -37,6 +37,9 @@ const VehicleSeatPreview = ({ vehicle }) => {
               if (cell === 'aisle') {
                 return <div key={`${r}-${c}`} className="nvd-bus-cell is-aisle" />;
               }
+              if (cell === 'door') {
+                return <div key={`${r}-${c}`} className="nvd-bus-cell is-door" title="Kapı / merdiven" />;
+              }
               return (
                 <div
                   key={`${r}-${c}`}
