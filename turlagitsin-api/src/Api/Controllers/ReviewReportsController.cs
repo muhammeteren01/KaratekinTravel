@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Api.Helpers;
 using Core.Entities;
 using Core.Repositories;
+using Core.Services;
 using Core.UnitOfWork;
 
 namespace Api.Controllers
@@ -14,11 +15,16 @@ namespace Api.Controllers
     {
         private readonly IReviewReportRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICompanyNotificationService _notifications;
 
-        public ReviewReportsController(IReviewReportRepository repository, IUnitOfWork unitOfWork)
+        public ReviewReportsController(
+            IReviewReportRepository repository,
+            IUnitOfWork unitOfWork,
+            ICompanyNotificationService notifications)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _notifications = notifications;
         }
 
         [HttpGet]
@@ -63,6 +69,20 @@ namespace Api.Controllers
 
             await _repository.AddAsync(report);
             await _unitOfWork.SaveChangesAsync();
+
+            // Şikayet edilen değerlendirmenin turu hangi firmaya aitse ona bildir.
+            var context = await _repository.Where(r => r.Id == report.Id)
+                .Include(r => r.Review)
+                    .ThenInclude(rv => rv.Trip)
+                .Select(r => new { r.Review.Trip.CompanyId, r.Review.Trip.Title })
+                .FirstOrDefaultAsync();
+
+            if (context != null)
+            {
+                await _notifications.NotifyReviewReportedAsync(
+                    context.CompanyId, context.Title ?? "Tur", request.Category ?? "Belirtilmedi");
+            }
+
             return Ok(Map(report));
         }
 

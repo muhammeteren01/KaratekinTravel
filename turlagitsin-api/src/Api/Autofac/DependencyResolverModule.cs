@@ -81,6 +81,7 @@ namespace Api.Autofac
             builder.RegisterType<VehicleService>().As<IVehicleService>().InstancePerLifetimeScope();
             builder.RegisterType<VehicleOperationService>().As<IVehicleOperationService>().InstancePerLifetimeScope();
             builder.RegisterType<BankChangeRequestService>().As<IBankChangeRequestService>().InstancePerLifetimeScope();
+            builder.RegisterType<CompanyNotificationService>().As<ICompanyNotificationService>().InstancePerLifetimeScope();
             builder.RegisterType<CouponService>().As<ICouponService>().InstancePerLifetimeScope();
             builder.RegisterType<RefundService>().As<IRefundService>().InstancePerLifetimeScope();
             builder.RegisterType<PaymentService>().As<IPaymentService>().InstancePerLifetimeScope();

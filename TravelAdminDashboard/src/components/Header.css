@@ -111,6 +111,7 @@
 }
 
 .hd-header-icon-btn {
+  position: relative;
   width: 44px;
   height: 44px;
   background: #F8F9FA;
@@ -124,6 +125,27 @@
   transition: all 0.2s ease;
   flex-shrink: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Okunmamış bildirim sayacı. Zil düğmesi bildirim sayfasını açıyordu ama
+   yeni bir şey olup olmadığı düğmeye basmadan anlaşılmıyordu. */
+.hd-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #DC2626;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 19px;
+  text-align: center;
+  box-shadow: 0 0 0 2px #FFFFFF;
+  pointer-events: none;
 }
 
 .hd-header-icon-btn:hover {

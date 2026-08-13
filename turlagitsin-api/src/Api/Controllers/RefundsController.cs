@@ -11,10 +11,20 @@ namespace Api.Controllers
     public class RefundsController : ControllerBase
     {
         private readonly IRefundService _service;
+        private readonly IReservationService _reservationService;
+        private readonly ITripService _tripService;
+        private readonly ICompanyNotificationService _notifications;
 
-        public RefundsController(IRefundService service)
+        public RefundsController(
+            IRefundService service,
+            IReservationService reservationService,
+            ITripService tripService,
+            ICompanyNotificationService notifications)
         {
             _service = service;
+            _reservationService = reservationService;
+            _tripService = tripService;
+            _notifications = notifications;
         }
 
         [HttpPost]
@@ -24,6 +34,16 @@ namespace Api.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userId = User.GetUserId();
             var item = await _service.CreateAsync(dto, userId);
+
+            // İade talebi açıldığında turun şirketine bildirim düşür.
+            var reservation = await _reservationService.GetReservationByIdAsync(item.ReservationId);
+            if (reservation != null && Guid.TryParse(reservation.CompanyId, out var companyId))
+            {
+                var trip = await _tripService.GetTripByIdAsync(Guid.Parse(reservation.TripId));
+                await _notifications.NotifyRefundRequestedAsync(
+                    companyId, trip?.Title ?? "Tur", item.Amount, item.Currency);
+            }
+
             return Ok(item);
         }
 

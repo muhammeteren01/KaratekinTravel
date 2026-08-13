@@ -14,10 +14,16 @@ namespace Api.Controllers
         private readonly IReservationService _reservationService;
         private readonly ITripService _tripService;
 
-        public ReservationsController(IReservationService reservationService, ITripService tripService)
+        private readonly ICompanyNotificationService _notifications;
+
+        public ReservationsController(
+            IReservationService reservationService,
+            ITripService tripService,
+            ICompanyNotificationService notifications)
         {
             _reservationService = reservationService;
             _tripService = tripService;
+            _notifications = notifications;
         }
 
         [HttpGet]
@@ -99,6 +105,19 @@ namespace Api.Controllers
 
             var userId = User.GetUserId();
             var reservation = await _reservationService.CreateReservationAsync(dto, userId);
+
+            // Firmaya bildirim düşür. Bildirim yazılamazsa rezervasyon yine de
+            // geçerli; hata rezervasyonu geri almamalı.
+            if (Guid.TryParse(reservation.CompanyId, out var notifyCompanyId))
+            {
+                var trip = await _tripService.GetTripByIdAsync(Guid.Parse(reservation.TripId));
+                await _notifications.NotifyNewReservationAsync(
+                    notifyCompanyId,
+                    trip?.Title ?? "Tur",
+                    User.Identity?.Name ?? "Bir kullanıcı",
+                    reservation.SeatNumbers.Count);
+            }
+
             return CreatedAtAction(nameof(GetById), new { id = reservation.Id }, reservation);
         }
 
@@ -151,6 +170,15 @@ namespace Api.Controllers
             var cancelled = await _reservationService.CancelReservationAsync(id, reason);
             if (!cancelled)
                 return NotFound();
+
+            if (Guid.TryParse(existing.CompanyId, out var notifyCompanyId))
+            {
+                var trip = await _tripService.GetTripByIdAsync(Guid.Parse(existing.TripId));
+                await _notifications.NotifyReservationCancelledAsync(
+                    notifyCompanyId,
+                    trip?.Title ?? "Tur",
+                    User.Identity?.Name ?? "Bir kullanıcı");
+            }
 
             return NoContent();
         }
