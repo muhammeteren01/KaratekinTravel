@@ -200,43 +200,51 @@ const Sidebar = ({ onToggle, isMobile, onMobileClose, onPageChange, currentPage,
 
           {/* Navigation Menu */}
           <nav className="sidebar-nav">
-            <div className={`nav-item ${currentPage === 'Anasayfa' ? 'active' : ''}`} onClick={() => handleMainNavClick('Anasayfa')}>
-              <img src={homeIcon} alt="Home" className="nav-icon" />
+            <button
+              type="button"
+              className={`nav-item ${currentPage === 'Anasayfa' ? 'active' : ''}`}
+              onClick={() => handleMainNavClick('Anasayfa')}
+              aria-current={currentPage === 'Anasayfa' ? 'page' : undefined}
+            >
+              <img src={homeIcon} alt="" className="nav-icon" />
               {!isCollapsed && <span>Anasayfa</span>}
-            </div>
+            </button>
             {/* Araç İşlemleri with Submenu */}
             <div className="nav-item-container">
-              <div 
-                className={`nav-item ${expandedMenus['Araç İşlemleri'] ? 'expanded' : ''}`} 
+              <button
+                type="button"
+                className={`nav-item ${expandedMenus['Araç İşlemleri'] ? 'expanded' : ''}`}
                 onClick={() => handleNavItemClick('Araç İşlemleri')}
+                aria-expanded={Boolean(expandedMenus['Araç İşlemleri'])}
               >
                 <img src={carIcon} alt="Car" className="nav-icon" />
                 {!isCollapsed && (
                   <>
                     <span>Araç İşlemleri</span>
-                    <div className={`nav-arrow ${expandedMenus['Araç İşlemleri'] ? 'rotated' : ''}`}>
+                    <span className={`nav-arrow ${expandedMenus['Araç İşlemleri'] ? 'rotated' : ''}`}>
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                         <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                    </div>
+                    </span>
                   </>
                 )}
-              </div>
-              
+              </button>
+
               {/* Submenu */}
               {!isCollapsed && expandedMenus['Araç İşlemleri'] && (
                 <div className="submenu">
                   <div className="submenu-line"></div>
                   <div className="submenu-items">
                     {submenuItems['Araç İşlemleri'].map((item, index) => (
-                      <div 
+                      <button
+                        type="button"
                         key={index}
                         className={`submenu-item ${activeSubmenu === item ? 'active' : ''}`}
                         onClick={() => handleSubmenuClick(item, 'Araç İşlemleri')}
                       >
-                        <div className="submenu-dot"></div>
+                        <span className="submenu-dot"></span>
                         <span>{item}</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -245,37 +253,40 @@ const Sidebar = ({ onToggle, isMobile, onMobileClose, onPageChange, currentPage,
             
             {/* Gezi İşlemleri with Submenu */}
             <div className="nav-item-container">
-              <div 
-                className={`nav-item ${expandedMenus['Gezi İşlemleri'] ? 'expanded' : ''}`} 
+              <button
+                type="button"
+                className={`nav-item ${expandedMenus['Gezi İşlemleri'] ? 'expanded' : ''}`}
                 onClick={() => handleNavItemClick('Gezi İşlemleri')}
+                aria-expanded={Boolean(expandedMenus['Gezi İşlemleri'])}
               >
                 <img src={tripIcon} alt="Trip" className="nav-icon" />
                 {!isCollapsed && (
                   <>
                     <span>Gezi İşlemleri</span>
-                    <div className={`nav-arrow ${expandedMenus['Gezi İşlemleri'] ? 'rotated' : ''}`}>
+                    <span className={`nav-arrow ${expandedMenus['Gezi İşlemleri'] ? 'rotated' : ''}`}>
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                         <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                    </div>
+                    </span>
                   </>
                 )}
-              </div>
-              
+              </button>
+
               {/* Submenu */}
               {!isCollapsed && expandedMenus['Gezi İşlemleri'] && (
                 <div className="submenu">
                   <div className="submenu-line"></div>
                   <div className="submenu-items">
                     {submenuItems['Gezi İşlemleri'].map((item, index) => (
-                      <div 
+                      <button
+                        type="button"
                         key={index}
                         className={`submenu-item ${activeSubmenu === item ? 'active' : ''}`}
                         onClick={() => handleSubmenuClick(item)}
                       >
-                        <div className="submenu-dot"></div>
+                        <span className="submenu-dot"></span>
                         <span>{item}</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -284,35 +295,38 @@ const Sidebar = ({ onToggle, isMobile, onMobileClose, onPageChange, currentPage,
             
             {/* Kullanıcı İşlemleri with Submenu */}
             <div className="nav-item-container">
-              <div 
-                className={`nav-item ${expandedMenus['Kullanıcı İşlemleri'] ? 'expanded' : ''}`} 
+              <button
+                type="button"
+                className={`nav-item ${expandedMenus['Kullanıcı İşlemleri'] ? 'expanded' : ''}`}
                 onClick={() => handleNavItemClick('Kullanıcı İşlemleri')}
+                aria-expanded={Boolean(expandedMenus['Kullanıcı İşlemleri'])}
               >
                 <img src={kullaniciIcon} alt="Kullanıcı İşlemleri" className="nav-icon" />
                 {!isCollapsed && (
                   <>
                     <span>Kullanıcı İşlemleri</span>
-                    <div className={`nav-arrow ${expandedMenus['Kullanıcı İşlemleri'] ? 'rotated' : ''}`}>
+                    <span className={`nav-arrow ${expandedMenus['Kullanıcı İşlemleri'] ? 'rotated' : ''}`}>
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                         <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                    </div>
+                    </span>
                   </>
                 )}
-              </div>
+              </button>
               {!isCollapsed && expandedMenus['Kullanıcı İşlemleri'] && (
                 <div className="submenu">
                   <div className="submenu-line"></div>
                   <div className="submenu-items">
                     {submenuItems['Kullanıcı İşlemleri'].map((item, index) => (
-                      <div 
+                      <button
+                        type="button"
                         key={index}
                         className={`submenu-item ${activeSubmenu === item ? 'active' : ''}`}
                         onClick={() => handleSubmenuClick(item, 'Kullanıcı İşlemleri')}
                       >
-                        <div className="submenu-dot"></div>
+                        <span className="submenu-dot"></span>
                         <span>{item}</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>

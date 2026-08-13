@@ -1,45 +1,47 @@
 import React from 'react';
-import badgeIcon from '../../../assets/icons/pending-badge.svg';
-import liraIcon from '../../../assets/icons/icon-lira.svg';
 import downloadIcon from '../../../assets/icons/download-pdf.svg';
+import { formatCurrency, formatDisplayDateTime } from '../../../utils/reportDates';
 
 const PendingRow = ({ date, amount, type }) => (
-  <div className="pending-card">
-    <div className="pending-left">
-      <img src={badgeIcon} alt="pending" className="pending-badge" />
-      <div className="pending-info">
-        <div className="pending-label">Planlanan Ödeme Tarihi</div>
-        <div className="pending-date">{date}</div>
-      </div>
-      <div className="pending-info">
-        <div className="pending-label">Toplam Tutar</div>
-        <div className="pending-amount"><img src={liraIcon} alt="₺"/>{amount}</div>
-      </div>
-      <div className="pending-info">
-        <div className="pending-label">Ödeme Türü</div>
-        <div className="pending-type">{type}</div>
-      </div>
+  <div className="pending-row">
+    <div className="pending-info">
+      <span className="pending-date">{date}</span>
+      <span className="pending-type">{type}</span>
     </div>
-    <button className="pending-download">
-      <span>PDF İndir</span>
-      <img src={downloadIcon} alt="indir" />
+    <span className="pending-amount">{amount}</span>
+    {/* Belge ucu API'de yok; düğme çalışıyormuş gibi görünmesin. */}
+    <button
+      type="button"
+      className="pending-download"
+      aria-label="Belgeyi indir"
+      disabled
+      title="Fatura indirme henüz hazır değil; API'de belge ucu yok."
+    >
+      <img src={downloadIcon} alt="" />
     </button>
   </div>
 );
 
-const PendingPayments = () => {
-  const rows = [
-    { date: '08.09.2025', amount: '12.685', type: 'Tur Ücreti' },
-    { date: '07.09.2025', amount: '12.685', type: 'Tur Ücreti' },
-  ];
+const PendingPayments = ({ payments = [], loading = false, error = '' }) => {
+  const rows = payments.map((payment) => ({
+    id: payment.id,
+    date: formatDisplayDateTime(payment.createdAt),
+    amount: formatCurrency(payment.amount, payment.currency),
+    type: payment.method === 'transfer' ? 'Havale' : 'Tur Ücreti',
+  }));
 
   return (
     <div className="pay-card">
       <h3 className="pay-card-title">Bekleyen / Planlanan Ödemeler</h3>
       <div className="pay-card-inner">
-        {rows.map((r, i) => (
-          <div className="pending-wrapper" key={i}>
-            <PendingRow {...r} />
+        {loading && <p className="pay-empty">Yükleniyor...</p>}
+        {!loading && error && <p className="pay-empty pay-empty-error">{error}</p>}
+        {!loading && !error && !rows.length && (
+          <p className="pay-empty">Bekleyen ödeme bulunmuyor.</p>
+        )}
+        {rows.map((row) => (
+          <div className="pending-wrapper" key={row.id}>
+            <PendingRow {...row} />
           </div>
         ))}
       </div>

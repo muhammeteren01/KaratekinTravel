@@ -42,3 +42,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+# Yerel bağlantı ayarları — gerçek parola commit'lenmesin
+src/Api/appsettings.Development.local.json
+src/Api/appsettings.Local.json

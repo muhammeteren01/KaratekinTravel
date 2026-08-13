@@ -25,7 +25,10 @@ namespace Core.Entities
         [MaxLength(50)]
         public string? Phone { get; set; }
 
-        [MaxLength(500)]
+        /// <summary>
+        /// Profil fotoğrafı. base64 veri URL'i olarak saklanıyor, bu yüzden
+        /// 500 karakterlik sınır kaldırıldı (diğer görsel kolonlarıyla aynı).
+        /// </summary>
         public string? Avatar { get; set; }
 
         public bool IsEmailVerified { get; set; } = false;

@@ -1,19 +1,5 @@
-import { ApiError } from './apiError';
-import { handleDemoRequest } from './demoServer';
-
 const DEFAULT_API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:5076';
-
-/**
- * Demo modu: .env dosyasında VITE_DEMO_MODE=true olduğunda tüm API çağrıları
- * ağa çıkmadan tarayıcı içindeki sahte sunucuya gider. Backend/veritabanı
- * kurmadan paneli gezmek ve tur ekleme/yönetme akışlarını denemek için.
- */
-export const DEMO_MODE = String(import.meta.env.VITE_DEMO_MODE || '').toLowerCase() === 'true';
-
-// ApiError artık ayrı modülde (demoServer da kullanıyor); eski import yolu
-// bozulmasın diye buradan tekrar dışa veriliyor.
-export { ApiError };
 
 const ADMIN_TOKEN_KEY = 'travelAdminDashboard.apiToken';
 
@@ -52,6 +38,9 @@ export const API_ENDPOINTS = {
   refunds: `${DEFAULT_API_BASE_URL}/api/refunds`,
   reviewReports: `${DEFAULT_API_BASE_URL}/api/review-reports`,
   vehicles: `${DEFAULT_API_BASE_URL}/api/vehicles`,
+  vehicleOperations: `${DEFAULT_API_BASE_URL}/api/vehicle-operations`,
+  bankChangeRequests: `${DEFAULT_API_BASE_URL}/api/bank-change-requests`,
+  payments: `${DEFAULT_API_BASE_URL}/api/payments`,
   tripDepartures: `${DEFAULT_API_BASE_URL}/api/trip-departures`,
   seats: `${DEFAULT_API_BASE_URL}/api/seats`,
   companyReviews: `${DEFAULT_API_BASE_URL}/api/company-reviews`,
@@ -89,13 +78,17 @@ export function clearAdminToken() {
   }
 }
 
+export class ApiError extends Error {
+  constructor(status, message, body) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.body = body;
+  }
+}
+
 async function request(url, options = {}) {
   const { auth = true, headers, timeoutMs = 12000, signal, ...rest } = options;
-
-  if (DEMO_MODE) {
-    // Sahte sunucu senkron; gerçek istek gibi davranması için promise'e sarılıyor.
-    return Promise.resolve().then(() => handleDemoRequest(url, rest.method || 'GET', rest.body));
-  }
 
   const token = auth ? getAdminToken() : null;
   const controller = new AbortController();
@@ -197,8 +190,20 @@ export function fetchMeApi() {
 }
 
 // Trips
+/**
+ * Herkese açık katalog: yalnızca yayındaki turlar.
+ * Panel listeleri için fetchManagedTripsApi kullanın.
+ */
 export function fetchTripsApi() {
   return request(API_ENDPOINTS.trips, publicOptions());
+}
+
+/**
+ * Panel listesi: oturum açan hesabın şirketine ait turlar, taslaklar dahil.
+ * Şirket kapsamını API token'daki companyId claim'inden çözüyor.
+ */
+export function fetchManagedTripsApi() {
+  return request(`${API_ENDPOINTS.trips}/manage`, authOptions());
 }
 
 export function searchTripsApi(params = {}) {
@@ -234,6 +239,11 @@ export function createTripApi(payload) {
       isFeatured: payload.isFeatured ?? false,
       isPublished: payload.isPublished ?? false,
       pricing: payload.pricing ?? null,
+      // Tur içeriği: güzergâh, dahil/hariç olanlar, oteller, iptal politikası.
+      details: payload.details ?? null,
+      policy: payload.policy ?? null,
+      itinerary: payload.itinerary ?? null,
+      hotels: payload.hotels ?? null,
     }),
   }));
 }
@@ -629,6 +639,52 @@ export function createVehicleLayoutApi(payload) {
     method: 'POST',
     body: JSON.stringify(payload),
   }));
+}
+
+// Banka / tahsilat bilgisi değişiklik talepleri
+export function fetchCompanyBankInfoApi(companyId = null) {
+  const suffix = companyId ? `?companyId=${encodeURIComponent(companyId)}` : '';
+  return request(`${API_ENDPOINTS.bankChangeRequests}/current${suffix}`, authOptions());
+}
+
+export function fetchBankChangeRequestsApi(status = null) {
+  const suffix = status ? `?status=${encodeURIComponent(status)}` : '';
+  return request(`${API_ENDPOINTS.bankChangeRequests}${suffix}`, authOptions());
+}
+
+export function createBankChangeRequestApi(payload) {
+  return request(API_ENDPOINTS.bankChangeRequests, authOptions({
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }));
+}
+
+// Vehicle operations (araç işlem geçmişi)
+export function fetchVehicleOperationsApi({ companyId = null, vehicleId = null, operationType = null } = {}) {
+  const query = new URLSearchParams();
+  if (companyId) query.set('companyId', companyId);
+  if (vehicleId) query.set('vehicleId', vehicleId);
+  if (operationType && operationType !== 'Tümü') query.set('operationType', operationType);
+  const suffix = query.toString() ? `?${query.toString()}` : '';
+  return request(`${API_ENDPOINTS.vehicleOperations}${suffix}`, authOptions());
+}
+
+export function createVehicleOperationApi(payload) {
+  return request(API_ENDPOINTS.vehicleOperations, authOptions({
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }));
+}
+
+export function deleteVehicleOperationApi(id) {
+  return request(`${API_ENDPOINTS.vehicleOperations}/${id}`, authOptions({ method: 'DELETE' }));
+}
+
+// Payments
+export function fetchPaymentsApi(companyId, status = null) {
+  const query = new URLSearchParams({ companyId });
+  if (status) query.set('status', status);
+  return request(`${API_ENDPOINTS.payments}?${query.toString()}`, authOptions());
 }
 
 // Trip departures

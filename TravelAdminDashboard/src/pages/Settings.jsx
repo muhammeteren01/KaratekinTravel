@@ -5,10 +5,12 @@ import ProfilePhotoUploader from '../components/Settings/ProfilePhotoUploader';
 import BankInfoNotice from '../components/Settings/Payment/BankInfoNotice';
 import PaymentHistory from '../components/Settings/Payment/PaymentHistory';
 import PendingPayments from '../components/Settings/Payment/PendingPayments';
+import { useFeedback } from '../components/feedback/feedbackContext';
 import {
   changePasswordApi,
   fetchCompanyByIdApi,
   fetchMeApi,
+  fetchPaymentsApi,
   updateCompanyApi,
   updateUserProfileApi,
 } from '../services/adminApi';
@@ -51,7 +53,7 @@ const emptyCompanyForm = {
  * modelinde karşılıkları var, doldurulduğunda sessizce kayboluyorlardı.
  * E-posta salt okunur; UpdateUserDto e-posta alanını yok sayıyor.
  */
-const CompanyInfoForm = ({ profile, company, loading, saving, error, success, onSave }) => {
+const CompanyInfoForm = ({ profile, company, loading, saving, error, success, onSave, onSaveAvatar }) => {
   const [form, setForm] = useState(emptyCompanyForm);
 
   const buildFormState = () => ({
@@ -79,7 +81,8 @@ const CompanyInfoForm = ({ profile, company, loading, saving, error, success, on
         <div className="settings-col left">
           <ProfilePhotoUploader
             initialSrc={profile?.avatar || undefined}
-            disabledReason="Görsel yükleme ucu henüz hazır değil; seçtiğiniz fotoğraf yalnızca önizlemede görünür."
+            onSave={onSaveAvatar}
+            saving={saving}
           />
         </div>
         <div className="settings-col right">
@@ -117,6 +120,7 @@ const CompanyInfoForm = ({ profile, company, loading, saving, error, success, on
 };
 
 const AccountSecurityForm = ({ profile, loading, saving, error, success, onSavePassword }) => {
+  const { notify } = useFeedback();
   const [form, setForm] = useState({
     currentPassword: '',
     newPassword: '',
@@ -127,11 +131,11 @@ const AccountSecurityForm = ({ profile, loading, saving, error, success, onSaveP
 
   const handleSave = () => {
     if (!form.currentPassword || !form.newPassword) {
-      alert('Mevcut ve yeni şifre zorunludur.');
+      notify('Mevcut ve yeni şifre zorunludur.', 'warning');
       return;
     }
     if (form.newPassword !== form.confirmPassword) {
-      alert('Yeni şifreler eşleşmiyor.');
+      notify('Yeni şifreler eşleşmiyor.', 'warning');
       return;
     }
     onSavePassword({
@@ -183,12 +187,47 @@ const AccountSecurityForm = ({ profile, loading, saving, error, success, onSaveP
   );
 };
 
-const PaymentInfoForm = () => {
+const PaymentInfoForm = ({ companyId }) => {
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(Boolean(companyId));
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!companyId) {
+      setLoading(false);
+      setError('Bu hesap bir şirkete bağlı değil; ödeme kaydı listelenemiyor.');
+      return undefined;
+    }
+
+    let alive = true;
+
+    fetchPaymentsApi(companyId)
+      .then((list) => {
+        if (alive) setPayments(Array.isArray(list) ? list : []);
+      })
+      .catch((err) => {
+        if (!alive) return;
+        setError(err instanceof Error ? err.message : 'Ödeme kayıtları yüklenemedi.');
+        setPayments([]);
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, [companyId]);
+
+  // Tamamlanan ödemeler geçmişe, tamamlanmayanlar bekleyenlere düşer.
+  const completed = payments.filter((p) => p.status === 'completed');
+  const pending = payments.filter((p) => p.status !== 'completed');
+
   return (
     <div className="settings-section">
       <BankInfoNotice />
-      <PaymentHistory />
-      <PendingPayments />
+      <PaymentHistory payments={completed} loading={loading} error={error} />
+      <PendingPayments payments={pending} loading={loading} error={error} />
     </div>
   );
 };
@@ -243,7 +282,8 @@ const Settings = () => {
         name: form.companyName,
         phone: form.phone || null,
         location: form.address || null,
-        avatar: profile.avatar || null,
+        // avatar gönderilmiyor: kendi "Kaydet" düğmesi var ve API artık
+        // yalnızca gönderilen alanları yazıyor, atlanınca mevcut değer kalıyor.
       });
       setProfile((prev) => ({ ...prev, ...updatedUser }));
 
@@ -261,6 +301,27 @@ const Settings = () => {
       setSuccess('Firma bilgileri kaydedildi.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Profil kaydedilemedi.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  /**
+   * Profil fotoğrafını kaydeder. Avatar kolonu text'e genişletildiği için
+   * base64 veri URL'i doğrudan yazılabiliyor.
+   */
+  const handleSaveAvatar = async (dataUrl) => {
+    if (!profile?.id) return;
+
+    try {
+      setSaving(true);
+      setError('');
+      setSuccess('');
+      const updated = await updateUserProfileApi(profile.id, { avatar: dataUrl });
+      setProfile((prev) => ({ ...prev, ...updated }));
+      setSuccess('Profil fotoğrafı güncellendi.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Profil fotoğrafı kaydedilemedi.');
     } finally {
       setSaving(false);
     }
@@ -294,6 +355,7 @@ const Settings = () => {
             error={error}
             success={success}
             onSave={handleSaveProfile}
+            onSaveAvatar={handleSaveAvatar}
           />
         );
       case Tabs.ACCOUNT:
@@ -308,7 +370,7 @@ const Settings = () => {
           />
         );
       case Tabs.PAYMENT:
-        return <PaymentInfoForm />;
+        return <PaymentInfoForm companyId={profile?.companyId} />;
       default:
         return null;
     }

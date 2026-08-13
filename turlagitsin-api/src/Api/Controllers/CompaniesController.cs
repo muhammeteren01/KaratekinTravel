@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Core.DTOs.Company;
 using Core.DTOs.ResponseDto;
 using Core.Services;
+using Api.Helpers;
 
 namespace Api.Controllers
 {
@@ -51,6 +52,9 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<ActionResult<CompanyResponseDto>> Update(Guid id, [FromBody] UpdateCompanyDto dto)
         {
+            // CompanyAdmin başka bir şirketin kaydını düzenleyemez.
+            if (!User.CanAccessCompany(id)) return Forbid();
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

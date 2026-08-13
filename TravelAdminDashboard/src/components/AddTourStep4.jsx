@@ -5,8 +5,17 @@ import imagePictureIcon from '../assets/icons/image-picture-icon.svg';
 import MediaThumbCard from './media/MediaThumbCard';
 import ChipTag from './pricing/ChipTag';
 import helpCircleIcon from '../assets/icons/help-circle-icon.svg';
+import { useFeedback } from './feedback/feedbackContext';
+import {
+  MAX_GALLERY_IMAGES,
+  filterImageFiles,
+  readFileAsDataUrl,
+  toGalleryItems,
+  validateSingleImage,
+} from '../utils/imageUpload';
 
 const AddTourStep4 = ({ onNext, onBack, formData, setFormData, updateMode = false, updatedStep = null }) => {
+  const { notify } = useFeedback();
   const [coverImage, setCoverImage] = useState(formData.step4?.coverImage || null);
   const [additionalImages, setAdditionalImages] = useState(formData.step4?.additionalImages || []);
   const [includedItems, setIncludedItems] = useState(formData.step4?.includedItems || []);
@@ -29,74 +38,42 @@ const AddTourStep4 = ({ onNext, onBack, formData, setFormData, updateMode = fals
   //   };
   // }, [coverImage, additionalImages]);
 
-  const handleCoverImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type
-      const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
-      if (!validTypes.includes(file.type)) {
-        alert('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.');
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
-        return;
-      }
-
-      // Use only base64 for better persistence across components
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCoverImage({
-          file: file,
-          name: file.name,
-          preview: e.target.result // Use base64 as preview
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-    // Reset input value to allow selecting the same file again
+  const handleCoverImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    // Girdi hemen sıfırlanıyor; aksi halde aynı dosya ikinci kez seçilemiyor.
     event.target.value = '';
+
+    if (!validateSingleImage(file, { notify })) return;
+
+    try {
+      setCoverImage({ file, name: file.name, preview: await readFileAsDataUrl(file) });
+    } catch {
+      notify('Görsel okunamadı.', 'error');
+    }
   };
 
-  const handleAdditionalImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type
-      const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
-      if (!validTypes.includes(file.type)) {
-        alert('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.');
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
-        return;
-      }
-
-      // Check if maximum number of images reached (e.g., 10)
-      if (additionalImages.length >= 10) {
-        alert('En fazla 10 ek fotoğraf ekleyebilirsiniz.');
-        return;
-      }
-
-      // Use only base64 for better persistence across components
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const newImage = {
-          id: Date.now(),
-          file: file,
-          name: file.name,
-          preview: e.target.result // Use base64 as preview
-        };
-        setAdditionalImages(prev => [...prev, newImage]);
-      };
-      reader.readAsDataURL(file);
-    }
-    // Reset input value to allow selecting the same file again
+  /**
+   * Ek görseller tek seferde çoklu seçilebiliyor.
+   *
+   * Önceden yalnızca `files[0]` okunuyordu: kullanıcı birden fazla fotoğraf
+   * seçse bile yalnızca ilki ekleniyor, geri kalanı sessizce düşüyordu.
+   */
+  const handleAdditionalImageUpload = async (event) => {
+    const files = event.target.files;
     event.target.value = '';
+
+    const accepted = filterImageFiles(files, {
+      notify,
+      remainingSlots: MAX_GALLERY_IMAGES - additionalImages.length,
+    });
+    if (!accepted.length) return;
+
+    try {
+      const images = await toGalleryItems(accepted);
+      setAdditionalImages((prev) => [...prev, ...images]);
+    } catch {
+      notify('Görseller okunamadı.', 'error');
+    }
   };
 
   const removeImage = (imageId, isCover = false) => {
@@ -150,16 +127,6 @@ const AddTourStep4 = ({ onNext, onBack, formData, setFormData, updateMode = fals
       step4: step4Data
     }));
 
-    console.log('=== STEP 4 SAVE DEBUG ===');
-    console.log('Step 4 data:', step4Data);
-    console.log('Cover image:', coverImage);
-    console.log('Cover image preview length:', coverImage?.preview?.length);
-    console.log('Additional images count:', additionalImages.length);
-    console.log('Additional images:', additionalImages);
-    additionalImages.forEach((img, index) => {
-      console.log(`Image ${index + 1} preview length:`, img.preview?.length);
-    });
-    console.log('=== END STEP 4 DEBUG ===');
     onNext();
   };
 
@@ -239,6 +206,7 @@ const AddTourStep4 = ({ onNext, onBack, formData, setFormData, updateMode = fals
                   id="additional-upload"
                   type="file"
                   accept=".svg,.png,.jpg,.jpeg"
+                  multiple
                   onChange={handleAdditionalImageUpload}
                   className="step4-upload-input"
                 />

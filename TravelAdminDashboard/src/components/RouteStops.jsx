@@ -45,6 +45,9 @@ const RouteStops = ({
           >
             <div className="rs-header">
               <span className="rs-chip chip-orange">{idx+1}. Durak</span>
+              {/* Durağın hangi tur gününe düştüğü; çok günlü turlarda saat
+                  tek başına yeterli değildi. */}
+              {stop.day > 0 && <span className="rs-chip chip-day">{stop.day}. Gün</span>}
               <div className="rs-actions">
                 <button className={`rs-icon circle ${idx===stops.length-1 ? 'disabled' : ''}`} onClick={()=>onMoveDown(idx)} title="Aşağı Taşı" disabled={idx===stops.length-1}>↓</button>
                 <button className={`rs-icon circle ${idx===0 ? 'disabled' : ''}`} onClick={()=>onMoveUp(idx)} title="Yukarı Taşı" disabled={idx===0}>↑</button>

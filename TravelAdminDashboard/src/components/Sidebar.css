@@ -275,6 +275,8 @@
   align-items: center;
 }
 
+/* nav-item ve submenu-item artık <button>: klavyeyle gezilebilsin diye.
+   Düğme varsayılanlarını sıfırlayıp görünümü aynı tutuyoruz. */
 .nav-item {
   display: flex;
   align-items: center;
@@ -284,6 +286,17 @@
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.nav-item:focus-visible,
+.submenu-item:focus-visible {
+  outline: 2px solid #24BAEC;
+  outline-offset: 2px;
 }
 
 .sidebar.collapsed .nav-item {
@@ -373,6 +386,11 @@
 }
 
 .submenu-item {
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: 8px;

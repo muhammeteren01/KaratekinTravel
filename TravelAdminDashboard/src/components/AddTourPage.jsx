@@ -12,12 +12,11 @@ import AddTourStep4 from './AddTourStep4';
 import AddTourStep5 from './AddTourStep5';
 import AddTourStep6 from './AddTourStep6';
 import TourCreationSuccess from './TourCreationSuccess';
+import { useFeedback } from './feedback/feedbackContext';
 import {
   createTripApi,
   createTripDepartureApi,
   fetchCompaniesApi,
-  getAdminToken,
-  setAdminToken,
   uploadGalleryImageApi,
 } from '../services/adminApi';
 import {
@@ -28,12 +27,12 @@ import {
 } from '../utils/tripPayload';
 
 const AddTourPage = () => {
+  const { notify } = useFeedback();
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [companyError, setCompanyError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [apiToken, setApiToken] = useState(() => getAdminToken() || '');
   const [formData, setFormData] = useState({
     companyId: '',
     tourName: '',
@@ -41,10 +40,6 @@ const AddTourPage = () => {
     category: '',
     tags: []
   });
-
-  useEffect(() => {
-    setAdminToken(apiToken);
-  }, [apiToken]);
 
   useEffect(() => {
     let active = true;
@@ -177,7 +172,7 @@ const AddTourPage = () => {
       setCurrentStep(8);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Tur kaydedilemedi.';
-      alert(message);
+      notify(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -186,22 +181,20 @@ const AddTourPage = () => {
   const handleSaveAndContinue = () => {
     // Validate required fields
     if (!formData.tourName || !formData.tourDescription || !formData.category) {
-      alert('Lütfen tüm zorunlu alanları doldurun.');
+      notify('Lütfen tüm zorunlu alanları doldurun.', 'warning');
       return;
     }
 
   // Show success (no delay)
   setShowSuccess(true);
 
-  // Here you would typically save the data and move to next step
-  console.log('Form data:', formData);
 
   // Move to next step immediately (remove artificial delay)
   setCurrentStep(2);
   };
 
   const handleStep2Next = () => {
-    console.log('Step 2 completed with data:', formData);
+
   setShowSuccess(true);
   setCurrentStep(3);
   };
@@ -211,7 +204,7 @@ const AddTourPage = () => {
   };
 
   const handleHotelNext = () => {
-    console.log('Hotel step completed with data:', formData);
+
     setShowSuccess(true);
     setCurrentStep(4);
   };
@@ -221,7 +214,7 @@ const AddTourPage = () => {
   };
 
   const handleStep3Next = () => {
-    console.log('Pricing step completed with data:', formData);
+
     setShowSuccess(true);
     setCurrentStep(5);
   };
@@ -231,7 +224,7 @@ const AddTourPage = () => {
   };
 
   const handleStep4Next = () => {
-    console.log('Step 5 completed with data:', formData);
+
   setShowSuccess(true);
   setCurrentStep(6);
   };
@@ -241,7 +234,7 @@ const AddTourPage = () => {
   };
 
   const handleStep5Next = () => {
-    console.log('Form completed with data:', formData);
+
   setShowSuccess(true);
     setCurrentStep(7); // Move to review step
   };
@@ -449,15 +442,6 @@ const AddTourPage = () => {
                     placeholder="Etiketler"
                     value={formData.tags}
                     onChange={(tags) => handleInputChange('tags', tags)}
-                  />
-
-                  <FormField
-                    label="Admin JWT"
-                    type="password"
-                    placeholder="JWT token giriniz"
-                    value={apiToken}
-                    onChange={(e) => setApiToken(e.target.value)}
-                    helperText="Bu token /api/trips oluşturma isteği için Authorization header olarak saklanır."
                   />
                 </div>
                 

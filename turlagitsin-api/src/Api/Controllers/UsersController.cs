@@ -45,7 +45,7 @@ namespace Api.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<ActionResult<UserResponseDto>> UpdateProfile(Guid id, [FromBody] UserProfileDto dto)
+        public async Task<ActionResult<UserResponseDto>> UpdateProfile(Guid id, [FromBody] UpdateUserDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

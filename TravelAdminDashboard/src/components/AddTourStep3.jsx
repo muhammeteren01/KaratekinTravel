@@ -6,8 +6,10 @@ import ChipTag from './pricing/ChipTag';
 import SummaryCard from './pricing/SummaryCard';
 import { fetchVehiclesApi } from '../services/adminApi';
 import { getStep3Data } from '../utils/tripPayload';
+import { useFeedback } from './feedback/feedbackContext';
 
 const AddTourStep3 = ({ onNext, onBack, formData, setFormData, updateMode = false, updatedStep = null }) => {
+  const { notify } = useFeedback();
   const existingStep3 = getStep3Data(formData);
   const [tourPrice, setTourPrice] = useState(existingStep3.tourPrice || '');
   const [differentPrices, setDifferentPrices] = useState(existingStep3.differentPrices || []);
@@ -112,9 +114,7 @@ const AddTourStep3 = ({ onNext, onBack, formData, setFormData, updateMode = fals
   const handleSubmit = () => {
     const capacity = getTotalCapacity();
     if (!capacity || capacity <= 0) {
-      alert(
-        "Kapasite 0'dan büyük olmalıdır. En az bir araç ekleyin veya Minimum Katılımcı Sayısı alanına kişi sayısı girin.",
-      );
+      notify("Kapasite 0'dan büyük olmalıdır. En az bir araç ekleyin veya Minimum Katılımcı Sayısı alanına kişi sayısı girin.", 'warning');
       return;
     }
 

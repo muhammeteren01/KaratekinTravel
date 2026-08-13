@@ -61,6 +61,25 @@ static string BuildFreeTierConnectionString(string raw)
         csb = new NpgsqlConnectionStringBuilder(raw);
     }
 
+    // Yerel PostgreSQL kurulumlarında SSL genelde kapalıdır ve free-tier havuz
+    // limitleri (MaxPoolSize=3) gereksiz yere kısıtlayıcıdır. Aşağıdaki Supabase
+    // ayarlarını zorlamak yerel bağlantıyı doğrudan başarısız kılıyordu.
+    var isLocal = csb.Host is "localhost" or "127.0.0.1" or "::1";
+
+    if (isLocal)
+    {
+        csb.SslMode = SslMode.Disable;
+        csb.Pooling = true;
+        csb.MinPoolSize = 1;
+        csb.MaxPoolSize = 20;
+        csb.Timeout = 15;
+        csb.CommandTimeout = 30;
+        csb.ApplicationName = "turlagitsin-api";
+        csb.IncludeErrorDetail = true;
+        Console.WriteLine("💻 Yerel PostgreSQL tespit edildi — SSL kapalı, standart havuz ayarları");
+        return csb.ToString();
+    }
+
     // Transaction pooler (6543) → Session pooler (5432) — EF Core için zorunlu
     if (csb.Port == 6543)
     {
@@ -123,10 +142,10 @@ else
 // Connection info logging
 {
     var preview = new NpgsqlConnectionStringBuilder(finalConnectionString);
-    Console.WriteLine("=== SUPABASE FREE TIER CONNECTION ===");
+    Console.WriteLine("=== POSTGRESQL CONNECTION ===");
     Console.WriteLine($"Environment: {environment}");
     Console.WriteLine($"Host: {preview.Host}");
-    Console.WriteLine($"Port: {preview.Port} (5432=Session recommended)");
+    Console.WriteLine($"Port: {preview.Port} (Supabase için 5432=Session önerilir)");
     Console.WriteLine($"Timeout: {preview.Timeout}s | CommandTimeout: {preview.CommandTimeout}s | MaxPool: {preview.MaxPoolSize}");
     Console.WriteLine("=====================================");
 }
@@ -153,20 +172,71 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // ***************************************************************
 
 // CORS yapılandırması
+// CORS: her kaynağa açmak yerine yapılandırılabilir liste.
+// Cors:AllowedOrigins bir dizi olarak verilir (appsettings veya
+// CORS__ALLOWEDORIGINS__0 gibi ortam değişkenleriyle).
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() ?? Array.Empty<string>();
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("Default", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        if (allowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader();
+        }
+        else if (builder.Environment.IsProduction())
+        {
+            // Liste boşsa production'da hiçbir tarayıcı kaynağına izin verme.
+            policy.WithOrigins(Array.Empty<string>()).AllowAnyMethod().AllowAnyHeader();
+        }
+        else
+        {
+            // Geliştirmede localhost portları değişebiliyor; serbest bırak.
+            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        }
     });
 });
 
 // JWT Authentication yapılandırması
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
+//
+// Anahtar depoda sabit bir varsayılanla geliyordu. Bu değer herkese açık
+// olduğu için, onu bilen biri kendine Admin rolünde geçerli bir token
+// üretebilirdi. Production'da yapılandırılmamış veya varsayılan anahtarla
+// açılış artık engelleniyor.
+var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "TurlaGitsinAPI";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "TurlaGitsinApp";
+
+var insecureJwtKeys = new[]
+{
+    "YourSuperSecretKeyThatIsAtLeast32CharactersLong!",
+    "YourSuperSecretKeyThatIsAtLeast32CharactersLongForProduction!"
+};
+
+var jwtKeyIsUsable = !string.IsNullOrWhiteSpace(jwtKey)
+    && jwtKey.Length >= 32
+    && !insecureJwtKeys.Contains(jwtKey);
+
+if (!jwtKeyIsUsable)
+{
+    if (builder.Environment.IsProduction())
+    {
+        throw new InvalidOperationException(
+            "Jwt:Key yapılandırılmamış, 32 karakterden kısa veya depodaki varsayılan değerde. " +
+            "Production'da JWT__KEY ortam değişkeniyle rastgele bir anahtar verin.");
+    }
+
+    // Geliştirmede çalışmayı engellemiyoruz ama sessiz de geçmiyoruz.
+    jwtKey = "gelistirme-icin-gecici-anahtar-en-az-32-karakter!!";
+    Console.WriteLine("⚠️ Jwt:Key yapılandırılmamış; yalnızca geliştirme için geçici anahtar kullanılıyor.");
+}
+
+// Token üreten AuthController aynı anahtarı okumalı; aksi halde imzalama ve
+// doğrulama farklı anahtarlarla yapılır ve her istek 401 döner.
+builder.Configuration["Jwt:Key"] = jwtKey;
 
 builder.Services.AddAuthentication(options =>
 {
@@ -363,7 +433,7 @@ else
     });
 }
 
-app.UseCors("AllowAll");
+app.UseCors("Default");
 
 app.UseAuthentication();
 app.UseAuthorization();

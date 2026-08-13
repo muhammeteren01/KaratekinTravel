@@ -68,3 +68,11 @@
 	.hotel-card-title{font-size:18px}
 	.hotel-card-line{font-size:13px}
 }
+
+/* Açılır listede otel yıldızı; seçimin hangi otele ait olduğu daha net. */
+.hotel-option-stars {
+  margin-left: 8px;
+  color: #F59E0B;
+  font-size: 12px;
+  letter-spacing: 1px;
+}

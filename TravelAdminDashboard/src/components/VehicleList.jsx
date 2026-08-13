@@ -2,8 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './VehicleList.css';
 import editButtonIcon from '../assets/icons/edit-button-icon.svg';
 import { deleteVehicleApi, fetchVehiclesApi } from '../services/adminApi';
+import { useFeedback } from './feedback/feedbackContext';
+import { downloadCsv } from '../utils/format';
 
 const VehicleList = () => {
+  const { notify, confirm } = useFeedback();
   const [selectedVehicles, setSelectedVehicles] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('plate');
@@ -122,18 +125,28 @@ const VehicleList = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    const ok = window.confirm('Bu aracı silmek istiyor musunuz?');
+  const handleDelete = async (id) => {
+    const ok = await confirm({
+      title: 'Araç silinsin mi?',
+      message: 'Bu aracı silmek istediğinize emin misiniz?',
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
 
     deleteVehicleApi(id)
       .then(() => setVehicles((prev) => prev.filter((vehicle) => vehicle.id !== id)))
-      .catch((err) => alert(err instanceof Error ? err.message : 'Araç silinemedi.'));
+      .catch((err) => notify(err instanceof Error ? err.message : 'Araç silinemedi.', 'error'));
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedVehicles.length === 0) return;
-    const ok = window.confirm('Seçili araçları silmek istiyor musunuz?');
+    const ok = await confirm({
+      title: 'Seçili araçlar silinsin mi?',
+      message: `${selectedVehicles.length} araç kalıcı olarak silinecek.`,
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
 
     Promise.all(selectedVehicles.map((id) => deleteVehicleApi(id)))
@@ -141,11 +154,31 @@ const VehicleList = () => {
         setVehicles((prev) => prev.filter((vehicle) => !selectedVehicles.includes(vehicle.id)));
         setSelectedVehicles([]);
       })
-      .catch((err) => alert(err instanceof Error ? err.message : 'Seçili araçlar silinemedi.'));
+      .catch((err) => notify(err instanceof Error ? err.message : 'Seçili araçlar silinemedi.', 'error'));
   };
 
+  /**
+   * Araç listesini CSV olarak indirir.
+   *
+   * Düğme "PDF dışa aktarma henüz hazır değil" uyarısı veriyordu, yani
+   * hiçbir şey yapmıyordu. Tarayıcıda PDF üretmek ek bağımlılık gerektiriyor;
+   * CSV hem Excel'de hem de tabloya aktarmada doğrudan açılıyor.
+   */
   const handleDownloadAll = () => {
-    console.log('Download all as PDF');
+    const rows = selectedVehicles.length
+      ? filteredAndSortedVehicles.filter((v) => selectedVehicles.includes(v.id))
+      : filteredAndSortedVehicles;
+
+    if (!rows.length) {
+      notify('Dışa aktarılacak araç bulunamadı.', 'warning');
+      return;
+    }
+
+    downloadCsv(
+      `araclar-${new Date().toISOString().slice(0, 10)}.csv`,
+      ['Plaka', 'Tasarım', 'Düzen', 'Kapasite', 'Kayıt Tarihi'],
+      rows.map((v) => [v.plate, v.design, v.type, v.raw?.capacity ?? '', v.date]),
+    );
   };
 
   const handlePageChange = (page) => {
@@ -196,9 +229,9 @@ const VehicleList = () => {
             <img src="/icons/delete-icon.svg" alt="Sil" />
             <span>Seçilenleri Sil</span>
           </button>
-          <button className="vl-download-all" onClick={handleDownloadAll}>
-            <img src="/icons/download-cloud-02.svg" alt="PDF" />
-            <span>Tümünü PDF İndir</span>
+          <button type="button" className="vl-download-all" onClick={handleDownloadAll}>
+            <img src="/icons/download-cloud-02.svg" alt="" />
+            <span>{selectedVehicles.length ? `Seçilenleri İndir (${selectedVehicles.length})` : 'Listeyi İndir'}</span>
           </button>
           </div>
         </div>

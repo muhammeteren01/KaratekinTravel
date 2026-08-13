@@ -36,6 +36,29 @@ namespace Core.Entities
 
         public bool IsVerified { get; set; } = false;
 
+        // Banka / tahsilat bilgileri. Panelin "Ödeme Bilgileri" sekmesi bu
+        // alanları gösteriyordu ama modelde karşılıkları yoktu; ekranda sabit
+        // örnek bir hesap yazıyordu. Yalnızca onaylanmış değişiklik talebiyle
+        // güncelleniyor (bkz. BankChangeRequest).
+        [MaxLength(100)]
+        public string? BankName { get; set; }
+
+        [MaxLength(200)]
+        public string? BankAccountHolder { get; set; }
+
+        /// <summary>Boşluksuz saklanıyor: TR + 24 hane.</summary>
+        [MaxLength(34)]
+        public string? Iban { get; set; }
+
+        [MaxLength(100)]
+        public string? TaxOffice { get; set; }
+
+        [MaxLength(20)]
+        public string? TaxNumber { get; set; }
+
+        [MaxLength(500)]
+        public string? BillingAddress { get; set; }
+
         // Navigation Properties
         public virtual ICollection<Trip> Trips { get; set; } = new List<Trip>();
         public virtual ICollection<CompanyReview> Reviews { get; set; } = new List<CompanyReview>();

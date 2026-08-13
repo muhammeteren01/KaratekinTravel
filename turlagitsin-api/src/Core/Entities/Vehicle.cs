@@ -40,5 +40,6 @@ namespace Core.Entities
         public virtual SeatLayout? SeatLayout { get; set; }
 
         public virtual ICollection<TripDeparture> Departures { get; set; } = new List<TripDeparture>();
+        public virtual ICollection<VehicleOperation> Operations { get; set; } = new List<VehicleOperation>();
     }
 }

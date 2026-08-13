@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './NewVehicleDefinition.css';
+import { useFeedback } from './feedback/feedbackContext';
 import {
   createVehicleApi,
   fetchCompaniesApi,
@@ -13,8 +14,17 @@ import {
   parseLayoutGrid,
   seatNumbers,
 } from '../utils/seatLayoutTemplates';
+import { VEHICLE_CLASSES, formatPlate, validatePlate } from '../utils/vehicle';
+import {
+  MAX_GALLERY_IMAGES,
+  filterImageFiles,
+  readFileAsDataUrl,
+  toGalleryItems,
+  validateSingleImage,
+} from '../utils/imageUpload';
 
 const NewVehicleDefinition = () => {
+  const { notify } = useFeedback();
   const [formData, setFormData] = useState({
     companyId: '',
     vehiclePlate: '',
@@ -117,12 +127,10 @@ const NewVehicleDefinition = () => {
     };
   }, [formData.companyId]);
 
-  const vehicleModels = [
-    'Mercedes Sprinter',
-    'Ford Transit',
-    'Iveco Daily',
-    'Volkswagen Crafter'
-  ];
+  // Listede ticari araç markaları vardı (Mercedes Sprinter, Ford Transit
+  // gibi). Turda seçilen şey markadan çok aracın sınıfı; kapasite ipucu da
+  // sınıfla birlikte gösteriliyor.
+  const vehicleModels = VEHICLE_CLASSES.map((c) => c.label);
 
   const companyOptions = useMemo(() => companies.map((company) => ({
     value: String(company.id),
@@ -171,77 +179,49 @@ const NewVehicleDefinition = () => {
     }));
   };
 
-  const handleCoverImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type
-      const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
-      if (!validTypes.includes(file.type)) {
-        alert('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.');
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
-        return;
-      }
-
-      // Use base64 for better persistence
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        handleInputChange('coverImage', {
-          file: file,
-          name: file.name,
-          preview: e.target.result // Use base64 as preview
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-    // Reset input value to allow selecting the same file again
+  const handleCoverImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    // Girdi hemen sıfırlanıyor; aksi halde aynı dosya ikinci kez seçilemiyor.
     event.target.value = '';
+
+    if (!validateSingleImage(file, { notify })) return;
+
+    try {
+      handleInputChange('coverImage', {
+        file,
+        name: file.name,
+        preview: await readFileAsDataUrl(file),
+      });
+    } catch {
+      notify('Görsel okunamadı.', 'error');
+    }
   };
 
-  const handleAdditionalImagesUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type
-      const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
-      if (!validTypes.includes(file.type)) {
-        alert('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.');
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
-        return;
-      }
-
-      // Check if maximum number of images reached (e.g., 10)
-      if (formData.additionalImages.length >= 10) {
-        alert('En fazla 10 ek fotoğraf ekleyebilirsiniz.');
-        return;
-      }
-
-      // Use base64 for better persistence
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const newImage = {
-          id: Date.now(),
-          file: file,
-          name: file.name,
-          preview: e.target.result // Use base64 as preview
-        };
-        setFormData(prev => ({
-          ...prev,
-          additionalImages: [...prev.additionalImages, newImage]
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-    // Reset input value to allow selecting the same file again
+  /**
+   * Ek görseller tek seferde çoklu seçilebiliyor.
+   *
+   * Önceden yalnızca `files[0]` okunuyordu: kullanıcı on fotoğraf seçse bile
+   * yalnızca ilki ekleniyor, geri kalanı sessizce düşüyordu.
+   */
+  const handleAdditionalImagesUpload = async (event) => {
+    const files = event.target.files;
     event.target.value = '';
+
+    const accepted = filterImageFiles(files, {
+      notify,
+      remainingSlots: MAX_GALLERY_IMAGES - formData.additionalImages.length,
+    });
+    if (!accepted.length) return;
+
+    try {
+      const images = await toGalleryItems(accepted);
+      setFormData((prev) => ({
+        ...prev,
+        additionalImages: [...prev.additionalImages, ...images],
+      }));
+    } catch {
+      notify('Görseller okunamadı.', 'error');
+    }
   };
 
   const removeCoverImage = () => {
@@ -275,8 +255,9 @@ const NewVehicleDefinition = () => {
       return;
     }
 
-    if (!payload.plate) {
-      setError('Araç plakası zorunludur.');
+    const plateCheck = validatePlate(payload.plate);
+    if (!plateCheck.valid) {
+      setError(plateCheck.message);
       return;
     }
 
@@ -356,9 +337,12 @@ const NewVehicleDefinition = () => {
                 <input
                   type="text"
                   className="nvd-input"
-                  placeholder="Plaka"
+                  placeholder="34 AB 1234"
+                  autoCapitalize="characters"
+                  autoComplete="off"
+                  maxLength={10}
                   value={formData.vehiclePlate}
-                  onChange={(e) => handleInputChange('vehiclePlate', e.target.value)}
+                  onChange={(e) => handleInputChange('vehiclePlate', formatPlate(e.target.value))}
                 />
               </div>
             </div>
@@ -631,6 +615,9 @@ const NewVehicleDefinition = () => {
                       if (cell === 'aisle') {
                         return <div key={`${r}-${c}`} className="nvd-bus-cell is-aisle" />;
                       }
+                      if (cell === 'door') {
+                        return <div key={`${r}-${c}`} className="nvd-bus-cell is-door" title="Kapı / merdiven" />;
+                      }
                       const num = previewNumbers[r]?.[c];
                       return (
                         <div
@@ -749,12 +736,13 @@ const NewVehicleDefinition = () => {
                 </span>
               </div>
               <label htmlFor="additional-upload" className="nvd-upload-button">
-                Görseli Ekle
+                Görselleri Ekle
               </label>
               <input
                 id="additional-upload"
                 type="file"
                 accept=".svg,.png,.jpg,.jpeg"
+                multiple
                 onChange={handleAdditionalImagesUpload}
                 className="nvd-upload-input"
               />

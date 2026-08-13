@@ -94,6 +94,14 @@ export function getTripDatesFromWizard(formData) {
   return { dateStart, dateEnd };
 }
 
+/**
+ * Açıklama artık yalnızca gerçekten açıklama olan metni taşıyor.
+ *
+ * Fiyat, iptal politikası, dahil/hariç olanlar, güzergâh ve oteller kendi
+ * yapılandırılmış alanlarına taşındı. Kategori ve etiketlerin API modelinde
+ * hâlâ karşılığı yok (Trip entity'sinde Category/Tags alanı bulunmuyor),
+ * bu yüzden yalnızca onlar açıklamaya ekleniyor.
+ */
 export function enrichDescription(formData) {
   const base = (formData.tourDescription || '').trim();
   const parts = [base];
@@ -102,16 +110,110 @@ export function enrichDescription(formData) {
   if (tags.length) parts.push(`Etiketler: ${tags.join(', ')}`);
   if (formData.category) parts.push(`Kategori: ${formData.category}`);
 
-  // Fiyat artık payload.pricing ile gönderiliyor; açıklamaya gömmeye gerek yok.
-  const policy = formData.cancellationPolicyText?.trim();
-  if (policy) parts.push(`İptal politikası: ${policy}`);
-
-  const included = formData.step4?.includedItems;
-  if (Array.isArray(included) && included.length) {
-    parts.push(`Dahil olanlar: ${included.join(', ')}`);
-  }
-
   return parts.filter(Boolean).join('\n\n') || null;
+}
+
+/** step4'teki dahil/hariç listelerini API'nin details yapısına çevirir. */
+export function buildDetailsPayload(formData) {
+  const step4 = formData.step4 || {};
+  const included = (Array.isArray(step4.includedItems) ? step4.includedItems : []).filter(Boolean);
+  const excluded = (Array.isArray(step4.excludedItems) ? step4.excludedItems : []).filter(Boolean);
+  const specialNote = (step4.specialDescription || '').trim();
+
+  if (!included.length && !excluded.length && !specialNote) return null;
+  return { included, excluded, specialNote: specialNote || null };
+}
+
+/** Çok satırlı iptal politikası metnini paragraf listesine çevirir. */
+export function buildPolicyPayload(formData) {
+  const text = (formData.cancellationPolicyText || '').trim();
+  if (!text) return null;
+
+  const paragraphs = text
+    .split(/\n{1,}/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (!paragraphs.length) return null;
+  return { title: 'İptal Politikası', paragraphs };
+}
+
+/**
+ * Rota duraklarını güzergâh (itinerary) yapısına çevirir.
+ *
+ * Sihirbaz gün kavramı tutmuyor, tek bir güzergâh listesi topluyor; bu yüzden
+ * tüm duraklar tek güne (Day 1) aktivite olarak yazılıyor. Ara duraklar
+ * ait oldukları durağın hemen ardına, açıklamalarında üst durak adıyla
+ * ekleniyor — aktivite modelinde iç içe yapı yok.
+ */
+export function buildItineraryPayload(formData) {
+  const stops = Array.isArray(formData.stops) ? formData.stops : [];
+  if (!stops.length) return null;
+
+  const activities = [];
+  stops.forEach((stop) => {
+    const label = stop.name || stop.address;
+    if (!label) return;
+
+    activities.push({
+      time: stop.time || '',
+      label,
+      description: stop.address && stop.address !== label ? stop.address : null,
+    });
+
+    (Array.isArray(stop.subStops) ? stop.subStops : []).forEach((sub) => {
+      const subLabel = sub.name || sub.label;
+      if (!subLabel) return;
+      activities.push({
+        time: sub.time || '',
+        label: subLabel,
+        description: `${label} ara durağı`,
+      });
+    });
+  });
+
+  if (!activities.length) return null;
+  return [{ day: 1, title: 'Güzergâh', dateLabel: null, note: null, hotelIndex: null, activities }];
+}
+
+/** Sihirbazdaki otel listesini API'nin hotels yapısına çevirir. */
+export function buildHotelsPayload(formData) {
+  const hotels = Array.isArray(formData.hotels) ? formData.hotels : [];
+  const mapped = hotels
+    .filter((hotel) => hotel?.name)
+    .map((hotel) => ({
+      // Not: hotelId gönderilmiyor — TripHotelInputDto'da karşılığı yok,
+      // gönderilse sessizce yok sayılırdı. Kaynak otel kaydına bağ kurmak
+      // için TripHotel entity'sine HotelId alanı eklenmeli.
+      name: hotel.name,
+      stars: Number(hotel.stars) || 0,
+      address: hotel.address || null,
+      checkIn: hotel.checkIn || null,
+      checkOut: hotel.checkOut || null,
+      description: hotel.note || hotel.description || null,
+      phone: hotel.phone || null,
+      website: hotel.website || null,
+      mapLink: hotel.mapLink || null,
+      amenities: Array.isArray(hotel.amenities) ? hotel.amenities.filter(Boolean) : [],
+    }));
+
+  return mapped.length ? mapped : null;
+}
+
+/** Create ve update için ortak içerik alanları. */
+function buildContentPayload(formData) {
+  const payload = {};
+  const details = buildDetailsPayload(formData);
+  const policy = buildPolicyPayload(formData);
+  const itinerary = buildItineraryPayload(formData);
+  const hotels = buildHotelsPayload(formData);
+
+  if (details) payload.details = details;
+  if (policy) payload.policy = policy;
+  if (itinerary) payload.itinerary = itinerary;
+  if (hotels) payload.hotels = hotels;
+
+  return payload;
 }
 
 export function buildCreateTripPayload(formData) {
@@ -152,6 +254,7 @@ export function buildCreateTripPayload(formData) {
     // ekranından "Yayınla" denmesi gerekir.
     isPublished: false,
     pricing: buildPricingPayload(formData),
+    ...buildContentPayload(formData),
   };
 }
 
@@ -220,6 +323,8 @@ export function buildUpdateTripPayload(formData, existingTrip = {}) {
   const pricing = buildPricingPayload(formData);
   if (pricing) payload.pricing = pricing;
 
+  Object.assign(payload, buildContentPayload(formData));
+
   return payload;
 }
 
@@ -232,12 +337,17 @@ export function mapApiTripToFormData(trip) {
     tourDescription: trip.description || '',
     category: trip.region || '',
     tags: [],
+    // Duraklar güzergâhın aktiviteleri olarak yazılıyor (bkz.
+    // buildItineraryPayload); geri okurken de tüm günlerin aktiviteleri
+    // düzleştirilir, yoksa listede tek bir "Güzergâh" satırı görünürdü.
     stops: Array.isArray(trip.itinerary)
-      ? trip.itinerary.map((item, idx) => ({
-          id: idx + 1,
-          name: item.title || item.label || `Durak ${idx + 1}`,
-          time: item.activities?.[0]?.time || '',
-        }))
+      ? trip.itinerary.flatMap((day) =>
+          (Array.isArray(day.activities) ? day.activities : []).map((activity) => ({
+            name: activity.label,
+            time: activity.time || '',
+            address: activity.description || '',
+          })),
+        ).map((stop, idx) => ({ ...stop, id: idx + 1 }))
       : [],
     hotels: Array.isArray(trip.hotels)
       ? trip.hotels.map((h, idx) => ({

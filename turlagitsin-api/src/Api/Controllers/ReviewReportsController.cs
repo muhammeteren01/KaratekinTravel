@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Api.Helpers;
 using Core.Entities;
 using Core.Repositories;
+using Core.Services;
 using Core.UnitOfWork;
 
 namespace Api.Controllers
@@ -14,18 +15,35 @@ namespace Api.Controllers
     {
         private readonly IReviewReportRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICompanyNotificationService _notifications;
 
-        public ReviewReportsController(IReviewReportRepository repository, IUnitOfWork unitOfWork)
+        public ReviewReportsController(
+            IReviewReportRepository repository,
+            IUnitOfWork unitOfWork,
+            ICompanyNotificationService notifications)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _notifications = notifications;
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<IActionResult> GetAll([FromQuery] string? status = null)
         {
-            var query = _repository.Where(r => true).Include(r => r.Review).AsQueryable();
+            var query = _repository.Where(r => true)
+                .Include(r => r.Review)
+                    .ThenInclude(rv => rv.Trip)
+                .AsQueryable();
+
+            // CompanyAdmin yalnızca kendi turlarına gelen şikayetleri görür.
+            if (!User.IsPlatformAdmin())
+            {
+                var own = User.GetCompanyId();
+                if (own == null) return Forbid();
+                query = query.Where(r => r.Review.Trip.CompanyId == own.Value);
+            }
+
             if (!string.IsNullOrWhiteSpace(status))
                 query = query.Where(r => r.Status == status);
 
@@ -51,6 +69,20 @@ namespace Api.Controllers
 
             await _repository.AddAsync(report);
             await _unitOfWork.SaveChangesAsync();
+
+            // Şikayet edilen değerlendirmenin turu hangi firmaya aitse ona bildir.
+            var context = await _repository.Where(r => r.Id == report.Id)
+                .Include(r => r.Review)
+                    .ThenInclude(rv => rv.Trip)
+                .Select(r => new { r.Review.Trip.CompanyId, r.Review.Trip.Title })
+                .FirstOrDefaultAsync();
+
+            if (context != null)
+            {
+                await _notifications.NotifyReviewReportedAsync(
+                    context.CompanyId, context.Title ?? "Tur", request.Category ?? "Belirtilmedi");
+            }
+
             return Ok(Map(report));
         }
 
@@ -58,9 +90,17 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin,CompanyAdmin")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateReviewReportStatusRequest request)
         {
-            var report = await _repository.Where(r => r.Id == id).FirstOrDefaultAsync();
+            var report = await _repository.Where(r => r.Id == id)
+                .Include(r => r.Review)
+                    .ThenInclude(rv => rv.Trip)
+                .FirstOrDefaultAsync();
+
             if (report == null)
                 return NotFound();
+
+            // Başka şirketin turuna gelen şikayetin durumu değiştirilemez.
+            if (!User.IsPlatformAdmin() && !User.CanAccessCompany(report.Review.Trip.CompanyId))
+                return Forbid();
 
             report.Status = request.Status;
             report.UpdatedAt = DateTime.UtcNow;

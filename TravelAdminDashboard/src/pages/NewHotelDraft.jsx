@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import './NewHotelDraft.css';
 import { createHotelApi, deleteHotelApi, fetchHotelByIdApi, updateHotelApi } from '../services/adminApi';
 import { clearSelectedHotel, getSelectedHotel, setSelectedHotel } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const Checkbox = ({ label, checked, onChange }) => (
   <label className="nhd-checkbox">
@@ -37,7 +38,22 @@ const defaultForm = () => ({
   features: { klima: true, tv: false, wifi: false, balkon: false, minibar: true },
 });
 
+// Görseller base64 olarak API'ye gidiyor; büyük dosya hem isteği hem satırı
+// şişiriyor. Diğer yükleme ekranlarıyla aynı sınır uygulanıyor.
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+// notify bir React kancasından geldiği için modül seviyesinde erişilemez;
+// çağıran bileşen kendi notify'ını parametre olarak geçiyor.
+function rejectOversized(files, notify) {
+  const tooBig = files.filter((f) => f.size > MAX_IMAGE_BYTES);
+  if (tooBig.length) {
+    notify(`En fazla 5MB yükleyebilirsiniz. Çok büyük: ${tooBig.map((f) => f.name).join(', ')}`, 'warning');
+  }
+  return files.filter((f) => f.size <= MAX_IMAGE_BYTES);
+}
+
 const NewHotelDraft = () => {
+  const { notify, confirm } = useFeedback();
   const [hotelId, setHotelId] = useState(null);
   const [form, setForm] = useState(defaultForm());
   const [images, setImages] = useState([]);
@@ -103,7 +119,7 @@ const NewHotelDraft = () => {
   }, []);
 
   const handleFile = async (e) => {
-    const files = Array.from(e.target.files || []);
+    const files = rejectOversized(Array.from(e.target.files || []), notify);
     if (!files.length) return;
     try {
       const slice = files.slice(0, 9 - images.length);
@@ -141,7 +157,7 @@ const NewHotelDraft = () => {
 
   const saveDraft = async () => {
     if (!form.name.trim()) {
-      alert('Otel adı zorunludur.');
+      notify('Otel adı zorunludur.', 'warning');
       return;
     }
 
@@ -156,7 +172,7 @@ const NewHotelDraft = () => {
         setHotelId(created.id);
         setSelectedHotel(created);
       }
-      alert('Taslak kaydedildi.');
+      notify('Taslak kaydedildi.', 'success');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Kayıt başarısız oldu.');
     } finally {
@@ -166,7 +182,12 @@ const NewHotelDraft = () => {
 
   const handleDelete = async () => {
     if (!hotelId) return;
-    const ok = window.confirm('Bu otel kaydını silmek istediğinize emin misiniz?');
+    const ok = await confirm({
+      title: 'Otel kaydı silinsin mi?',
+      message: 'Bu otel kaydı kalıcı olarak silinecek.',
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
     setSaving(true);
     setError('');

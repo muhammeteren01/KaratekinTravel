@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import ProgressSteps from './ProgressSteps';
 import OpenStreetMap from './OpenStreetMap';
 import OpenStreetMapSearch from './OpenStreetMapSearch';
 import './AddTourStep2.css';
 import RouteStops from './RouteStops';
 import TimeInput from './TimeInput';
+import DayPicker from './DayPicker';
+import { getTripDatesFromWizard } from '../utils/tripPayload';
+
+// Oteller henüz girilmemişse gün sayısı bilinmiyor; makul bir üst sınır.
+const MAX_TOUR_DAYS = 14;
 
 const AddTourStep2 = ({ onNext, onBack, formData, setFormData, updateMode = false, updatedStep = null }) => {
   // Step 2 (Rota Oluşturma) artık tarih yönetmiyor; takvim state'i ve
@@ -14,6 +19,26 @@ const AddTourStep2 = ({ onNext, onBack, formData, setFormData, updateMode = fals
   const [dragOverItem, setDragOverItem] = useState(null);
   const [pendingStop, setPendingStop] = useState(null);
   const [pendingTime, setPendingTime] = useState('');
+  // Durak hangi tur gününe düşüyor. Önceden yalnızca saat vardı; birden
+  // fazla gün süren turlarda "09:00" hangi güne aitti belli değildi.
+  const [pendingDay, setPendingDay] = useState(1);
+
+  // Tur süresi otel giriş/çıkış tarihlerinden çıkarılıyor. Sihirbazda
+  // oteller bu adımdan sonra giriliyor olabilir; o durumda gün sayısı
+  // tek gün varsayılıyor ve kullanıcı yine de gün seçebiliyor.
+  const { tourStartDate, tourDayCount } = useMemo(() => {
+    const { dateStart, dateEnd } = getTripDatesFromWizard(formData);
+    if (!dateStart) return { tourStartDate: null, tourDayCount: MAX_TOUR_DAYS };
+
+    const start = new Date(dateStart);
+    const end = dateEnd ? new Date(dateEnd) : start;
+    const diff = Math.round((end - start) / (24 * 3600 * 1000)) + 1;
+
+    return {
+      tourStartDate: start,
+      tourDayCount: Math.min(MAX_TOUR_DAYS, Math.max(1, diff)),
+    };
+  }, [formData]);
   // No time selection in this step
   const [subPendingTimes] = useState({});
 
@@ -38,7 +63,7 @@ const AddTourStep2 = ({ onNext, onBack, formData, setFormData, updateMode = fals
   const handleConfirmAdd = () => {
     if (!pendingStop) return;
     const time = pendingTime && /\d{1,2}:\d{2}/.test(pendingTime) ? pendingTime : undefined;
-    setAddedStops(prev => [...prev, { ...pendingStop, ...(time ? { time } : {}) }]);
+    setAddedStops(prev => [...prev, { ...pendingStop, day: pendingDay, ...(time ? { time } : {}) }]);
     setPendingStop(null);
     setPendingTime('');
   };
@@ -179,7 +204,15 @@ const AddTourStep2 = ({ onNext, onBack, formData, setFormData, updateMode = fals
                             <button type="button" className="sl-clear" onClick={()=>setPendingStop(null)} aria-label="Seçimi temizle">×</button>
                           </div>
                         )}
-                        <TimeInput value={pendingTime} onChange={setPendingTime} />
+                        <div className="route-when-row">
+                          <DayPicker
+                            value={pendingDay}
+                            onChange={setPendingDay}
+                            dayCount={tourDayCount}
+                            startDate={tourStartDate}
+                          />
+                          <TimeInput value={pendingTime} onChange={setPendingTime} />
+                        </div>
                       </div>
                     </div>
                     <div className="route-actions-footer">

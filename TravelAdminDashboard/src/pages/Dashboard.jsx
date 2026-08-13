@@ -11,10 +11,9 @@ import tripHeartIcon from '../assets/icons/trip-heart-icon.svg';
 import tripPlaneIcon from '../assets/icons/trip-plane-icon.svg';
 import tripCarIcon from '../assets/icons/trip-car-icon.svg';
 import {
-  fetchCompanyReportApi,
   fetchFinanceReportApi,
   fetchTripReportApi,
-  fetchTripsApi,
+  fetchManagedTripsApi,
 } from '../services/adminApi';
 import { formatCurrency, getMonthRanges, toApiDate } from '../utils/reportDates';
 
@@ -41,7 +40,6 @@ const Dashboard = ({ isSidebarCollapsed }) => {
   const [error, setError] = useState('');
   const [financeReport, setFinanceReport] = useState(null);
   const [tripReport, setTripReport] = useState(null);
-  const [companyReport, setCompanyReport] = useState(null);
   const [trips, setTrips] = useState([]);
   const [monthlyFinance, setMonthlyFinance] = useState(FALLBACK_REVENUE);
 
@@ -57,11 +55,12 @@ const Dashboard = ({ isSidebarCollapsed }) => {
         const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
         const ranges = getMonthRanges(6);
 
-        const [finance, trip, company, tripList, ...monthlyReports] = await Promise.all([
+        // Şirket raporu (platform geneli) kaldırıldı: CompanyAdmin'e kapalı ve
+        // memnuniyet oranı zaten tripReport.averageRating'den geliyor.
+        const [finance, trip, tripList, ...monthlyReports] = await Promise.all([
           fetchFinanceReportApi(toApiDate(monthStart), toApiDate(now)),
           fetchTripReportApi(toApiDate(monthStart), toApiDate(now)),
-          fetchCompanyReportApi(toApiDate(monthStart), toApiDate(now)),
-          fetchTripsApi(),
+          fetchManagedTripsApi(),
           ...ranges.map(({ start, end }) => fetchFinanceReportApi(toApiDate(start), toApiDate(end)).catch(() => null)),
         ]);
 
@@ -69,7 +68,6 @@ const Dashboard = ({ isSidebarCollapsed }) => {
 
         setFinanceReport(finance);
         setTripReport(trip);
-        setCompanyReport(company);
         setTrips(Array.isArray(tripList) ? tripList : []);
 
         setMonthlyFinance(
@@ -95,7 +93,7 @@ const Dashboard = ({ isSidebarCollapsed }) => {
 
   const statsData = useMemo(() => {
     const earnings = financeReport?.netProfit ?? financeReport?.totalRevenue;
-    const rating = Number(tripReport?.averageRating ?? companyReport?.averageCompanyRating ?? 0);
+    const rating = Number(tripReport?.averageRating ?? 0);
     const reservations = tripReport?.totalReservations ?? 0;
 
     return [
@@ -112,7 +110,7 @@ const Dashboard = ({ isSidebarCollapsed }) => {
         value: String(reservations),
       },
     ];
-  }, [financeReport, tripReport, companyReport]);
+  }, [financeReport, tripReport]);
 
   const profileData = useMemo(() => {
     const topTrips = tripReport?.topTrips || [];

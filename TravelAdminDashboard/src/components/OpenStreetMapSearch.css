@@ -1,0 +1,12 @@
+/**
+ * Arama kutusu yükleniyor animasyonu.
+ *
+ * Bu keyframes bileşenin içinde <style jsx> ile tanımlıydı. Projede
+ * styled-jsx kurulu değil; React etiketi olduğu gibi DOM'a basıyor ve
+ * "Received `true` for a non-boolean attribute `jsx`" uyarısı veriyordu.
+ * Ayrıca stil kapsamlanmadığı için zaten global olarak uygulanıyordu.
+ */
+@keyframes osm-search-spin {
+  0%   { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}

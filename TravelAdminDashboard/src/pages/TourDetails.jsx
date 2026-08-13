@@ -8,6 +8,7 @@ import {
   updateTripDepartureApi,
 } from '../services/adminApi';
 import { getSelectedTour, getSelectedTripId, setSelectedSubTour, setSelectedTour } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -81,6 +82,7 @@ const mapDepartureRow = (departure, vehicleMap) => {
 };
 
 const TourDetails = ({ isSidebarCollapsed }) => {
+  const { notify, confirm } = useFeedback();
   const [trip, setTrip] = useState(null);
   const [subDates, setSubDates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -226,9 +228,12 @@ const TourDetails = ({ isSidebarCollapsed }) => {
   const activeCount = subDates.filter((row) => row.status === 'active').length;
 
   const confirmAndMakeInactive = async () => {
-    const ok = window.confirm(
-      'Tur yayından kaldırılacak ve tüm alt turların durumu pasif yapılacak. Emin misiniz?',
-    );
+    const ok = await confirm({
+      title: 'Tur yayından kaldırılsın mı?',
+      message: 'Tur kullanıcılara görünmeyecek ve tüm alt turların durumu pasif yapılacak.',
+      confirmLabel: 'Evet, yayından kaldır',
+      danger: true,
+    });
     if (!ok) return;
 
     setBulkUpdating(true);
@@ -242,7 +247,7 @@ const TourDetails = ({ isSidebarCollapsed }) => {
       setTrip((prev) => (prev ? { ...prev, isPublished: false } : prev));
       setSubDates((prev) => prev.map((row) => ({ ...row, status: 'inactive' })));
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Durum güncellenemedi.');
+      notify(err instanceof Error ? err.message : 'Durum güncellenemedi.', 'error');
     } finally {
       setBulkUpdating(false);
     }
@@ -254,7 +259,7 @@ const TourDetails = ({ isSidebarCollapsed }) => {
       await updateTripApi(tripId, { isPublished: true });
       setTrip((prev) => (prev ? { ...prev, isPublished: true } : prev));
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Tur yayınlanamadı.');
+      notify(err instanceof Error ? err.message : 'Tur yayınlanamadı.', 'error');
     } finally {
       setBulkUpdating(false);
     }
@@ -267,7 +272,7 @@ const TourDetails = ({ isSidebarCollapsed }) => {
       await updateTripApi(tripId, { isFeatured: next });
       setTrip((prev) => (prev ? { ...prev, isFeatured: next } : prev));
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Öne çıkarma durumu güncellenemedi.');
+      notify(err instanceof Error ? err.message : 'Öne çıkarma durumu güncellenemedi.', 'error');
     } finally {
       setBulkUpdating(false);
     }

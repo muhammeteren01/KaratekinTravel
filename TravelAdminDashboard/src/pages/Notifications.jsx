@@ -6,6 +6,7 @@ import starIcon from '../assets/icons/people-stats-icon.svg';
 import profileIcon from '../assets/icons/user-profile.svg';
 import checkIcon from '../assets/icons/check-icon.svg';
 import { archiveNotificationApi, fetchMyNotificationsApi, markNotificationReadApi } from '../services/adminApi';
+import { useFeedback } from '../components/feedback/feedbackContext';
 // Use inline SVG for three-dots menu icon (no external asset needed)
 
 // Helpers: extract initials from a quoted name in title (e.g., “Şakir Ayıtkı”) or fallback
@@ -126,6 +127,7 @@ const NotificationItem = ({ item, onToggleRead }) => {
 };
 
 const Notifications = () => {
+  const { notify } = useFeedback();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -170,7 +172,7 @@ const Notifications = () => {
       .then(() => {
         setItems((prev) => prev.filter((n) => n.id !== id));
       })
-      .catch((err) => alert(err instanceof Error ? err.message : 'Bildirim güncellenemedi.'));
+      .catch((err) => notify(err instanceof Error ? err.message : 'Bildirim güncellenemedi.', 'error'));
   };
 
   return (
@@ -178,9 +180,25 @@ const Notifications = () => {
       <div className="ntf-card">
         {error && <div className="table-error">{error}</div>}
         <ul className="ntf-list" role="list">
-          {loading ? (
+          {loading && (
             <li role="listitem"><div className="ntf-item">Bildirimler yükleniyor...</div></li>
-          ) : items.map((item) => (
+          )}
+
+          {/* Kayıt yokken sayfa tamamen boş kalıyordu; ekranda başlık dışında
+              hiçbir şey görünmüyor, yüklenme mi bittiği belli olmuyordu. */}
+          {!loading && !error && items.length === 0 && (
+            <li role="listitem">
+              <div className="ntf-empty">
+                <p className="ntf-empty-title">Henüz bildiriminiz yok</p>
+                <p className="ntf-empty-text">
+                  Yeni rezervasyon, iptal, iade talebi, tur değerlendirmesi ve şikayetler
+                  ile haftalık/aylık analiz özetleri burada listelenir.
+                </p>
+              </div>
+            </li>
+          )}
+
+          {!loading && items.map((item) => (
             <li key={item.id} role="listitem">
               <NotificationItem item={item} onToggleRead={handleToggleRead} />
             </li>

@@ -3,6 +3,7 @@ import './TourManagement.css';
 import './HotelDrafts.css';
 import { deleteHotelApi, fetchHotelsApi } from '../services/adminApi';
 import { clearSelectedHotel, setSelectedHotel } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const PLACEHOLDER_IMAGE = '/icons/image-picture-icon.svg';
 
@@ -31,6 +32,7 @@ const HotelCard = ({ hotel, onEdit, onDelete }) => {
 };
 
 const HotelDrafts = () => {
+  const { notify, confirm } = useFeedback();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [province, setProvince] = useState('Tümü');
@@ -126,13 +128,18 @@ const HotelDrafts = () => {
   };
 
   const handleDelete = async (hotel) => {
-    const ok = window.confirm(`"${hotel.name}" otel kaydını silmek istediğinize emin misiniz?`);
+    const ok = await confirm({
+      title: 'Otel kaydı silinsin mi?',
+      message: `"${hotel.name}" kaydı kalıcı olarak silinecek.`,
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
     try {
       await deleteHotelApi(hotel.id);
       setHotels((prev) => prev.filter((item) => item.id !== hotel.id));
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.');
+      notify(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.', 'error');
     }
   };
 

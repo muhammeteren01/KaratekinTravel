@@ -61,6 +61,25 @@ namespace Service.Service
             return items.Select(MapToDto).ToList();
         }
 
+        public async Task<List<RefundRequestDto>> GetByCompanyAsync(Guid companyId)
+        {
+            // İade -> Rezervasyon -> Tur -> Şirket zinciriyle kapsamlanıyor.
+            var items = await _repository.Where(r => r.Reservation.Trip.CompanyId == companyId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return items.Select(MapToDto).ToList();
+        }
+
+        public async Task<Guid?> GetOwnerCompanyIdAsync(Guid refundId)
+        {
+            var item = await _repository.Where(r => r.Id == refundId)
+                .Select(r => new { CompanyId = (Guid?)r.Reservation.Trip.CompanyId })
+                .FirstOrDefaultAsync();
+
+            return item?.CompanyId;
+        }
+
         public async Task<RefundRequestDto?> UpdateStatusAsync(Guid id, UpdateRefundStatusDto dto)
         {
             var entity = await _repository.Where(r => r.Id == id).FirstOrDefaultAsync();

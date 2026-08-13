@@ -12,10 +12,17 @@ namespace Api.Controllers
     public class ReviewsController : ControllerBase
     {
         private readonly IReviewService _reviewService;
+        private readonly ITripService _tripService;
+        private readonly ICompanyNotificationService _notifications;
 
-        public ReviewsController(IReviewService reviewService)
+        public ReviewsController(
+            IReviewService reviewService,
+            ITripService tripService,
+            ICompanyNotificationService notifications)
         {
             _reviewService = reviewService;
+            _tripService = tripService;
+            _notifications = notifications;
         }
 
         [HttpGet]
@@ -52,6 +59,14 @@ namespace Api.Controllers
 
             var userId = User.GetUserId();
             var review = await _reviewService.CreateReviewAsync(dto, userId);
+
+            // Değerlendirme yazıldığında firmanın haberi olsun.
+            var trip = await _tripService.GetTripByIdAsync(dto.TripId);
+            if (trip != null && Guid.TryParse(trip.CompanyId, out var companyId))
+            {
+                await _notifications.NotifyNewReviewAsync(companyId, trip.Title ?? "Tur", dto.Rating);
+            }
+
             return CreatedAtAction(nameof(GetById), new { id = review.Id }, review);
         }
 

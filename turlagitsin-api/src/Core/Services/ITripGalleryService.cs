@@ -8,5 +8,8 @@ namespace Core.Services
         Task<List<GalleryImageDto>> GetByTripIdAsync(Guid tripId);
         Task<GalleryImageDto> AddAsync(UploadImageDto dto);
         Task<bool> DeleteAsync(Guid id);
+
+        /// <summary>Yetki kontrolü için görselin bağlı olduğu tur.</summary>
+        Task<Guid?> GetTripIdAsync(Guid imageId);
     }
 }

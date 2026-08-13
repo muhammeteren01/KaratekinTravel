@@ -1121,6 +1121,12 @@
   background: repeating-linear-gradient(135deg, #d5dde8, #d5dde8 3px, #e8eef6 3px, #e8eef6 6px);
 }
 
+/* Kapı / merdiven boşluğu: koltuk sayılmayan alan. */
+.nvd-bus-cell.is-door {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+}
+
 .nvd-bus-cell.is-empty {
   background: #fff;
   border: 1px dashed #c9d2df;

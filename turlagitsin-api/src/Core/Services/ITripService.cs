@@ -7,7 +7,19 @@ namespace Core.Services
 {
     public interface ITripService : IService<Trip>
     {
+        /// <summary>
+        /// Herkese açık katalog: yalnızca yayındaki turlar.
+        /// </summary>
         Task<List<TripResponseDto>> GetAllTripsAsync();
+
+        /// <summary>
+        /// Panel listesi: verilen şirketin turları, taslaklar dahil.
+        /// companyId null ise (platform admini) tüm şirketler döner.
+        /// </summary>
+        Task<List<TripResponseDto>> GetManagedTripsAsync(Guid? companyId);
+
+        /// <summary>Yetki kontrolü için turun sahibi şirket.</summary>
+        Task<Guid?> GetOwnerCompanyIdAsync(Guid tripId);
         Task<PagedResultDto<TripResponseDto>> SearchTripsAsync(TripSearchDto search);
         Task<TripResponseDto?> GetTripByIdAsync(Guid id);
         Task<TripResponseDto> CreateTripAsync(CreateTripDto dto);

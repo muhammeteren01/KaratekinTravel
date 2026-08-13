@@ -335,6 +335,70 @@
   border: 1px dashed #c9d2df;
 }
 
+/* Kapı / merdiven boşluğu: koltuk sayılmayan, yolcunun indiği alan. */
+.vd-door-cell {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  color: #b45309;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vd-door-cell:hover {
+  background: #fde68a;
+}
+
+/* Kapı fırçası etkinken koridor da tıklanabilir olduğunu göster. */
+.vd-aisle.is-paintable {
+  cursor: pointer;
+  outline: 1px dashed #f59e0b;
+  outline-offset: -2px;
+}
+
+.vd-aisle.is-paintable:hover {
+  background: #fef3c7;
+}
+
+/* Fırça seçici */
+.vd-brushes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.vd-brush {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid #d5dde8;
+  background: #fff;
+  color: var(--vd-muted, #667085);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vd-brush:hover {
+  border-color: var(--vd-seat);
+}
+
+.vd-brush.is-active {
+  background: var(--vd-seat);
+  border-color: var(--vd-seat);
+  color: #fff;
+}
+
+.vd-brush:focus-visible {
+  outline: 2px solid var(--vd-seat);
+  outline-offset: 2px;
+}
+
 .vd-legend {
   display: flex;
   gap: 16px;
@@ -354,6 +418,7 @@
 
 .vd-dot.seat { background: var(--vd-seat); }
 .vd-dot.aisle { background: #d5dde8; }
+.vd-dot.door { background: #fef3c7; border: 1px solid #f59e0b; }
 .vd-dot.empty { background: #fff; border: 1px dashed #c9d2df; }
 
 @media (max-width: 980px) {

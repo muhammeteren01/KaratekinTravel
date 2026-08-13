@@ -23,7 +23,10 @@ const HotelPreviewCard = ({ index, hotel, onRemove, onDetails }) => {
 };
 
 const AddTourStep3Hotel = ({ onNext, onBack, formData, setFormData, updateMode = false, updatedStep = null }) => {
-  const [selectedHotel, setSelectedHotel] = useState('');
+  // Önceden yalnızca açılır listedeki etiket metni tutuluyordu; otelin
+  // yıldızı, adresi, telefonu ve olanakları kayıtta olmasına rağmen tura
+  // hiç geçmiyordu. Artık otel kaydının kendisi seçiliyor.
+  const [selectedHotel, setSelectedHotel] = useState(null);
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [note, setNote] = useState('');
@@ -65,10 +68,23 @@ const AddTourStep3Hotel = ({ onNext, onBack, formData, setFormData, updateMode =
 
   const addHotel = () => {
     if (!selectedHotel || !checkIn || !checkOut) return;
-    const newHotel = { id: Date.now(), name: selectedHotel, checkIn, checkOut, note };
+    const newHotel = {
+      id: Date.now(),
+      hotelId: selectedHotel.id,
+      name: selectedHotel.name,
+      stars: selectedHotel.stars ?? selectedHotel.rating ?? 0,
+      address: [selectedHotel.address, selectedHotel.district, selectedHotel.city].filter(Boolean).join(', ') || null,
+      phone: selectedHotel.phone || null,
+      website: selectedHotel.website || null,
+      mapLink: selectedHotel.mapLink || null,
+      amenities: Array.isArray(selectedHotel.amenities) ? selectedHotel.amenities : [],
+      checkIn,
+      checkOut,
+      note,
+    };
     const next = [...hotels, newHotel];
     setHotels(next);
-    setSelectedHotel('');
+    setSelectedHotel(null);
     setCheckIn('');
     setCheckOut('');
     setNote('');
@@ -82,8 +98,8 @@ const AddTourStep3Hotel = ({ onNext, onBack, formData, setFormData, updateMode =
   };
 
   // Filter list by query
-  const hotelLabels = savedHotels.map(formatHotelLabel);
-  const filteredHotels = hotelLabels.filter((h) => h.toLowerCase().includes(query.toLowerCase()));
+  const filteredHotels = savedHotels.filter((h) =>
+    formatHotelLabel(h).toLocaleLowerCase('tr').includes(query.toLocaleLowerCase('tr')));
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -124,7 +140,7 @@ const AddTourStep3Hotel = ({ onNext, onBack, formData, setFormData, updateMode =
                         setNoAccommodation(v => {
                           const next = !v;
                           if (next) {
-                            setSelectedHotel('');
+                            setSelectedHotel(null);
                             setQuery('');
                             setIsOpen(false);
                           }
@@ -147,7 +163,7 @@ const AddTourStep3Hotel = ({ onNext, onBack, formData, setFormData, updateMode =
                     aria-autocomplete="list"
                     aria-controls="hotel-dropdown-list"
                     placeholder="Otel adı veya il, ilçe adına göre aratınız..."
-                    value={isOpen ? query : (selectedHotel || '')}
+                    value={isOpen ? query : (selectedHotel ? formatHotelLabel(selectedHotel) : '')}
                     onChange={(e)=>{ if (!noAccommodation) { setQuery(e.target.value); setIsOpen(true); } }}
                     onFocus={()=> { if (!noAccommodation) setIsOpen(true); }}
                     disabled={noAccommodation || hotelsLoading}
@@ -166,19 +182,20 @@ const AddTourStep3Hotel = ({ onNext, onBack, formData, setFormData, updateMode =
 
                   {isOpen && !noAccommodation && (
                     <div id="hotel-dropdown-list" className="hotel-dropdown" role="listbox">
-                      {(query ? filteredHotels : hotelLabels).map((h) => (
+                      {(query ? filteredHotels : savedHotels).map((h) => (
                         <div
-                          key={h}
+                          key={h.id}
                           role="option"
-                          aria-selected={selectedHotel === h}
-                          className={`hotel-option ${selectedHotel === h ? 'selected' : ''}`}
+                          aria-selected={selectedHotel?.id === h.id}
+                          className={`hotel-option ${selectedHotel?.id === h.id ? 'selected' : ''}`}
                           onMouseDown={(e)=> e.preventDefault()}
                           onClick={()=> { setSelectedHotel(h); setIsOpen(false); setQuery(''); }}
                         >
-                          {h}
+                          {formatHotelLabel(h)}
+                          {h.stars > 0 && <span className="hotel-option-stars">{'★'.repeat(Math.min(5, h.stars))}</span>}
                         </div>
                       ))}
-                      {((query ? filteredHotels : hotelLabels).length === 0) && (
+                      {((query ? filteredHotels : savedHotels).length === 0) && (
                         <div className="hotel-option disabled" aria-disabled="true">
                           {hotelsLoading ? 'Yükleniyor...' : 'Sonuç bulunamadı'}
                         </div>

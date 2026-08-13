@@ -1024,3 +1024,10 @@
     max-width: 300px;
   }
 } 
+/* Gün seçici ve saat alanı yan yana; dar ekranda alt alta. */
+.route-when-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}

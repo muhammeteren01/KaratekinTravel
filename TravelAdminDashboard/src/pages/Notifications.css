@@ -83,3 +83,26 @@
 @media (prefers-reduced-motion: reduce) {
   .ntf-item { transition: none; }
 }
+
+/* Bildirim yokken sayfa yalnızca başlıktan ibaret kalıyordu. */
+.ntf-empty {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.ntf-empty-title {
+  margin: 0 0 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #344054;
+}
+
+.ntf-empty-text {
+  margin: 0 auto;
+  max-width: 460px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #718EBF;
+}

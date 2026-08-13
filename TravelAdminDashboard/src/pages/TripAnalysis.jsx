@@ -5,7 +5,7 @@ import StatCard from '../components/StatCard';
 import TripTable from '../components/TripTable';
 import TripCategoryAnalysis from '../components/TripCategoryAnalysis';
 import TripLineAnalysis from '../components/TripLineAnalysis';
-import { fetchTripReportApi, fetchTripsApi } from '../services/adminApi';
+import { fetchTripReportApi, fetchManagedTripsApi } from '../services/adminApi';
 import { getRangeForFilter, toApiDate } from '../utils/reportDates';
 
 const TripAnalysis = () => {
@@ -26,7 +26,7 @@ const TripAnalysis = () => {
 
         const [report, tripList] = await Promise.all([
           fetchTripReportApi(toApiDate(start), toApiDate(end)),
-          fetchTripsApi(),
+          fetchManagedTripsApi(),
         ]);
 
         if (!alive) return;

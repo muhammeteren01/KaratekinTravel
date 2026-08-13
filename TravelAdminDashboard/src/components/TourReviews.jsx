@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './TourReviews.css';
 import ReviewAnalysisChart from './ReviewAnalysisChart';
 import AllReviewsList from './AllReviewsList';
-import { fetchReviewsApi, fetchTripsApi } from '../services/adminApi';
+import { fetchReviewsApi, fetchManagedTripsApi } from '../services/adminApi';
 import { formatDisplayDateTime } from '../utils/reportDates';
 
 const TourReviews = () => {
@@ -20,7 +20,7 @@ const TourReviews = () => {
 
         const [reviews, trips] = await Promise.all([
           fetchReviewsApi(),
-          fetchTripsApi(),
+          fetchManagedTripsApi(),
         ]);
 
         if (!alive) return;

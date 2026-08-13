@@ -10,6 +10,7 @@ import {
   updateTripDepartureApi,
 } from '../services/adminApi';
 import { clearSelectedSubTour, getSelectedDepartureId, getSelectedTripId, setSelectedSubTour } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -39,6 +40,7 @@ const formatVehicleOption = (vehicle) =>
   `${vehicle.busType} ${vehicle.model || 'Otobüs'} - ${vehicle.plate}`;
 
 const UpdateSubDate = ({ isSidebarCollapsed }) => {
+  const { notify, confirm } = useFeedback();
   const todayStr = useMemo(() => {
     const d = new Date();
     return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} - ${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -118,13 +120,13 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
 
   const submit = async () => {
     if (!departureId) {
-      alert('Alt tur seçimi bulunamadı.');
+      notify('Alt tur seçimi bulunamadı.', 'error');
       return;
     }
 
     const parsed = parseDisplayDate(form.datetime);
     if (!parsed) {
-      alert('Geçerli bir tarih ve saat seçiniz.');
+      notify('Geçerli bir tarih ve saat seçiniz.', 'warning');
       return;
     }
 
@@ -161,7 +163,12 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
 
   const handleDelete = async () => {
     if (!departureId) return;
-    const ok = window.confirm(`"${titleDate || 'Seçili'}" tarihli alt turu silmek istediğinize emin misiniz?`);
+    const ok = await confirm({
+      title: 'Alt tarih silinsin mi?',
+      message: `“${titleDate || 'Seçili'}” tarihli alt tur kalıcı olarak silinecek.`,
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
 
     setSaving(true);
@@ -204,7 +211,10 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
                   }));
                 }}
               >
-                {!vehicles.length && <option value="">Araç bulunamadı</option>}
+                {/* Boş seçenek şart: form.vehicleId başlangıçta '' iken tarayıcı
+                    listenin ilk aracını gösteriyor, kayıt ise vehicleId=null
+                    gidiyordu. Kullanıcı seçtiğini sandığı araç kaydedilmiyordu. */}
+                <option value="">{vehicles.length ? 'Araç seçiniz' : 'Araç bulunamadı'}</option>
                 {vehicles.map((vehicle) => (
                   <option key={vehicle.id} value={vehicle.id}>
                     {formatVehicleOption(vehicle)}
@@ -212,14 +222,13 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
                 ))}
               </select>
             </div>
-            <button type="button" className="nsd-bus-btn">Otobüs Seç</button>
           </div>
         </div>
 
         <div className="nsd-field">
           <label className="nsd-label">Önizleme <span className="nsd-sub">({selectedVehicle?.busType || '2+1'} Otobüs)</span></label>
           <div className="nsd-preview">
-            <VehicleSeatPreview />
+            <VehicleSeatPreview vehicle={selectedVehicle} />
           </div>
         </div>
 

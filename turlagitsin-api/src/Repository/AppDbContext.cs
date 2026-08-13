@@ -37,6 +37,8 @@ namespace Repository
         public DbSet<CalendarTrip> CalendarTrips { get; set; }
         public DbSet<TripDeparture> TripDepartures { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<VehicleOperation> VehicleOperations { get; set; }
+        public DbSet<BankChangeRequest> BankChangeRequests { get; set; }
         public DbSet<SeatLayout> SeatLayouts { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<RefundRequest> RefundRequests { get; set; }
@@ -73,6 +75,7 @@ namespace Repository
             modelBuilder.Entity<UserNotification>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<TripDeparture>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<Vehicle>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<VehicleOperation>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<SeatLayout>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<Coupon>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<RefundRequest>().HasQueryFilter(e => !e.IsDeleted);
@@ -457,6 +460,37 @@ namespace Repository
             });
 
             // Vehicle Configuration
+            // Vehicle Operation Configuration
+            modelBuilder.Entity<VehicleOperation>(entity =>
+            {
+                entity.ToTable("vehicle_operations");
+                entity.HasIndex(e => e.VehicleId);
+                entity.HasIndex(e => e.OperationType);
+                entity.HasIndex(e => e.OccurredAt);
+                entity.HasIndex(e => e.IsDeleted);
+                entity.HasQueryFilter(e => !e.IsDeleted);
+
+                entity.HasOne(e => e.Vehicle)
+                    .WithMany(e => e.Operations)
+                    .HasForeignKey(e => e.VehicleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Bank Change Request Configuration
+            modelBuilder.Entity<BankChangeRequest>(entity =>
+            {
+                entity.ToTable("bank_change_requests");
+                entity.HasIndex(e => e.CompanyId);
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => e.IsDeleted);
+                entity.HasQueryFilter(e => !e.IsDeleted);
+
+                entity.HasOne(e => e.Company)
+                    .WithMany()
+                    .HasForeignKey(e => e.CompanyId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
             modelBuilder.Entity<Vehicle>(entity =>
             {
                 entity.ToTable("vehicles");

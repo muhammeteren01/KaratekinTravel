@@ -8,13 +8,25 @@ import {
 import {
   SEAT_TEMPLATES,
   buildSeatGrid,
+  encodeCellType,
   parseLayoutGrid,
   countSeats,
   seatNumbers,
 } from '../utils/seatLayoutTemplates';
 
+/**
+ * Fırça modları. Önceden yalnızca koltuk açıp kapatılabiliyordu; orta kapı
+ * ve merdiven boşluğu tanımlanamadığı için o alan da koltuk sayılıyordu.
+ */
+const BRUSHES = [
+  { id: 'seat', label: 'Koltuk', hint: 'Tıklanan hücreye koltuk koyar / kaldırır' },
+  { id: 'door', label: 'Kapı / Merdiven', hint: 'Orta kapı ve merdiven boşluğunu işaretler' },
+  { id: 'empty', label: 'Boşluk', hint: 'Hücreyi boşaltır' },
+];
+
 const VehicleDesign = () => {
   const [templateId, setTemplateId] = useState('2plus1');
+  const [brush, setBrush] = useState('seat');
   const [designName, setDesignName] = useState('');
   const [capacity, setCapacity] = useState('46');
   const [grid, setGrid] = useState(() => buildSeatGrid(SEAT_TEMPLATES[0], 46).grid);
@@ -94,12 +106,37 @@ const VehicleDesign = () => {
     setCapacity(String(parsed.capacity || layout.totalSeats || countSeats(parsed.grid)));
   };
 
-  const toggleCell = (rowIndex, colIndex) => {
+  /**
+   * Seçili fırçaya göre hücreyi boyar.
+   *
+   * Kapı fırçası koridor hücrelerine de uygulanabiliyor: orta kapı çoğu
+   * otobüste koridorun tam ortasında. Aynı hücreye ikinci kez tıklamak
+   * boyamayı geri alıyor.
+   */
+  const paintCell = (rowIndex, colIndex) => {
     setGrid((prev) => {
       const next = prev.map((row) => [...row]);
       const cell = next[rowIndex][colIndex];
+
+      if (brush === 'door') {
+        // Kapı kaldırılınca hücre eski hâline dönmeli: koridor sütunuysa
+        // koridor, değilse boş.
+        const aisleColumn = meta.seatsLeft;
+        next[rowIndex][colIndex] = cell === 'door'
+          ? (colIndex === aisleColumn ? 'aisle' : 'empty')
+          : 'door';
+        return next;
+      }
+
+      // Koltuk ve boşluk fırçaları koridora dokunmuyor.
       if (cell === 'aisle') return prev;
-      next[rowIndex][colIndex] = cell === 'seat' ? 'empty' : 'seat';
+
+      if (brush === 'seat') {
+        next[rowIndex][colIndex] = cell === 'seat' ? 'empty' : 'seat';
+      } else {
+        next[rowIndex][colIndex] = 'empty';
+      }
+
       return next;
     });
   };
@@ -125,7 +162,7 @@ const VehicleDesign = () => {
           index: r * meta.cols + c,
           row: r,
           col: c,
-          type: type === 'seat' ? 'koltuk' : type === 'aisle' ? 'koridor' : 'empty',
+          type: encodeCellType(type),
         });
       });
     });
@@ -294,7 +331,22 @@ const VehicleDesign = () => {
         <section className="vd-preview-panel">
           <div className="vd-preview-header">
             <h2>Önizleme</h2>
-            <p>Koltuklara tıklayarak tek hücre aç/kapatabilirsiniz. Koridor sabit kalır.</p>
+            <p>Bir fırça seçin, sonra hücrelere tıklayın. Kapı fırçası koridora da uygulanabilir.</p>
+          </div>
+
+          <div className="vd-brushes" role="group" aria-label="Düzenleme fırçası">
+            {BRUSHES.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`vd-brush ${brush === item.id ? 'is-active' : ''}`}
+                onClick={() => setBrush(item.id)}
+                aria-pressed={brush === item.id}
+                title={item.hint}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
 
           <div className="vd-bus">
@@ -309,16 +361,42 @@ const VehicleDesign = () => {
               {grid.map((row, r) => (
                 <div className="vd-bus-row" key={`row-${r}`}>
                   {row.map((cell, c) => {
-                    if (cell === 'aisle') {
-                      return <div key={`${r}-${c}`} className="vd-cell vd-aisle" title="Koridor" />;
+                    if (cell === 'door') {
+                      return (
+                        <button
+                          key={`${r}-${c}`}
+                          type="button"
+                          className="vd-cell vd-door-cell"
+                          onClick={() => paintCell(r, c)}
+                          title="Kapı / merdiven boşluğu — kaldırmak için kapı fırçasıyla tıklayın"
+                        >
+                          <span aria-hidden>⇱</span>
+                        </button>
+                      );
                     }
+
+                    // Koridor yalnızca kapı fırçasıyla düzenlenebiliyor.
+                    if (cell === 'aisle') {
+                      return brush === 'door' ? (
+                        <button
+                          key={`${r}-${c}`}
+                          type="button"
+                          className="vd-cell vd-aisle is-paintable"
+                          onClick={() => paintCell(r, c)}
+                          title="Koridor — kapı eklemek için tıklayın"
+                        />
+                      ) : (
+                        <div key={`${r}-${c}`} className="vd-cell vd-aisle" title="Koridor" />
+                      );
+                    }
+
                     const num = numbers[r]?.[c];
                     return (
                       <button
                         key={`${r}-${c}`}
                         type="button"
                         className={`vd-cell vd-seat ${cell === 'seat' ? 'is-seat' : 'is-empty'}`}
-                        onClick={() => toggleCell(r, c)}
+                        onClick={() => paintCell(r, c)}
                         title={cell === 'seat' ? `Koltuk ${num}` : 'Boş — tıkla ekle'}
                       >
                         {cell === 'seat' ? num : '+'}
@@ -334,6 +412,7 @@ const VehicleDesign = () => {
           <div className="vd-legend">
             <span><i className="vd-dot seat" /> Koltuk</span>
             <span><i className="vd-dot aisle" /> Koridor</span>
+            <span><i className="vd-dot door" /> Kapı / Merdiven</span>
             <span><i className="vd-dot empty" /> Boş</span>
           </div>
         </section>

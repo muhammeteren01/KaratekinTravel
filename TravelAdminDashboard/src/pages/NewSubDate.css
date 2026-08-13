@@ -8,7 +8,10 @@
 .nsd-select select { width:100%; appearance:none; -webkit-appearance:none; -moz-appearance:none; border:1px solid #E5E7EB; border-radius:8px; padding:10px 36px 10px 12px; background:#fff; outline:none; }
 .nsd-select::after { content:""; position:absolute; right:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; background:url('/icons/chevron-down-icon.svg') no-repeat center/14px; opacity:0.8; pointer-events:none; }
 .nsd-bus-btn { background:#24BAEC; color:#fff; border:none; border-radius:8px; padding:10px 14px; font-weight:600; }
-.nsd-preview { background:#E5E7EB; border:1px solid #D1D5DB; border-radius:12px; padding:12px; }
+/* 48 koltuklu bir düzen tüm sayfayı uzatıyor, altındaki durum/açıklama
+   alanları ve kaydet düğmesi ekranın çok altına düşüyordu. Önizleme kendi
+   içinde kaysın. */
+.nsd-preview { background:#E5E7EB; border:1px solid #D1D5DB; border-radius:12px; padding:12px; max-height:340px; overflow-y:auto; }
 
 /* Seat preview */
 .nsd-seat-legend { display:flex; gap:8px; margin-bottom:8px; }

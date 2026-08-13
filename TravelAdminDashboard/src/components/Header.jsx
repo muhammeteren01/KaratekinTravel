@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Header.css';
+import { fetchMyNotificationsApi } from '../services/adminApi';
 
 // Import icons
 import settingsGearIcon from '../assets/icons/settings-gear-icon.svg';
@@ -14,6 +15,36 @@ const Header = ({
   onSettingsClick = null,
   onNotificationsClick = null,
 }) => {
+  // Okunmamış bildirim sayısı. Zil düğmesi bildirim sayfasını açıyordu ama
+  // yeni bir şey olup olmadığı düğmeye basmadan anlaşılmıyordu.
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    let alive = true;
+
+    const load = () => {
+      fetchMyNotificationsApi()
+        .then((list) => {
+          if (!alive) return;
+          const rows = Array.isArray(list) ? list : (list?.recent || []);
+          setUnreadCount(rows.filter((n) => !n.isRead && !n.isArchived).length);
+        })
+        .catch(() => {
+          // Bildirim sayısı ikincil bilgi; hata başlığı bozmasın.
+          if (alive) setUnreadCount(0);
+        });
+    };
+
+    load();
+    // Sayfa yenilenmeden gelen bildirimler için düzenli tazeleme.
+    const timer = setInterval(load, 60000);
+
+    return () => {
+      alive = false;
+      clearInterval(timer);
+    };
+  }, []);
+
   return (
     <div className="hd-header">
       <div className="hd-header-content">
@@ -42,8 +73,15 @@ const Header = ({
             <button className="hd-header-icon-btn" onClick={onSettingsClick}>
               <img src={settingsGearIcon} alt="Settings" className="hd-header-icon" />
             </button>
-            <button className="hd-header-icon-btn" onClick={onNotificationsClick}>
-              <img src={notificationIcon} alt="Notifications" className="hd-header-icon" />
+            <button
+              className="hd-header-icon-btn"
+              onClick={onNotificationsClick}
+              aria-label={unreadCount > 0 ? `Bildirimler, ${unreadCount} okunmamış` : 'Bildirimler'}
+            >
+              <img src={notificationIcon} alt="" className="hd-header-icon" />
+              {unreadCount > 0 && (
+                <span className="hd-badge" aria-hidden>{unreadCount > 99 ? '99+' : unreadCount}</span>
+              )}
             </button>
           </div>
           <div className="hd-profile-avatar">

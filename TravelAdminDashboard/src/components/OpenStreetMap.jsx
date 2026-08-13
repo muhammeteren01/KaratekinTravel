@@ -10,6 +10,11 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+// Bileşen içindeydi ama effect'ten, yani tanımından önce çağrılıyordu.
+// Prop ya da state kullanmadığı için modül seviyesine taşındı.
+const MARKER_COLORS = ['#6FCF97', '#F2994A', '#DC1500', '#24BAEC', '#9B59B6'];
+const getMarkerColor = (index) => MARKER_COLORS[index % MARKER_COLORS.length];
+
 const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -136,35 +141,36 @@ const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
           popupAnchor: [0, -24]
         });
 
+        // Popup içeriği HTML metni olarak değil, gerçek DOM düğümleriyle
+        // kuruluyor. Durak adı ve adresi Nominatim'den geliyor; şablon
+        // dizesine gömüldüğünde adres alanındaki bir etiket panelin
+        // kaynağında çalışabiliyordu (oturum jetonu localStorage'da).
+        const popup = document.createElement('div');
+        popup.style.textAlign = 'center';
+
+        const title = document.createElement('strong');
+        title.textContent = stop.name || 'Durak';
+
+        const address = document.createElement('small');
+        address.textContent = stop.address || '';
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.textContent = 'Kaldır';
+        removeButton.style.cssText = 'margin-top:8px;padding:4px 8px;background:#dc3545;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px';
+        removeButton.addEventListener('click', () => {
+          onStopRemoveRef.current?.(stop.id);
+        });
+
+        popup.append(title, document.createElement('br'), address, document.createElement('br'), removeButton);
+
         const marker = L.marker([stop.lat, stop.lng], { icon: customIcon })
           .addTo(mapInstanceRef.current)
-          .bindPopup(`
-            <div style="text-align: center;">
-              <strong>${stop.name}</strong><br>
-              <small>${stop.address}</small><br>
-              <button onclick="window.removeStop(${stop.id})" style="
-                margin-top: 8px;
-                padding: 4px 8px;
-                background: #dc3545;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 12px;
-              ">Kaldır</button>
-            </div>
-          `);
+          .bindPopup(popup);
 
         markersRef.current.push(marker);
       }
     });
-
-    // Global remove function
-    window.removeStop = (stopId) => {
-      if (onStopRemoveRef.current) {
-        onStopRemoveRef.current(stopId);
-      }
-    };
 
     // Eğer marker'lar varsa haritayı bu marker'lara göre ayarla
     if (markersRef.current.length > 0) {
@@ -172,11 +178,6 @@ const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
       mapInstanceRef.current.fitBounds(group.getBounds().pad(0.1));
     }
   }, [addedStops, isMapLoaded]);
-
-  const getMarkerColor = (index) => {
-    const colors = ['#6FCF97', '#F2994A', '#DC1500', '#24BAEC', '#9B59B6'];
-    return colors[index % colors.length];
-  };
 
   const handleZoomIn = () => {
     if (mapInstanceRef.current) {
@@ -198,7 +199,7 @@ const OpenStreetMap = ({ onLocationAdd, addedStops, onStopRemove }) => {
           mapInstanceRef.current.setView([latitude, longitude], 15);
         },
         () => {
-          console.log('Konum alınamadı');
+          console.warn('Konum alınamadı; harita varsayılan merkezde açılıyor.');
         }
       );
     }

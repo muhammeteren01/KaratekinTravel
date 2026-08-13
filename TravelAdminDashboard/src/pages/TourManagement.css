@@ -68,6 +68,26 @@
 
 .filter-btn svg {
   color: rgba(36, 186, 236, 0.4);
+  transition: transform 0.15s ease;
+}
+
+/* Etkin sıralama ölçütü hangi düğmede olduğu görünsün. */
+.filter-btn.active {
+  background: #24BAEC;
+  color: #FFFFFF;
+}
+
+.filter-btn.active:hover {
+  background: #1ea8d6;
+}
+
+.filter-btn.active svg {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.filter-btn:focus-visible {
+  outline: 2px solid #24BAEC;
+  outline-offset: 2px;
 }
 
 .search-box {
@@ -291,6 +311,25 @@
   max-width: 360px;
 }
 
+/* Tur kodu, tarih ve fiyat tek satırda kalmalı: dar ekranda "1.800" ile "₺"
+   ya da "TR-" ile kodun geri kalanı alt alta düşüyordu. Başlıklar sarılmaya
+   devam ediyor, aksi halde tablo genişleyip son sütunu taşırıyor. */
+.data-table td:nth-child(2),
+.data-table td:nth-child(4),
+.data-table td:nth-child(5) {
+  white-space: nowrap;
+}
+
+.data-table td:nth-child(5) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sütunlar sığmadığında tablo kendi içinde kaysın; sayfa gövdesi yatay
+   kaymasın ve "Detaylar" düğmesi kart dışında kalmasın. */
+.data-table {
+  overflow-x: auto;
+}
+
 /* Mobile card list defaults (hidden on desktop) */
 .mobile-tour-list { display: none; }
 .mobile-tour-card { display: none; }
@@ -435,14 +474,38 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
   background: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e") center/contain no-repeat;
 }
 
+/* Sütun başlıkları artık sıralama düğmesi; görsel olarak metin gibi kalmalı. */
 .header-cell {
   display: flex;
   align-items: center;
   gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.header-cell:hover {
+  color: #24BAEC;
+}
+
+.header-cell:focus-visible {
+  outline: 2px solid #24BAEC;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .header-cell svg {
   color: #667085;
+  transition: transform 0.15s ease;
+}
+
+.header-cell.sorted,
+.header-cell.sorted svg {
+  color: #24BAEC;
 }
 
 /* Status Badge */

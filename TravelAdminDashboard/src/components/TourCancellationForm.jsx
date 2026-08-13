@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './TourCancellationForm.css';
-import { deleteTripApi, fetchTripsApi } from '../services/adminApi';
+import { deleteTripApi, fetchManagedTripsApi } from '../services/adminApi';
+import { useFeedback } from './feedback/feedbackContext';
 
 const TourCancellationForm = ({ onCancel }) => {
+  const { notify, confirm } = useFeedback();
   const [selectedTour, setSelectedTour] = useState('');
   const [selectedTourId, setSelectedTourId] = useState('');
   const [selectedReason, setSelectedReason] = useState('');
@@ -17,7 +19,7 @@ const TourCancellationForm = ({ onCancel }) => {
   useEffect(() => {
     let alive = true;
 
-    fetchTripsApi()
+    fetchManagedTripsApi()
       .then((response) => {
         if (!alive) return;
         const normalized = (Array.isArray(response) ? response : []).map((trip) => ({
@@ -63,11 +65,16 @@ const TourCancellationForm = ({ onCancel }) => {
 
   const handleSubmit = async () => {
     if (!selectedTourId || !selectedReason || !notificationMessage.trim()) {
-      alert('Lütfen tüm alanları doldurunuz.');
+      notify('Lütfen tüm alanları doldurunuz.', 'warning');
       return;
     }
 
-    const confirmed = window.confirm('Seçili tur silinecek. Devam etmek istiyor musunuz?');
+    const confirmed = await confirm({
+      title: 'Tur iptal edilsin mi?',
+      message: 'Seçili tur silinecek. Bu işlem geri alınamaz.',
+      confirmLabel: 'Evet, iptal et',
+      danger: true,
+    });
     if (!confirmed) return;
 
     const cancellationData = {
@@ -87,7 +94,7 @@ const TourCancellationForm = ({ onCancel }) => {
       setSelectedTourId('');
       setSelectedReason('');
       setNotificationMessage('');
-      alert('Tur iptal işlemi başarıyla tamamlandı.');
+      notify('Tur iptal işlemi başarıyla tamamlandı.', 'success');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Tur iptal edilemedi.');
     } finally {

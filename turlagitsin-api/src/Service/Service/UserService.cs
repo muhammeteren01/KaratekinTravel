@@ -42,16 +42,23 @@ namespace Service.Service
             };
         }
 
-        public async Task<UserResponseDto?> UpdateProfileAsync(Guid id, UserProfileDto dto)
+        public async Task<UserResponseDto?> UpdateProfileAsync(Guid id, UpdateUserDto dto)
         {
             var user = await _repository.Where(u => u.Id == id).FirstOrDefaultAsync();
             if (user == null) return null;
 
-            user.Name = dto.Name;
-            user.Email = dto.Email;
-            user.Phone = dto.Phone;
-            user.Location = dto.Location;
-            user.Avatar = dto.Avatar;
+            // Yalnızca gönderilen alanlar yazılıyor. Önceden her alan koşulsuz
+            // atanıyordu; panel yalnızca ad/telefon/adres gönderdiği için
+            // gönderilmeyen alanlar null'a düşüyordu.
+            //
+            // E-posta bilerek burada değiştirilmiyor: oturum kimliği e-postaya
+            // bağlı ve şifre sıfırlama e-postayla yapılıyor. Profil ucundan
+            // e-posta değiştirilebilseydi hesap devralma yolu açık olurdu.
+            // Panel de bu alanı salt okunur gösteriyor.
+            if (dto.Name != null) user.Name = dto.Name;
+            if (dto.Phone != null) user.Phone = dto.Phone;
+            if (dto.Location != null) user.Location = dto.Location;
+            if (dto.Avatar != null) user.Avatar = dto.Avatar;
             user.UpdatedAt = DateTime.UtcNow;
 
             await UpdateAsync(user);

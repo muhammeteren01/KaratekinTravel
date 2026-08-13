@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './UserCommunication.css';
 import ReportModal from '../components/ReportModal';
 import { fetchChatMessagesApi, fetchMeApi, fetchMyChatsApi, sendChatMessageApi } from '../services/adminApi';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 function formatRelative(ts) {
   const diff = Math.max(1, Math.floor((Date.now() - ts) / 1000));
@@ -24,6 +25,7 @@ const Avatar = ({ name }) => {
 };
 
 const UserCommunication = () => {
+  const { notify } = useFeedback();
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState('');
   const [text, setText] = useState('');
@@ -156,7 +158,7 @@ const UserCommunication = () => {
         setUnread((prev) => ({ ...prev, [selectedId]: 0 }));
         setTimeout(scrollToBottom, 0);
       })
-      .catch((err) => alert(err instanceof Error ? err.message : 'Mesaj gönderilemedi.'))
+      .catch((err) => notify(err instanceof Error ? err.message : 'Mesaj gönderilemedi.', 'error'))
       .finally(() => setTyping((prev) => ({ ...prev, [selectedId]: false })));
   };
 

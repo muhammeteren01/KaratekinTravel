@@ -2,18 +2,38 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './TourManagement.css';
 import DownloadIcon from '../assets/icons/download-cloud-02.svg';
 import DeleteIcon from '../assets/icons/delete-icon.svg';
-import { deleteTripApi, fetchTripsApi } from '../services/adminApi';
+import { deleteTripApi, fetchManagedTripsApi } from '../services/adminApi';
 import { formatTurkishDate, normalizeSelectedTour } from '../utils/tripPayload';
 import { setSelectedTour } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
+import { downloadCsv, formatPrice } from '../utils/format';
+import { matchesSearch, sortRows } from '../utils/sorting';
+
+const STATUS_LABELS = {
+  active: 'Yayında',
+  inactive: 'Pasif',
+  processing: 'Taslak',
+};
+
+// Sütun başlıkları: etiket + hangi alana göre nasıl sıralanacağı.
+const COLUMNS = [
+  { key: 'code', label: 'Tur Kodu', type: 'text' },
+  { key: 'name', label: 'Tur Adı', type: 'text' },
+  { key: 'date', label: 'Oluşturulma Tarihi', type: 'date' },
+  { key: 'priceValue', label: 'Fiyat', type: 'number' },
+  { key: 'status', label: 'Durum', type: 'text' },
+];
 
 const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
+  const { notify, confirm } = useFeedback();
   const [selectedTours, setSelectedTours] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sort, setSort] = useState({ key: 'date', direction: 'desc' });
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
   const toursPerPage = 7;
 
   useEffect(() => {
@@ -23,7 +43,7 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
       try {
         setLoading(true);
         setError('');
-        const result = await fetchTripsApi();
+        const result = await fetchManagedTripsApi();
         if (!alive) return;
         setTours(Array.isArray(result) ? result : []);
       } catch (err) {
@@ -42,31 +62,64 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
     };
   }, []);
 
-  const mappedTours = useMemo(() => {
+  // Tur kodu turun kendi kimliğinden türetiliyor. Önceden filtrelenmiş
+  // listedeki sıra numarası kullanılıyordu; arama kutusuna bir şey yazıldığında
+  // aynı turun kodu değişiyor, kod bir tanımlayıcı olmaktan çıkıyordu.
+  const allTours = useMemo(() => {
     const toStatus = (item) => {
       if (item?.isDeleted) return 'inactive';
       if (item?.isPublished === false) return 'processing';
       return 'active';
     };
 
-    return tours
-      .filter((tour) => {
-        const term = searchTerm.trim().toLowerCase();
-        if (!term) return true;
-        return [tour.title, tour.location, tour.city, tour.region]
-          .filter(Boolean)
-          .some((value) => String(value).toLowerCase().includes(term));
-      })
-      .map((tour, index) => ({
+    return tours.map((tour) => {
+      const rawPrice = tour.price ?? tour.pricing?.basePrice ?? null;
+      const currency = tour.currency || tour.pricing?.currency || 'TRY';
+
+      return {
         id: tour.id,
-        code: `TR-${String(index + 1).padStart(4, '0')}`,
-        name: tour.title,
+        code: `TR-${String(tour.id ?? '').replace(/-/g, '').slice(0, 6).toUpperCase() || '------'}`,
+        name: tour.title || 'İsimsiz tur',
         date: formatTurkishDate(tour.createdAt || tour.CreatedAt),
-        price: tour.price || (tour.pricing?.basePrice ? `${tour.pricing.basePrice} ${tour.pricing.currency || 'TRY'}` : '0 TRY'),
+        price: formatPrice(rawPrice, currency),
+        priceValue: rawPrice,
         status: toStatus(tour),
         raw: tour,
-      }));
-  }, [tours, searchTerm]);
+      };
+    });
+  }, [tours]);
+
+  const mappedTours = useMemo(() => {
+    const filtered = allTours.filter((tour) =>
+      matchesSearch(searchTerm, tour.name, tour.code, tour.raw?.location, tour.raw?.city, tour.raw?.region)
+    );
+
+    const column = COLUMNS.find((c) => c.key === sort.key);
+    return sortRows(filtered, { key: sort.key, direction: sort.direction, type: column?.type || 'text' });
+  }, [allTours, searchTerm, sort]);
+
+  const toggleSort = (key) => {
+    setSort((prev) => (
+      prev.key === key
+        ? { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
+        : { key, direction: key === 'date' ? 'desc' : 'asc' }
+    ));
+    setCurrentPage(1);
+    setSelectedTours([]);
+  };
+
+  const exportRows = (rows) => {
+    if (!rows.length) {
+      notify('Dışa aktarılacak tur bulunamadı.', 'warning');
+      return;
+    }
+
+    downloadCsv(
+      `turlar-${new Date().toISOString().slice(0, 10)}.csv`,
+      ['Tur Kodu', 'Tur Adı', 'Oluşturulma Tarihi', 'Fiyat', 'Durum'],
+      rows.map((tour) => [tour.code, tour.name, tour.date, tour.price, STATUS_LABELS[tour.status] || tour.status])
+    );
+  };
 
   const lastUpdatedLabel = useMemo(() => {
     const stamps = tours
@@ -100,19 +153,23 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
     }
   };
 
-  const handleDeleteSelected = () => {
-    if (selectedTours.length > 0) {
-      const ok = window.confirm('Seçili turlar silinecek. Devam etmek istiyor musunuz?');
-      if (!ok) return;
+  const handleDeleteSelected = async () => {
+    if (selectedTours.length === 0) return;
 
-      Promise.all(selectedTours.map((tourId) => deleteTripApi(tourId)))
-        .then(() => {
-          setTours((prev) => prev.filter((tour) => !selectedTours.includes(tour.id)));
-          setSelectedTours([]);
-        })
-        .catch((err) => {
-          alert(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.');
-        });
+    const ok = await confirm({
+      title: 'Seçili turlar silinsin mi?',
+      message: `${selectedTours.length} tur kalıcı olarak silinecek.`,
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
+    if (!ok) return;
+
+    try {
+      await Promise.all(selectedTours.map((tourId) => deleteTripApi(tourId)));
+      setTours((prev) => prev.filter((tour) => !selectedTours.includes(tour.id)));
+      setSelectedTours([]);
+    } catch (err) {
+      notify(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.', 'error');
     }
   };
 
@@ -127,6 +184,18 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
     }
   };
 
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
+    }
+  };
+
+  // Arama sonucu sayfa sayısını düşürdüğünde kullanıcı boş bir sayfada
+  // kalıyordu; her zaman geçerli bir sayfaya çek.
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [currentPage, totalPages]);
+
   return (
     <div className={`tour-management ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>        
       <div className="tour-management-content">
@@ -137,15 +206,27 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
             <h2 className="section-title">Mevcut Turlar</h2>
             <div className="header-actions">
               <div className="filter-group">
-                <button className="filter-btn">
+                <button
+                  type="button"
+                  className={`filter-btn ${sort.key === 'priceValue' ? 'active' : ''}`}
+                  onClick={() => toggleSort('priceValue')}
+                  aria-pressed={sort.key === 'priceValue'}
+                >
                   <span>Fiyata Göre Sırala</span>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                    style={{ transform: sort.key === 'priceValue' && sort.direction === 'asc' ? 'rotate(180deg)' : 'none' }}>
                     <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
-                <button className="filter-btn">
+                <button
+                  type="button"
+                  className={`filter-btn ${sort.key === 'date' ? 'active' : ''}`}
+                  onClick={() => toggleSort('date')}
+                  aria-pressed={sort.key === 'date'}
+                >
                   <span>Tarihe Göre Sırala</span>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                    style={{ transform: sort.key === 'date' && sort.direction === 'asc' ? 'rotate(180deg)' : 'none' }}>
                     <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
@@ -154,11 +235,16 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="search-icon">
                   <path d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z" stroke="currentColor" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                <input 
-                  type="text" 
+                <input
+                  type="search"
+                  aria-label="Tur ismi ile arayın"
                   placeholder="Tur İsmi İle Arayın"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setCurrentPage(1);
+                    setSelectedTours([]);
+                  }}
                 />
               </div>
             </div>
@@ -185,12 +271,17 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                   <img src={DeleteIcon} alt="Delete" width="20" height="20" />
                   Sil
                 </button>
-                <button className="action-btn excel-btn">
-                  <img src={DownloadIcon} alt="Download" width="20" height="20" />
-                  Excell İndir
-                  <svg width="12" height="6" viewBox="0 0 12 6" fill="none" className="dropdown-arrow">
-                    <path d="M1 1L6 5L11 1" stroke="#D0D5DD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                <button
+                  type="button"
+                  className="action-btn excel-btn"
+                  onClick={() => exportRows(selectedTours.length
+                    ? mappedTours.filter((tour) => selectedTours.includes(tour.id))
+                    : mappedTours)}
+                  disabled={loading || mappedTours.length === 0}
+                  title={selectedTours.length ? 'Seçili turları indir' : 'Listedeki tüm turları indir'}
+                >
+                  <img src={DownloadIcon} alt="" width="20" height="20" />
+                  {selectedTours.length ? `Seçilenleri İndir (${selectedTours.length})` : 'Listeyi İndir'}
                 </button>
               </div>
             </div>
@@ -205,52 +296,31 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                         <input 
                           type="checkbox" 
                           id="select-all"
-                          checked={selectedTours.length === currentTours.length}
+                          checked={currentTours.length > 0 && selectedTours.length === currentTours.length}
                           onChange={(e) => handleSelectAll(e.target.checked)}
                         />
                         <label htmlFor="select-all">Tümü</label>
                       </div>
                     </th>
-                    <th>
-                      <div className="header-cell">
-                        <span>Tur Kodu</span>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                    </th>
-                    <th>
-                      <div className="header-cell">
-                        <span>Tur Adı</span>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                    </th>
-                    <th>
-                      <div className="header-cell">
-                        <span>Oluşturulma Tarihi</span>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                    </th>
-                    <th>
-                      <div className="header-cell">
-                        <span>Fiyat</span>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                    </th>
-                    <th>
-                      <div className="header-cell">
-                        <span>Durum</span>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                    </th>
+                    {COLUMNS.map((column) => (
+                      <th
+                        key={column.key}
+                        aria-sort={sort.key === column.key ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                      >
+                        <button
+                          type="button"
+                          className={`header-cell ${sort.key === column.key ? 'sorted' : ''}`}
+                          onClick={() => toggleSort(column.key)}
+                          title={`${column.label} sütununa göre sırala`}
+                        >
+                          <span>{column.label}</span>
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                            style={{ transform: sort.key === column.key && sort.direction === 'asc' ? 'rotate(180deg)' : 'none' }}>
+                            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </th>
+                    ))}
                     <th></th>
                     <th></th>
                   </tr>
@@ -296,8 +366,14 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                         </button>
                       </td>
                       <td>
-                        <button className="download-btn">
-                          <img src={DownloadIcon} alt="Download" width="16" height="16" />
+                        <button
+                          type="button"
+                          className="download-btn"
+                          onClick={() => exportRows([tour])}
+                          aria-label={`${tour.name} turunu indir`}
+                          title="Bu turu CSV olarak indir"
+                        >
+                          <img src={DownloadIcon} alt="" width="16" height="16" />
                         </button>
                       </td>
                     </tr>
@@ -369,8 +445,13 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
                 >
                   Detaylar
                 </button>
-                <button className="download-btn" aria-label="İndir">
-                  <img src={DownloadIcon} alt="Download" width="16" height="16" />
+                <button
+                  type="button"
+                  className="download-btn"
+                  onClick={() => exportRows([tour])}
+                  aria-label={`${tour.name} turunu indir`}
+                >
+                  <img src={DownloadIcon} alt="" width="16" height="16" />
                 </button>
               </div>
             </div>
@@ -379,19 +460,33 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
 
         {/* Pagination */}
         <div className="pagination">
+          <button
+            type="button"
+            className="next-btn"
+            onClick={handlePrevPage}
+            disabled={currentPage <= 1}
+          >
+            <svg width="6" height="12" viewBox="0 0 6 12" fill="none">
+              <path d="M5 1L1 6L5 11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span>Önceki</span>
+          </button>
           <div className="pagination-numbers">
             {Array.from({ length: totalPages }, (_, index) => (
-              <button 
+              <button
+                type="button"
                 key={index + 1}
-                className={`page-btn ${currentPage === index + 1 ? 'active' : ''}`} 
+                className={`page-btn ${currentPage === index + 1 ? 'active' : ''}`}
                 onClick={() => handlePageChange(index + 1)}
+                aria-current={currentPage === index + 1 ? 'page' : undefined}
               >
                 {index + 1}
               </button>
             ))}
           </div>
-          <button 
-            className="next-btn" 
+          <button
+            type="button"
+            className="next-btn"
             onClick={handleNextPage}
             disabled={currentPage >= totalPages}
           >
