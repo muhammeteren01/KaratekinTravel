@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "types:api": "openapi-typescript ${API_URL:-http://localhost:5076}/swagger/v1/swagger.json -o src/types/api.d.ts"
   },
   "dependencies": {
     "chart.js": "^4.5.0",
@@ -26,6 +28,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5.9.3",
     "vite": "^6.3.5"
   }
 }

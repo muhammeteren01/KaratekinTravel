@@ -35,6 +35,12 @@ export const TURKISH_BANKS = [
   'Ziraat Katılım',
 ];
 
+/** validateIban sonucu. */
+export interface IbanValidation {
+  valid: boolean;
+  message: string;
+}
+
 // TR IBAN: TR + 2 kontrol hanesi + 22 hane = 26 karakter, 24'ü rakam.
 const TR_IBAN_DIGITS = 24;
 
@@ -42,14 +48,14 @@ const TR_IBAN_DIGITS = 24;
  * Kullanıcının yazdığını IBAN'a çevirir: TR öneki sabit, yalnızca rakam
  * kabul edilir, en fazla 24 hane, dörderli gruplar hâlinde boşluklanır.
  */
-export function formatIban(input) {
+export function formatIban(input: unknown): string {
   const digits = String(input || '')
     .toUpperCase()
     .replace(/^TR/, '')
     .replace(/\D/g, '')
     .slice(0, TR_IBAN_DIGITS);
 
-  const groups = [];
+  const groups: string[] = [];
   // İlk grup "TR" + 2 kontrol hanesi olacak şekilde dörtlü bloklar kuruluyor.
   const full = `TR${digits}`;
   for (let i = 0; i < full.length; i += 4) {
@@ -60,12 +66,12 @@ export function formatIban(input) {
 }
 
 /** Biçimlenmiş IBAN'dan boşlukları atar; API'ye bu hâli gider. */
-export function compactIban(value) {
+export function compactIban(value: unknown): string {
   return String(value || '').replace(/\s/g, '').toUpperCase();
 }
 
 /** IBAN'ın rakam kısmı; doğrulama ve sayaç için. */
-export function ibanDigitCount(value) {
+export function ibanDigitCount(value: unknown): number {
   return compactIban(value).replace(/^TR/, '').replace(/\D/g, '').length;
 }
 
@@ -73,7 +79,7 @@ export function ibanDigitCount(value) {
  * IBAN'ın mod-97 kontrolü (ISO 13616). Hane sayısı doğru olsa bile
  * yanlış yazılmış bir IBAN'ı yakalar.
  */
-function isMod97Valid(compact) {
+function isMod97Valid(compact: string): boolean {
   // İlk dört karakter sona alınır, harfler A=10 ... Z=35 ile sayıya çevrilir.
   const rearranged = compact.slice(4) + compact.slice(0, 4);
   const numeric = rearranged.replace(/[A-Z]/g, (ch) => String(ch.charCodeAt(0) - 55));
@@ -87,10 +93,7 @@ function isMod97Valid(compact) {
   return remainder === 1;
 }
 
-/**
- * @returns {{ valid: boolean, message: string }}
- */
-export function validateIban(value) {
+export function validateIban(value: unknown): IbanValidation {
   const compact = compactIban(value);
 
   if (!compact || compact === 'TR') {
