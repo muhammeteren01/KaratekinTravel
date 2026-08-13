@@ -4,8 +4,10 @@ import searchIcon from '../assets/icons/search-outline.svg';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';
 import { fetchRefundsApi, updateRefundStatusApi } from '../services/adminApi';
 import { normalizeText, sortByDate } from '../utils/sorting';
+import { useFeedback } from './feedback/feedbackContext';
 
 const RefundRequestsTable = () => {
+  const { notify } = useFeedback();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   // 'desc' = yeniden eskiye; düğme her tıklamada yön değiştirir.
@@ -100,14 +102,14 @@ const RefundRequestsTable = () => {
     const adminNote = window.prompt('Onay notu (isteğe bağlı)', '');
     updateRefundStatusApi(item.id, { status: 'approved', adminNote: adminNote || undefined })
       .then(() => setRefunds((prev) => prev.map((row) => (row.id === item.id ? { ...row, status: 'approved', adminNote: adminNote || undefined } : row))))
-      .catch((err) => alert(err instanceof Error ? err.message : 'İade onaylanamadı.'));
+      .catch((err) => notify(err instanceof Error ? err.message : 'İade onaylanamadı.', 'error'));
   };
 
   const handleReject = (item) => {
     const adminNote = window.prompt('Ret notu (isteğe bağlı)', '');
     updateRefundStatusApi(item.id, { status: 'rejected', adminNote: adminNote || undefined })
       .then(() => setRefunds((prev) => prev.map((row) => (row.id === item.id ? { ...row, status: 'rejected', adminNote: adminNote || undefined } : row))))
-      .catch((err) => alert(err instanceof Error ? err.message : 'İade reddedilemedi.'));
+      .catch((err) => notify(err instanceof Error ? err.message : 'İade reddedilemedi.', 'error'));
   };
 
   const renderPaginationButtons = () => {

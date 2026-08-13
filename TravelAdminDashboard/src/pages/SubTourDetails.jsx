@@ -10,6 +10,7 @@ import {
   updateTripDepartureApi,
 } from '../services/adminApi';
 import { clearSelectedSubTour, getSelectedDepartureId, getSelectedTripId, setSelectedSubTour } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -50,6 +51,7 @@ const formatTimeTR = (value) => {
 };
 
 const SubTourDetails = ({ isSidebarCollapsed }) => {
+  const { notify, confirm } = useFeedback();
   const tripId = useMemo(() => getSelectedTripId(), []);
   const departureId = useMemo(() => getSelectedDepartureId(), []);
 
@@ -184,7 +186,12 @@ const SubTourDetails = ({ isSidebarCollapsed }) => {
     if (!departureId) return;
     const next = subStatus === 'inactive' ? 'active' : 'inactive';
     const targetLabel = next === 'inactive' ? 'Pasif' : 'Aktif';
-    const ok = window.confirm(`“${titleDate}” tarihli turun durumunu ${targetLabel} yapmak istediğinize emin misiniz?`);
+    const ok = await confirm({
+      title: `Durum ${targetLabel} yapılsın mı?`,
+      message: `“${titleDate}” tarihli alt turun durumu ${targetLabel} olarak güncellenecek.`,
+      confirmLabel: `Evet, ${targetLabel} yap`,
+      danger: next === 'inactive',
+    });
     if (!ok) return;
 
     setStatusUpdating(true);
@@ -202,7 +209,7 @@ const SubTourDetails = ({ isSidebarCollapsed }) => {
         raw: updated,
       });
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Durum güncellenemedi.');
+      notify(err instanceof Error ? err.message : 'Durum güncellenemedi.', 'error');
     } finally {
       setStatusUpdating(false);
     }
@@ -210,7 +217,12 @@ const SubTourDetails = ({ isSidebarCollapsed }) => {
 
   const handleDeleteDeparture = async () => {
     if (!departureId) return;
-    const ok = window.confirm(`"${titleDate}" tarihli alt turu silmek istediğinize emin misiniz?`);
+    const ok = await confirm({
+      title: 'Alt tur silinsin mi?',
+      message: `“${titleDate}” tarihli alt tur kalıcı olarak silinecek.`,
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
 
     try {
@@ -218,7 +230,7 @@ const SubTourDetails = ({ isSidebarCollapsed }) => {
       clearSelectedSubTour();
       window.location.hash = encodeURIComponent('Tur Detayları');
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.');
+      notify(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.', 'error');
     }
   };
 

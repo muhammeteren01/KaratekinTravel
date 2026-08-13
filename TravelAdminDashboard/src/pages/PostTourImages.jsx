@@ -7,6 +7,7 @@ import {
   uploadGalleryImageApi,
 } from '../services/adminApi';
 import { getSelectedSubTour, getSelectedTripId } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -19,15 +20,18 @@ const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
 // şişiriyor. Diğer yükleme ekranlarıyla aynı sınır uygulanıyor.
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
-function rejectOversized(files) {
+// notify bir React kancasından geldiği için modül seviyesinde erişilemez;
+// çağıran bileşen kendi notify'ını parametre olarak geçiyor.
+function rejectOversized(files, notify) {
   const tooBig = files.filter((f) => f.size > MAX_IMAGE_BYTES);
   if (tooBig.length) {
-    alert(`En fazla 5MB yükleyebilirsiniz. Çok büyük: ${tooBig.map((f) => f.name).join(', ')}`);
+    notify(`En fazla 5MB yükleyebilirsiniz. Çok büyük: ${tooBig.map((f) => f.name).join(', ')}`, 'warning');
   }
   return files.filter((f) => f.size <= MAX_IMAGE_BYTES);
 }
 
 const PostTourImages = ({ isSidebarCollapsed }) => {
+  const { notify } = useFeedback();
   const [tripId, setTripId] = useState(getSelectedTripId());
   const [tourName, setTourName] = useState('');
   const [subTourDate, setSubTourDate] = useState('');
@@ -93,7 +97,7 @@ const PostTourImages = ({ isSidebarCollapsed }) => {
   const addFromPicker = () => inputRef.current?.click();
 
   const stageFiles = async (fileList) => {
-    const files = rejectOversized(Array.from(fileList || []));
+    const files = rejectOversized(Array.from(fileList || []), notify);
     if (!files.length) return;
     try {
       const staged = await Promise.all(files.map(async (f) => ({
@@ -130,7 +134,7 @@ const PostTourImages = ({ isSidebarCollapsed }) => {
       try {
         await deleteGalleryImageApi(img.id);
       } catch (err) {
-        alert(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.');
+        notify(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.', 'error');
         return;
       }
     } else {
@@ -176,7 +180,7 @@ const PostTourImages = ({ isSidebarCollapsed }) => {
 
   const saveAll = async () => {
     if (!tripId) {
-      alert('Tur seçimi bulunamadı.');
+      notify('Tur seçimi bulunamadı.', 'error');
       return;
     }
 

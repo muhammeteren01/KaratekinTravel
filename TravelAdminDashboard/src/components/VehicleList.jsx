@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './VehicleList.css';
 import editButtonIcon from '../assets/icons/edit-button-icon.svg';
 import { deleteVehicleApi, fetchVehiclesApi } from '../services/adminApi';
+import { useFeedback } from './feedback/feedbackContext';
 
 const VehicleList = () => {
+  const { notify, confirm } = useFeedback();
   const [selectedVehicles, setSelectedVehicles] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('plate');
@@ -122,18 +124,28 @@ const VehicleList = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    const ok = window.confirm('Bu aracı silmek istiyor musunuz?');
+  const handleDelete = async (id) => {
+    const ok = await confirm({
+      title: 'Araç silinsin mi?',
+      message: 'Bu aracı silmek istediğinize emin misiniz?',
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
 
     deleteVehicleApi(id)
       .then(() => setVehicles((prev) => prev.filter((vehicle) => vehicle.id !== id)))
-      .catch((err) => alert(err instanceof Error ? err.message : 'Araç silinemedi.'));
+      .catch((err) => notify(err instanceof Error ? err.message : 'Araç silinemedi.', 'error'));
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedVehicles.length === 0) return;
-    const ok = window.confirm('Seçili araçları silmek istiyor musunuz?');
+    const ok = await confirm({
+      title: 'Seçili araçlar silinsin mi?',
+      message: `${selectedVehicles.length} araç kalıcı olarak silinecek.`,
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
 
     Promise.all(selectedVehicles.map((id) => deleteVehicleApi(id)))
@@ -141,12 +153,12 @@ const VehicleList = () => {
         setVehicles((prev) => prev.filter((vehicle) => !selectedVehicles.includes(vehicle.id)));
         setSelectedVehicles([]);
       })
-      .catch((err) => alert(err instanceof Error ? err.message : 'Seçili araçlar silinemedi.'));
+      .catch((err) => notify(err instanceof Error ? err.message : 'Seçili araçlar silinemedi.', 'error'));
   };
 
   const handleDownloadAll = () => {
     // PDF dışa aktarma henüz uygulanmadı; sessizce log basmak yerine kullanıcıya söyle.
-    alert('PDF dışa aktarma henüz hazır değil.');
+    notify('PDF dışa aktarma henüz hazır değil.', 'warning');
   };
 
   const handlePageChange = (page) => {

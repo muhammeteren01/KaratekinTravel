@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './NewVehicleDefinition.css';
+import { useFeedback } from './feedback/feedbackContext';
 import {
   createVehicleApi,
   fetchCompaniesApi,
@@ -15,6 +16,7 @@ import {
 } from '../utils/seatLayoutTemplates';
 
 const NewVehicleDefinition = () => {
+  const { notify } = useFeedback();
   const [formData, setFormData] = useState({
     companyId: '',
     vehiclePlate: '',
@@ -177,13 +179,13 @@ const NewVehicleDefinition = () => {
       // Validate file type
       const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
       if (!validTypes.includes(file.type)) {
-        alert('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.');
+        notify('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.', 'warning');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+        notify('Dosya boyutu 5MB\'dan küçük olmalıdır.', 'warning');
         return;
       }
 
@@ -208,19 +210,19 @@ const NewVehicleDefinition = () => {
       // Validate file type
       const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
       if (!validTypes.includes(file.type)) {
-        alert('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.');
+        notify('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.', 'warning');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+        notify('Dosya boyutu 5MB\'dan küçük olmalıdır.', 'warning');
         return;
       }
 
       // Check if maximum number of images reached (e.g., 10)
       if (formData.additionalImages.length >= 10) {
-        alert('En fazla 10 ek fotoğraf ekleyebilirsiniz.');
+        notify('En fazla 10 ek fotoğraf ekleyebilirsiniz.', 'warning');
         return;
       }
 

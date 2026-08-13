@@ -5,6 +5,7 @@ import ProfilePhotoUploader from '../components/Settings/ProfilePhotoUploader';
 import BankInfoNotice from '../components/Settings/Payment/BankInfoNotice';
 import PaymentHistory from '../components/Settings/Payment/PaymentHistory';
 import PendingPayments from '../components/Settings/Payment/PendingPayments';
+import { useFeedback } from '../components/feedback/feedbackContext';
 import {
   changePasswordApi,
   fetchCompanyByIdApi,
@@ -118,6 +119,7 @@ const CompanyInfoForm = ({ profile, company, loading, saving, error, success, on
 };
 
 const AccountSecurityForm = ({ profile, loading, saving, error, success, onSavePassword }) => {
+  const { notify } = useFeedback();
   const [form, setForm] = useState({
     currentPassword: '',
     newPassword: '',
@@ -128,11 +130,11 @@ const AccountSecurityForm = ({ profile, loading, saving, error, success, onSaveP
 
   const handleSave = () => {
     if (!form.currentPassword || !form.newPassword) {
-      alert('Mevcut ve yeni şifre zorunludur.');
+      notify('Mevcut ve yeni şifre zorunludur.', 'warning');
       return;
     }
     if (form.newPassword !== form.confirmPassword) {
-      alert('Yeni şifreler eşleşmiyor.');
+      notify('Yeni şifreler eşleşmiyor.', 'warning');
       return;
     }
     onSavePassword({

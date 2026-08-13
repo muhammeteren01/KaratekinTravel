@@ -12,6 +12,7 @@ import AddTourStep4 from './AddTourStep4';
 import AddTourStep5 from './AddTourStep5';
 import AddTourStep6 from './AddTourStep6';
 import TourCreationSuccess from './TourCreationSuccess';
+import { useFeedback } from './feedback/feedbackContext';
 import {
   createTripApi,
   createTripDepartureApi,
@@ -28,6 +29,7 @@ import {
 } from '../utils/tripPayload';
 
 const AddTourPage = () => {
+  const { notify } = useFeedback();
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [companies, setCompanies] = useState([]);
@@ -177,7 +179,7 @@ const AddTourPage = () => {
       setCurrentStep(8);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Tur kaydedilemedi.';
-      alert(message);
+      notify(message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -186,7 +188,7 @@ const AddTourPage = () => {
   const handleSaveAndContinue = () => {
     // Validate required fields
     if (!formData.tourName || !formData.tourDescription || !formData.category) {
-      alert('Lütfen tüm zorunlu alanları doldurun.');
+      notify('Lütfen tüm zorunlu alanları doldurun.', 'warning');
       return;
     }
 

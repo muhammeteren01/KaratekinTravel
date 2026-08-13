@@ -27,6 +27,7 @@ import calendarIcon from '../assets/icons/calendar-icon.svg';
 import arrowBackIcon from '../assets/icons/arrow-back-left.svg';
 import arrowForwardIcon from '../assets/icons/arrow-forward-right.svg';
 import { fetchMeApi, fetchVehicleOperationsApi, fetchVehiclesApi } from '../services/adminApi';
+import { useFeedback } from './feedback/feedbackContext';
 
 const MONTHS_TR = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
 
@@ -245,6 +246,7 @@ const DatePicker = ({ value, onChange, placeholder }) => {
 };
 
 const VehicleHistory = () => {
+  const { notify } = useFeedback();
   // API verisi
   const [operations, setOperations] = useState([]);
   const [vehicles, setVehicles] = useState([]);
@@ -502,7 +504,7 @@ const VehicleHistory = () => {
 
   const downloadDocument = (operation) => {
     // Gerçek uygulamada dosya indirme işlemi yapılır
-    alert(`${operation.driverName} - ${operation.operationType} belgesi indiriliyor...`);
+    notify(`${operation.driverName} - ${operation.operationType} belgesi indiriliyor...`, 'error');
   };
 
   // Sayfa numaralarını oluştur

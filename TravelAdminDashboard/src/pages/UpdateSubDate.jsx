@@ -10,6 +10,7 @@ import {
   updateTripDepartureApi,
 } from '../services/adminApi';
 import { clearSelectedSubTour, getSelectedDepartureId, getSelectedTripId, setSelectedSubTour } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -39,6 +40,7 @@ const formatVehicleOption = (vehicle) =>
   `${vehicle.busType} ${vehicle.model || 'Otobüs'} - ${vehicle.plate}`;
 
 const UpdateSubDate = ({ isSidebarCollapsed }) => {
+  const { notify, confirm } = useFeedback();
   const todayStr = useMemo(() => {
     const d = new Date();
     return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} - ${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -118,13 +120,13 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
 
   const submit = async () => {
     if (!departureId) {
-      alert('Alt tur seçimi bulunamadı.');
+      notify('Alt tur seçimi bulunamadı.', 'error');
       return;
     }
 
     const parsed = parseDisplayDate(form.datetime);
     if (!parsed) {
-      alert('Geçerli bir tarih ve saat seçiniz.');
+      notify('Geçerli bir tarih ve saat seçiniz.', 'warning');
       return;
     }
 
@@ -161,7 +163,12 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
 
   const handleDelete = async () => {
     if (!departureId) return;
-    const ok = window.confirm(`"${titleDate || 'Seçili'}" tarihli alt turu silmek istediğinize emin misiniz?`);
+    const ok = await confirm({
+      title: 'Alt tarih silinsin mi?',
+      message: `“${titleDate || 'Seçili'}” tarihli alt tur kalıcı olarak silinecek.`,
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!ok) return;
 
     setSaving(true);

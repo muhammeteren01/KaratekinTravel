@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import './ProfilePhotoUploader.css';
 import uploadIcon from '../../assets/icons/image-upload-icon.svg';
 import defaultAvatar from '../../assets/images/profile-avatar.png';
+import { useFeedback } from '../feedback/feedbackContext';
 
 /**
  * disabledReason verildiğinde "Kaydet" devre dışı kalır ve sebep gösterilir.
@@ -9,6 +10,7 @@ import defaultAvatar from '../../assets/images/profile-avatar.png';
  * bu yüzden buton çalışıyormuş gibi görünmemeli.
  */
 const ProfilePhotoUploader = ({ initialSrc = defaultAvatar, onSave, disabledReason = '' }) => {
+  const { notify } = useFeedback();
   const fileRef = useRef(null);
   const [preview, setPreview] = useState(initialSrc);
   const [file, setFile] = useState(null);
@@ -20,7 +22,7 @@ const ProfilePhotoUploader = ({ initialSrc = defaultAvatar, onSave, disabledReas
     if (!f) return;
     // Simple size guard 2MB
     if (f.size > 2 * 1024 * 1024) {
-      alert('En fazla 2MB dosya yükleyebilirsiniz.');
+      notify('En fazla 2MB dosya yükleyebilirsiniz.', 'warning');
       return;
     }
     const reader = new FileReader();

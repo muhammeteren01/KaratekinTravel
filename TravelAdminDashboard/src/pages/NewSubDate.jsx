@@ -4,6 +4,7 @@ import VehicleSeatPreview from '../components/VehicleSeatPreview';
 import './NewSubDate.css';
 import { createTripDepartureApi, fetchTripByIdApi, fetchVehiclesApi } from '../services/adminApi';
 import { getSelectedTripId } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const parseDisplayDate = (value) => {
   if (!value) return null;
@@ -17,6 +18,7 @@ const formatVehicleOption = (vehicle) =>
   `${vehicle.busType} ${vehicle.model || 'Otobüs'} - ${vehicle.plate}`;
 
 const NewSubDate = ({ isSidebarCollapsed }) => {
+  const { notify } = useFeedback();
   const todayStr = useMemo(() => {
     const pad = (n) => String(n).padStart(2, '0');
     const d = new Date();
@@ -88,13 +90,13 @@ const NewSubDate = ({ isSidebarCollapsed }) => {
 
   const submit = async () => {
     if (!tripId) {
-      alert('Tur seçimi bulunamadı.');
+      notify('Tur seçimi bulunamadı.', 'error');
       return;
     }
 
     const parsed = parseDisplayDate(form.datetime);
     if (!parsed) {
-      alert('Geçerli bir tarih ve saat seçiniz.');
+      notify('Geçerli bir tarih ve saat seçiniz.', 'warning');
       return;
     }
 

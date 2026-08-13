@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './DeleteTour.css';
 import { ApiError, deleteTripApi, fetchMeApi, loginApi } from '../services/adminApi';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const readSelectedTour = () => {
   try {
@@ -13,6 +14,7 @@ const readSelectedTour = () => {
 };
 
 const DeleteTour = ({ isSidebarCollapsed }) => {
+  const { confirm } = useFeedback();
   const selectedTour = useMemo(readSelectedTour, []);
   const tripId = selectedTour?.raw?.id || selectedTour?.id || null;
 
@@ -40,7 +42,12 @@ const DeleteTour = ({ isSidebarCollapsed }) => {
   const handleDelete = async () => {
     if (!password || !tripId) return;
 
-    const confirmed = window.confirm('Bu işlem geri alınamaz. Turu silmek istediğinize emin misiniz?');
+    const confirmed = await confirm({
+      title: 'Tur silinsin mi?',
+      message: 'Bu işlem geri alınamaz. Tura bağlı tüm kayıtlar da silinecek.',
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
     if (!confirmed) return;
 
     setSubmitting(true);

@@ -5,8 +5,10 @@ import DeleteIcon from '../assets/icons/delete-icon.svg';
 import { deleteTripApi, fetchManagedTripsApi } from '../services/adminApi';
 import { formatTurkishDate, normalizeSelectedTour } from '../utils/tripPayload';
 import { setSelectedTour } from '../utils/selectionStorage';
+import { useFeedback } from '../components/feedback/feedbackContext';
 
 const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
+  const { notify, confirm } = useFeedback();
   const [selectedTours, setSelectedTours] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -100,19 +102,23 @@ const TourManagement = ({ isSidebarCollapsed, goToTourDetails }) => {
     }
   };
 
-  const handleDeleteSelected = () => {
-    if (selectedTours.length > 0) {
-      const ok = window.confirm('Seçili turlar silinecek. Devam etmek istiyor musunuz?');
-      if (!ok) return;
+  const handleDeleteSelected = async () => {
+    if (selectedTours.length === 0) return;
 
-      Promise.all(selectedTours.map((tourId) => deleteTripApi(tourId)))
-        .then(() => {
-          setTours((prev) => prev.filter((tour) => !selectedTours.includes(tour.id)));
-          setSelectedTours([]);
-        })
-        .catch((err) => {
-          alert(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.');
-        });
+    const ok = await confirm({
+      title: 'Seçili turlar silinsin mi?',
+      message: `${selectedTours.length} tur kalıcı olarak silinecek.`,
+      confirmLabel: 'Evet, sil',
+      danger: true,
+    });
+    if (!ok) return;
+
+    try {
+      await Promise.all(selectedTours.map((tourId) => deleteTripApi(tourId)));
+      setTours((prev) => prev.filter((tour) => !selectedTours.includes(tour.id)));
+      setSelectedTours([]);
+    } catch (err) {
+      notify(err instanceof Error ? err.message : 'Silme işlemi başarısız oldu.', 'error');
     }
   };
 

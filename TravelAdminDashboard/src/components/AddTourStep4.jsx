@@ -5,8 +5,10 @@ import imagePictureIcon from '../assets/icons/image-picture-icon.svg';
 import MediaThumbCard from './media/MediaThumbCard';
 import ChipTag from './pricing/ChipTag';
 import helpCircleIcon from '../assets/icons/help-circle-icon.svg';
+import { useFeedback } from './feedback/feedbackContext';
 
 const AddTourStep4 = ({ onNext, onBack, formData, setFormData, updateMode = false, updatedStep = null }) => {
+  const { notify } = useFeedback();
   const [coverImage, setCoverImage] = useState(formData.step4?.coverImage || null);
   const [additionalImages, setAdditionalImages] = useState(formData.step4?.additionalImages || []);
   const [includedItems, setIncludedItems] = useState(formData.step4?.includedItems || []);
@@ -35,13 +37,13 @@ const AddTourStep4 = ({ onNext, onBack, formData, setFormData, updateMode = fals
       // Validate file type
       const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
       if (!validTypes.includes(file.type)) {
-        alert('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.');
+        notify('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.', 'warning');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+        notify('Dosya boyutu 5MB\'dan küçük olmalıdır.', 'warning');
         return;
       }
 
@@ -66,19 +68,19 @@ const AddTourStep4 = ({ onNext, onBack, formData, setFormData, updateMode = fals
       // Validate file type
       const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
       if (!validTypes.includes(file.type)) {
-        alert('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.');
+        notify('Lütfen sadece .svg, .png, .jpg veya .jpeg formatında dosya seçiniz.', 'warning');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+        notify('Dosya boyutu 5MB\'dan küçük olmalıdır.', 'warning');
         return;
       }
 
       // Check if maximum number of images reached (e.g., 10)
       if (additionalImages.length >= 10) {
-        alert('En fazla 10 ek fotoğraf ekleyebilirsiniz.');
+        notify('En fazla 10 ek fotoğraf ekleyebilirsiniz.', 'warning');
         return;
       }
 

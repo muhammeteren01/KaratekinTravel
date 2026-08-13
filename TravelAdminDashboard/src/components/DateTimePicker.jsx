@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './DateTimePicker.css';
+import { useFeedback } from './feedback/feedbackContext';
 
 const monthsTR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
@@ -17,6 +18,7 @@ const parseIn = (str) => {
 };
 
 export default function DateTimePicker({ value, onChange, min, max, placeholder='Tarih ve Saat Seç' }){
+  const { notify } = useFeedback();
   const [open, setOpen] = useState(false);
   const initial = useMemo(()=> parseIn(value) || new Date(), [value]);
   const [view, setView] = useState(new Date(initial.getFullYear(), initial.getMonth(), 1));
@@ -70,11 +72,11 @@ export default function DateTimePicker({ value, onChange, min, max, placeholder=
     if (!selDate) return;
     const chosen = new Date(selDate.getFullYear(), selDate.getMonth(), selDate.getDate(), hour, minute, 0, 0);
     if (minDate && chosen < minDate) {
-      window.alert('Seçilen tarih başlangıç tarihinden önce olamaz.');
+      notify('Seçilen tarih başlangıç tarihinden önce olamaz.', 'warning');
       return;
     }
     if (maxDate && chosen > maxDate) {
-      window.alert('Seçilen tarih izin verilen aralığın dışında.');
+      notify('Seçilen tarih izin verilen aralığın dışında.', 'warning');
       return;
     }
     const out = formatOut(selDate, hour, minute);

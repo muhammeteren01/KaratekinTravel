@@ -7,6 +7,7 @@ import AddTourStep5 from './AddTourStep5';
 import AddTourStep6 from './AddTourStep6';
 import ProgressSteps from './ProgressSteps';
 import { fetchTripByIdApi, updateTripApi } from '../services/adminApi';
+import { useFeedback } from './feedback/feedbackContext';
 import {
   buildUpdateTripPayload,
   getTripIdFromStorage,
@@ -15,6 +16,7 @@ import {
 } from '../utils/tripPayload';
 
 const UpdateTourPage = ({ initialData }) => {
+  const { notify } = useFeedback();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedTour, setSelectedTour] = useState(initialData || null);
   const [formData, setFormData] = useState({
@@ -109,7 +111,7 @@ const UpdateTourPage = ({ initialData }) => {
       try {
         const tripId = getTripIdFromStorage(selectedTour);
         if (!tripId) {
-          alert('Güncellenecek tur bulunamadı.');
+          notify('Güncellenecek tur bulunamadı.', 'error');
           return;
         }
 
@@ -123,7 +125,7 @@ const UpdateTourPage = ({ initialData }) => {
         }
         window.location.hash = encodeURIComponent('Tur Detayları');
       } catch (error) {
-        alert(error instanceof Error ? error.message : 'Tur güncellenemedi.');
+        notify(error instanceof Error ? error.message : 'Tur güncellenemedi.', 'error');
       } finally {
         setSaving(false);
       }
