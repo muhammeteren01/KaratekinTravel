@@ -3,6 +3,7 @@ import './VehicleList.css';
 import editButtonIcon from '../assets/icons/edit-button-icon.svg';
 import { deleteVehicleApi, fetchVehiclesApi } from '../services/adminApi';
 import { useFeedback } from './feedback/feedbackContext';
+import { downloadCsv } from '../utils/format';
 
 const VehicleList = () => {
   const { notify, confirm } = useFeedback();
@@ -156,9 +157,28 @@ const VehicleList = () => {
       .catch((err) => notify(err instanceof Error ? err.message : 'Seçili araçlar silinemedi.', 'error'));
   };
 
+  /**
+   * Araç listesini CSV olarak indirir.
+   *
+   * Düğme "PDF dışa aktarma henüz hazır değil" uyarısı veriyordu, yani
+   * hiçbir şey yapmıyordu. Tarayıcıda PDF üretmek ek bağımlılık gerektiriyor;
+   * CSV hem Excel'de hem de tabloya aktarmada doğrudan açılıyor.
+   */
   const handleDownloadAll = () => {
-    // PDF dışa aktarma henüz uygulanmadı; sessizce log basmak yerine kullanıcıya söyle.
-    notify('PDF dışa aktarma henüz hazır değil.', 'warning');
+    const rows = selectedVehicles.length
+      ? filteredAndSortedVehicles.filter((v) => selectedVehicles.includes(v.id))
+      : filteredAndSortedVehicles;
+
+    if (!rows.length) {
+      notify('Dışa aktarılacak araç bulunamadı.', 'warning');
+      return;
+    }
+
+    downloadCsv(
+      `araclar-${new Date().toISOString().slice(0, 10)}.csv`,
+      ['Plaka', 'Tasarım', 'Düzen', 'Kapasite', 'Kayıt Tarihi'],
+      rows.map((v) => [v.plate, v.design, v.type, v.raw?.capacity ?? '', v.date]),
+    );
   };
 
   const handlePageChange = (page) => {
@@ -209,9 +229,9 @@ const VehicleList = () => {
             <img src="/icons/delete-icon.svg" alt="Sil" />
             <span>Seçilenleri Sil</span>
           </button>
-          <button className="vl-download-all" onClick={handleDownloadAll}>
-            <img src="/icons/download-cloud-02.svg" alt="PDF" />
-            <span>Tümünü PDF İndir</span>
+          <button type="button" className="vl-download-all" onClick={handleDownloadAll}>
+            <img src="/icons/download-cloud-02.svg" alt="" />
+            <span>{selectedVehicles.length ? `Seçilenleri İndir (${selectedVehicles.length})` : 'Listeyi İndir'}</span>
           </button>
           </div>
         </div>

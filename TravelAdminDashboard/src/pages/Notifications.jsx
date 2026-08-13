@@ -180,9 +180,25 @@ const Notifications = () => {
       <div className="ntf-card">
         {error && <div className="table-error">{error}</div>}
         <ul className="ntf-list" role="list">
-          {loading ? (
+          {loading && (
             <li role="listitem"><div className="ntf-item">Bildirimler yükleniyor...</div></li>
-          ) : items.map((item) => (
+          )}
+
+          {/* Kayıt yokken sayfa tamamen boş kalıyordu; ekranda başlık dışında
+              hiçbir şey görünmüyor, yüklenme mi bittiği belli olmuyordu. */}
+          {!loading && !error && items.length === 0 && (
+            <li role="listitem">
+              <div className="ntf-empty">
+                <p className="ntf-empty-title">Henüz bildiriminiz yok</p>
+                <p className="ntf-empty-text">
+                  Yeni rezervasyon, iptal, iade talebi, tur değerlendirmesi ve şikayetler
+                  ile haftalık/aylık analiz özetleri burada listelenir.
+                </p>
+              </div>
+            </li>
+          )}
+
+          {!loading && items.map((item) => (
             <li key={item.id} role="listitem">
               <NotificationItem item={item} onToggleRead={handleToggleRead} />
             </li>

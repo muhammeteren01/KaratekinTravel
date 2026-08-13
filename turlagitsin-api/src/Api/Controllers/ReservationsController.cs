@@ -150,6 +150,13 @@ namespace Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // Uç yalnızca [Authorize] idi: oturum açan herhangi bir kullanıcı
+            // gövdeye başkasının rezervasyon kimliğini yazıp o rezervasyonu
+            // "ödendi/completed" işaretleyebiliyordu. Sahiplik doğrulanıyor.
+            var existing = await _reservationService.GetReservationByIdAsync(dto.ReservationId);
+            if (existing == null) return NotFound();
+            if (!CanSeeReservation(existing)) return Forbid();
+
             var reservation = await _reservationService.ProcessPaymentAsync(dto);
             if (reservation == null)
                 return NotFound();
