@@ -145,8 +145,10 @@ const AppContent = ({ currentPage = 'Anasayfa', isSidebarCollapsed }) => {
       case 'Geçmiş İşlemler':
         return <VehicleHistory />;
       
+      // Sidebar'da bunlar alt menü başlığı; hash ile doğrudan gelinirse
+      // bölümün ilk sayfasına düşsün (önceden Anasayfa gösteriyordu).
       case 'Araç İşlemleri':
-        return <Dashboard />; // Geçici olarak Dashboard göster
+        return <VehicleList />;
       case 'Kullanıcı İletişim':
         return <UserCommunication />;
       case 'Kullanıcı İşlemleri':

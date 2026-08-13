@@ -128,11 +128,12 @@ const PaymentHistory = ({ payments = [], loading = false, error = '' }) => {
             {rows.map((row, i) => (
               <div key={row.id} className={`figma-data-cell ${i % 2 ? 'alt' : ''}`}>
                 <div className="figma-single-selector">
-                  <div className="figma-selector" role="button">
+                  {/* Fatura ucu API'de yok; tıklanabilir görünmemeli. */}
+                  <div className="figma-selector figma-selector-disabled" title="Fatura indirme henüz hazır değil; API'de belge ucu yok.">
                     <div className="figma-selector-text" aria-hidden="true">
                       <span className="line1">İndir</span>
                     </div>
-                    <img src={downloadIcon} alt="indir" />
+                    <img src={downloadIcon} alt="" />
                   </div>
                 </div>
               </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { normalizeText, sortByDate } from '../utils/sorting';
 import './CancellationTable.css';
 import searchIcon from '../assets/icons/search-outline.svg';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';
@@ -6,24 +7,14 @@ import arrowDownIcon from '../assets/icons/arrow-down.svg';
 const CancelledTicketsTable = ({ data = [] }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  // 'desc' = yeniden eskiye; düğme her tıklamada yön değiştirir.
+  const [sortDirection, setSortDirection] = useState('desc');
   const itemsPerPage = 5;
 
   // Search term değiştiğinde sayfa numarasını resetle
   React.useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
-
-  // Türkçe karakter normalize fonksiyonu
-  const normalizeText = (text) => {
-    return text
-      .toLowerCase()
-      .replace(/ğ/g, 'g')
-      .replace(/ü/g, 'u')
-      .replace(/ş/g, 's')
-      .replace(/ı/g, 'i')
-      .replace(/ö/g, 'o')
-      .replace(/ç/g, 'c');
-  };
 
   // Filtreleme - Tüm alanlarda arama
   const filteredData = data.filter(item => {
@@ -39,10 +30,13 @@ const CancelledTicketsTable = ({ data = [] }) => {
   });
 
   // Sayfalama
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  // Sıralama filtrelemeden sonra, sayfalamadan önce uygulanır.
+  const sortedData = sortByDate(filteredData, 'cancellationDate', sortDirection);
+
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentData = filteredData.slice(startIndex, endIndex);
+  const currentData = sortedData.slice(startIndex, endIndex);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -109,13 +103,22 @@ const CancelledTicketsTable = ({ data = [] }) => {
       <div className="table-controls">
         <div className="filter-section">
           <div className="sort-dropdown">
-            <button className="sort-button">
-              <span>Tarihe Göre Sırala</span>
+            <button
+              className="sort-button"
+              type="button"
+              onClick={() => {
+                setSortDirection((prev) => (prev === 'desc' ? 'asc' : 'desc'));
+                setCurrentPage(1);
+              }}
+              title={sortDirection === 'desc' ? 'Yeniden eskiye' : 'Eskiden yeniye'}
+            >
+              <span>Tarihe Göre Sırala ({sortDirection === 'desc' ? 'yeni → eski' : 'eski → yeni'})</span>
               <img 
-                src={arrowDownIcon} 
-                alt="Arrow Down" 
+                src={arrowDownIcon}
+                alt=""
                 width="16"
                 height="16"
+                style={{ transform: sortDirection === 'asc' ? 'rotate(180deg)' : 'none' }}
               />
             </button>
           </div>

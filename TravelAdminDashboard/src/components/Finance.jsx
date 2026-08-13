@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './Finance.css';
+import { normalizeText } from '../utils/sorting';
 import moneyBagIcon from '../assets/icons/money-bag.svg';
 import keyboardReturnNewIcon from '../assets/icons/keyboard-return-new.svg';
 import attachMoneyNewIcon from '../assets/icons/attach-money-new.svg';
@@ -90,17 +91,6 @@ const Finance = () => {
   }, [report]);
 
   // Turkish character normalization for search
-  const normalizeText = (text) => {
-    return text
-      .toLowerCase()
-      .replace(/ğ/g, 'g')
-      .replace(/ü/g, 'u')
-      .replace(/ş/g, 's')
-      .replace(/ı/g, 'i')
-      .replace(/ö/g, 'o')
-      .replace(/ç/g, 'c');
-  };
-
   // Filter tours based on search term
   const filteredTours = completedTours.filter(tour => {
     const normalizedSearch = normalizeText(searchTerm);
@@ -332,10 +322,12 @@ const Finance = () => {
                   <td className="finance-tour-earning">{tour.netEarning}</td>
                   <td className="finance-actions">
                     <div className="finance-actions-content">
-                      <img 
-                        src="/icons/finance-action-vector.svg" 
-                        alt="indir" 
-                        className="finance-download-icon"
+                      {/* Rapor indirme ucu API'de yok. */}
+                      <img
+                        src="/icons/finance-action-vector.svg"
+                        alt=""
+                        className="finance-download-icon finance-download-icon--disabled"
+                        title="Fatura indirme henüz hazır değil; API'de belge ucu yok."
                       />
                     </div>
                   </td>

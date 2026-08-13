@@ -9,7 +9,14 @@ const PendingRow = ({ date, amount, type }) => (
       <span className="pending-type">{type}</span>
     </div>
     <span className="pending-amount">{amount}</span>
-    <button type="button" className="pending-download" aria-label="Belgeyi indir">
+    {/* Belge ucu API'de yok; düğme çalışıyormuş gibi görünmesin. */}
+    <button
+      type="button"
+      className="pending-download"
+      aria-label="Belgeyi indir"
+      disabled
+      title="Fatura indirme henüz hazır değil; API'de belge ucu yok."
+    >
       <img src={downloadIcon} alt="" />
     </button>
   </div>

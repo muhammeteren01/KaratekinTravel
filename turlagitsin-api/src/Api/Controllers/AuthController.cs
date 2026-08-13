@@ -216,7 +216,14 @@ namespace Api.Controllers
         private string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
-            var key = Encoding.ASCII.GetBytes(jwtSettings["Key"] ?? "");
+            // Program.cs doğrulamayı UTF8 ile yapıyor. ASCII ile imzalamak,
+            // anahtarda ASCII dışı bir karakter olduğu anda tüm token'ları
+            // geçersiz kılardı.
+            var configuredKey = jwtSettings["Key"];
+            if (string.IsNullOrWhiteSpace(configuredKey))
+                throw new InvalidOperationException("Jwt:Key yapılandırılmamış; token üretilemez.");
+
+            var key = Encoding.UTF8.GetBytes(configuredKey);
 
             var claims = new List<Claim>
             {

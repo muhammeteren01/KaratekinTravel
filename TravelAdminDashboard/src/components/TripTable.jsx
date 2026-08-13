@@ -3,6 +3,7 @@ import './TripTable.css';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';
 import searchIcon from '../assets/icons/search.svg';
 import arrowRightIcon from '../assets/icons/arrow-right.svg';
+import arrowLeftIcon from '../assets/icons/arrow-prev.svg';
 
 const TripTable = ({ rows = [], loading = false }) => {
   const [selectedAll, setSelectedAll] = useState(false);
@@ -90,6 +91,12 @@ const TripTable = ({ rows = [], loading = false }) => {
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       handlePageChange(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
     }
   };
 
@@ -263,6 +270,17 @@ const TripTable = ({ rows = [], loading = false }) => {
         </table>
 
         <div className="trip-table__pagination">
+          {/* Sayfalamada yalnızca "Sonraki" vardı; geri gitmek için numaralara
+              tıklamak gerekiyordu. */}
+          <button
+            type="button"
+            className={`trip-table__pagination-next ${currentPage <= 1 ? 'trip-table__pagination-next--disabled' : ''}`}
+            onClick={handlePrevPage}
+            disabled={currentPage <= 1}
+          >
+            <img src={arrowLeftIcon} alt="" className="trip-table__next-icon" />
+            <span>Önceki</span>
+          </button>
           <div className="trip-table__pagination-numbers">
             {renderPaginationNumbers()}
           </div>

@@ -579,3 +579,13 @@
 .pay-empty-error {
   color: #C80509;
 }
+
+.figma-selector-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pending-download:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
