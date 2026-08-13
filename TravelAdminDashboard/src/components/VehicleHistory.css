@@ -1423,3 +1423,19 @@
 .vh-empty-error {
   color: #C80509;
 }
+
+/* Kayıt yokken grafik yerine açıklayıcı metin. Önceden grafik verisi koda
+   gömülüydü, veritabanı boşken bile dolu görünüyordu. */
+.vh-chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 180px;
+  padding: 24px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #718EBF;
+}

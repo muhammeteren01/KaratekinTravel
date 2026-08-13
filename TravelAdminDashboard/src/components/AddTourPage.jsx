@@ -17,8 +17,6 @@ import {
   createTripApi,
   createTripDepartureApi,
   fetchCompaniesApi,
-  getAdminToken,
-  setAdminToken,
   uploadGalleryImageApi,
 } from '../services/adminApi';
 import {
@@ -35,7 +33,6 @@ const AddTourPage = () => {
   const [companies, setCompanies] = useState([]);
   const [companyError, setCompanyError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [apiToken, setApiToken] = useState(() => getAdminToken() || '');
   const [formData, setFormData] = useState({
     companyId: '',
     tourName: '',
@@ -43,10 +40,6 @@ const AddTourPage = () => {
     category: '',
     tags: []
   });
-
-  useEffect(() => {
-    setAdminToken(apiToken);
-  }, [apiToken]);
 
   useEffect(() => {
     let active = true;
@@ -449,15 +442,6 @@ const AddTourPage = () => {
                     placeholder="Etiketler"
                     value={formData.tags}
                     onChange={(tags) => handleInputChange('tags', tags)}
-                  />
-
-                  <FormField
-                    label="Admin JWT"
-                    type="password"
-                    placeholder="JWT token giriniz"
-                    value={apiToken}
-                    onChange={(e) => setApiToken(e.target.value)}
-                    helperText="Bu token /api/trips oluşturma isteği için Authorization header olarak saklanır."
                   />
                 </div>
                 

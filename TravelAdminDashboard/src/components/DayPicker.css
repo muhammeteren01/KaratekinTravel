@@ -1,0 +1,153 @@
+.dp-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.dp-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #D1D1D1;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #2A2F3B;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease;
+}
+
+.dp-trigger:hover,
+.dp-trigger.is-open {
+  border-color: #24BAEC;
+  color: #24BAEC;
+}
+
+.dp-trigger:focus-visible {
+  outline: 2px solid #24BAEC;
+  outline-offset: 2px;
+}
+
+.dp-trigger-text {
+  font-weight: 500;
+}
+
+.dp-chevron {
+  transition: transform 0.15s ease;
+  opacity: 0.6;
+}
+
+.dp-pop {
+  position: absolute;
+  z-index: 2000;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 260px;
+  padding: 14px;
+  border: 1px solid #EAECF0;
+  border-radius: 12px;
+  background: #FFFFFF;
+  box-shadow: 0 12px 32px rgba(16, 24, 40, 0.16);
+  animation: dp-in 0.14s ease-out;
+}
+
+@keyframes dp-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.dp-pop-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #344054;
+}
+
+.dp-pop-sub {
+  font-weight: 400;
+  font-size: 12px;
+  color: #98A2B3;
+}
+
+.dp-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: #98A2B3;
+  text-align: center;
+}
+
+.dp-days {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  gap: 6px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.dp-days.is-calendar {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.dp-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 44px;
+  padding: 6px 4px;
+  border: 1px solid #EAECF0;
+  border-radius: 8px;
+  background: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.dp-day:hover {
+  border-color: #24BAEC;
+  background: #F7FCFE;
+}
+
+.dp-day.is-selected {
+  border-color: #24BAEC;
+  background: #24BAEC;
+  color: #FFFFFF;
+}
+
+.dp-day:focus-visible {
+  outline: 2px solid #24BAEC;
+  outline-offset: 1px;
+}
+
+.dp-day-number {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dp-day-date {
+  font-size: 10px;
+  opacity: 0.7;
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .dp-pop {
+    left: auto;
+    right: 0;
+    min-width: 240px;
+  }
+}

@@ -27,9 +27,10 @@ import calendarIcon from '../assets/icons/calendar-icon.svg';
 import arrowBackIcon from '../assets/icons/arrow-back-left.svg';
 import arrowForwardIcon from '../assets/icons/arrow-forward-right.svg';
 import { fetchMeApi, fetchVehicleOperationsApi, fetchVehiclesApi } from '../services/adminApi';
-import { useFeedback } from './feedback/feedbackContext';
+import { downloadCsv } from '../utils/format';
 
 const MONTHS_TR = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+const DAYS_TR = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
 
 /** "21 Oca, 14.30" (tablo) veya "17/05/2025" (kart) biçimi. */
 function formatOperationDate(value, variant = 'long') {
@@ -246,7 +247,6 @@ const DatePicker = ({ value, onChange, placeholder }) => {
 };
 
 const VehicleHistory = () => {
-  const { notify } = useFeedback();
   // API verisi
   const [operations, setOperations] = useState([]);
   const [vehicles, setVehicles] = useState([]);
@@ -502,9 +502,18 @@ const VehicleHistory = () => {
     }
   };
 
+  /**
+   * İşlem kaydını CSV olarak indirir.
+   *
+   * Önceden yalnızca "belgesi indiriliyor..." bildirimi çıkıyor, hiçbir dosya
+   * inmiyordu. API'de belge eki yok; indirilen şey kaydın kendisi.
+   */
   const downloadDocument = (operation) => {
-    // Gerçek uygulamada dosya indirme işlemi yapılır
-    notify(`${operation.driverName} - ${operation.operationType} belgesi indiriliyor...`, 'error');
+    downloadCsv(
+      `arac-islem-${String(operation.id).slice(0, 8)}.csv`,
+      ['Plaka', 'Sürücü', 'İşlem Türü', 'Tarih'],
+      [[operation.plate, operation.driverName, operation.operationType, operation.date]],
+    );
   };
 
   // Sayfa numaralarını oluştur
@@ -532,21 +541,86 @@ const VehicleHistory = () => {
   const vehiclePageNumbers = generatePageNumbers(currentPage, totalVehiclePages);
   const operationPageNumbers = generatePageNumbers(operationCurrentPage, totalOperationPages);
 
-  // Chart data
+  /**
+   * Grafik verisi gerçek işlem kayıtlarından üretiliyor.
+   *
+   * Buradaki iki dizi koda gömülüydü ([300, 225, 350, ...] ve
+   * [150, 125, 200, ...]); hiçbir araca, hiçbir tarihe bağlı değildi ve
+   * veritabanı boşken bile dolu görünüyordu. Etiketler de "Çalışma Süresi"
+   * ve "Yatış Süresi" diyordu ama kayıtlarda süre bilgisi yok — yalnızca
+   * işlemin türü ve zamanı var. Grafik artık olduğu şeyi gösteriyor:
+   * dönem içindeki sefer ve bakım/servis işlem sayıları.
+   */
+  const chartSeries = useMemo(() => {
+    const now = new Date();
+    const buckets = [];
+
+    if (selectedPeriod === 'Günlük') {
+      // Son 24 saat, dörder saatlik dilimler
+      for (let i = 5; i >= 0; i--) {
+        const end = new Date(now.getTime() - i * 4 * 3600 * 1000);
+        const start = new Date(end.getTime() - 4 * 3600 * 1000);
+        buckets.push({ label: `${String(end.getHours()).padStart(2, '0')}:00`, start, end });
+      }
+    } else if (selectedPeriod === 'Haftalık') {
+      for (let i = 6; i >= 0; i--) {
+        const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+        const next = new Date(day.getTime() + 24 * 3600 * 1000);
+        buckets.push({ label: DAYS_TR[day.getDay()], start: day, end: next });
+      }
+    } else if (selectedPeriod === 'Aylık') {
+      // Son 4 hafta
+      for (let i = 3; i >= 0; i--) {
+        const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i * 7 + 1);
+        const start = new Date(end.getTime() - 7 * 24 * 3600 * 1000);
+        buckets.push({ label: `${4 - i}. hafta`, start, end });
+      }
+    } else {
+      // Yıllık: son 12 ay
+      for (let i = 11; i >= 0; i--) {
+        const start = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+        buckets.push({ label: MONTHS_TR[start.getMonth()], start, end });
+      }
+    }
+
+    const trips = new Array(buckets.length).fill(0);
+    const service = new Array(buckets.length).fill(0);
+
+    operations.forEach((op) => {
+      const at = new Date(op.occurredAt);
+      if (Number.isNaN(at.getTime())) return;
+
+      const index = buckets.findIndex((b) => at >= b.start && at < b.end);
+      if (index < 0) return;
+
+      const type = String(op.operationType || '').toLocaleLowerCase('tr');
+      if (type.includes('sefer')) trips[index] += 1;
+      else service[index] += 1;
+    });
+
+    return { labels: buckets.map((b) => b.label), trips, service };
+  }, [operations, selectedPeriod]);
+
+  const hasChartData = useMemo(
+    () => chartSeries.trips.some(Boolean) || chartSeries.service.some(Boolean),
+    [chartSeries],
+  );
+
   const chartData = {
-    labels: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    labels: chartSeries.labels,
     datasets: [
       {
-        label: 'Çalışma Süresi',
-        data: [300, 225, 350, 400, 250, 325, 375],
+        label: 'Sefer',
+        data: chartSeries.trips,
         backgroundColor: '#24BAEC',
         borderRadius: 30,
         barThickness: 15,
         maxBarThickness: 15,
       },
       {
-        label: 'Yatış Süresi',
-        data: [150, 125, 200, 175, 225, 125, 250],
+        label: 'Bakım / Servis',
+        data: chartSeries.service,
         backgroundColor: '#FF7029',
         borderRadius: 30,
         barThickness: 15,
@@ -585,7 +659,9 @@ const VehicleHistory = () => {
       },
       y: {
         beginAtZero: true,
-        max: 500,
+        // Sabit 500 üst sınırı vardı; gerçek sayılar tek haneliyken tüm
+        // çubuklar dibe yapışıyordu. Eksen veriye göre ölçekleniyor.
+        suggestedMax: Math.max(4, ...chartSeries.trips, ...chartSeries.service),
         grid: {
           color: '#F3F3F5',
           drawBorder: false,
@@ -594,15 +670,13 @@ const VehicleHistory = () => {
           display: false,
         },
         ticks: {
-          stepSize: 100,
+          // İşlem sayısı tam sayı; 100'lük adımlar sabit 500 tavanına aitti.
+          precision: 0,
           color: '#718EBF',
           font: {
             family: 'Inter',
             size: 13,
             weight: 400,
-          },
-          callback: function(value) {
-            return value;
           },
         },
         position: 'left',
@@ -631,7 +705,7 @@ const VehicleHistory = () => {
         <div className="vh-work-history-card">
           <div className="vh-work-header">
             <div className="vh-work-title-row">
-              <h2>Araç Çalışma Geçmişi</h2>
+              <h2>Araç İşlem Yoğunluğu</h2>
               <div className="vh-work-controls">
                 <div className="vh-period-dropdown">
                   <button 
@@ -671,18 +745,27 @@ const VehicleHistory = () => {
             {/* Grafik Alanı */}
             <div className="vh-chart-container">
               <div className="vh-chart-wrapper">
-                <Bar data={chartData} options={chartOptions} />
+                {hasChartData ? (
+                  <Bar data={chartData} options={chartOptions} />
+                ) : (
+                  <div className="vh-chart-empty">
+                    {loading
+                      ? 'İşlem kayıtları yükleniyor...'
+                      : 'Seçili dönemde araç işlemi kaydı yok. Sefer, bakım, yakıt ve temizlik kayıtları burada özetlenir.'}
+                  </div>
+                )}
               </div>
-              
-              {/* Grafik Açıklaması - Alt Kısımda */}
+
+              {/* Etiketler kayıtlarda gerçekten olan şeyi anlatıyor: işlem
+                  kayıtlarında süre bilgisi yok, tür ve zaman var. */}
               <div className="vh-chart-legend">
                 <div className="vh-legend-item">
                   <div className="vh-legend-color" style={{backgroundColor: '#24BAEC'}}></div>
-                  <span>Çalışma Süresi</span>
+                  <span>Sefer</span>
                 </div>
                 <div className="vh-legend-item">
                   <div className="vh-legend-color" style={{backgroundColor: '#FF7029'}}></div>
-                  <span>Yatış Süresi</span>
+                  <span>Bakım / Servis</span>
                 </div>
               </div>
             </div>
