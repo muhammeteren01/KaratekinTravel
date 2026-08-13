@@ -1,58 +1,56 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import './NewVehicleDefinition.css';
+import { SEAT_TEMPLATES, buildSeatGrid, seatNumbers } from '../utils/seatLayoutTemplates';
 
-// Reuses the seat layout preview from NewVehicleDefinition without the header
-const VehicleSeatPreview = () => {
+/**
+ * Seçilen aracın koltuk düzenini gösterir.
+ *
+ * Önceden burada sabit bir 2+1 çizim vardı: hangi araç seçilirse seçilsin
+ * aynı görsel çıkıyor, üstündeki etiket ise "(2+2 Otobüs)" yazabiliyordu.
+ * Artık düzen aracın kendi busType ve capacity alanlarından kuruluyor.
+ */
+const VehicleSeatPreview = ({ vehicle }) => {
+  const preview = useMemo(() => {
+    const busType = vehicle?.busType || '2+1';
+    const capacity = Number(vehicle?.capacity) || 0;
+
+    const template = SEAT_TEMPLATES.find((t) => t.busType === busType) || SEAT_TEMPLATES[0];
+    const seatsPerRow = Number(template.seatsLeft) + Number(template.seatsRight);
+
+    // Kapasite bilinmiyorsa şablonun tipik uzunluğunda örnek bir düzen çiz.
+    return buildSeatGrid(template, capacity > 0 ? capacity : seatsPerRow * 12);
+  }, [vehicle]);
+
+  const numbers = useMemo(() => seatNumbers(preview.grid), [preview]);
+  const seatCount = useMemo(
+    () => (preview.grid || []).flat().filter((cell) => cell === 'seat').length,
+    [preview]
+  );
+
   return (
-    <div className="nvd-vehicle-preview">
-      <div className="nvd-vehicle-layout">
-        <div className="nvd-vehicle-left">
-          <div className="nvd-driver-section">
-            <div className="nvd-control-item nvd-door">Kapı</div>
-            <div className="nvd-control-item nvd-space">Boşluk</div>
+    <div className="nvd-bus-shell">
+      <div className="nvd-bus-cap">Şoför · Kapı</div>
+      <div className="nvd-bus-rows" style={{ ['--nvd-cols']: preview.cols }}>
+        {(preview.grid || []).map((row, r) => (
+          <div className="nvd-bus-row" key={`sp-${r}`}>
+            {row.map((cell, c) => {
+              if (cell === 'aisle') {
+                return <div key={`${r}-${c}`} className="nvd-bus-cell is-aisle" />;
+              }
+              return (
+                <div
+                  key={`${r}-${c}`}
+                  className={`nvd-bus-cell ${cell === 'seat' ? 'is-seat' : 'is-empty'}`}
+                >
+                  {cell === 'seat' ? numbers[r]?.[c] : ''}
+                </div>
+              );
+            })}
           </div>
-          <div className="nvd-steering-wheel">
-            <svg width="62" height="64" viewBox="0 0 62 64" fill="none">
-              <circle cx="31" cy="32" r="29" stroke="#FFFFFF" strokeWidth="2"/>
-              <circle cx="31" cy="32" r="25" stroke="#FFFFFF" strokeWidth="2"/>
-              <path d="M50 45L31 32L12 45" stroke="#FFFFFF" strokeWidth="2"/>
-              <path d="M31 7L31 32" stroke="#FFFFFF" strokeWidth="2"/>
-              <path d="M50 19L31 32" stroke="#FFFFFF" strokeWidth="2"/>
-              <circle cx="31" cy="32" r="3" stroke="#FFFFFF" strokeWidth="2"/>
-            </svg>
-          </div>
-        </div>
-
-        <div className="nvd-seating-area">
-          <div className="nvd-seat-row">
-            <div className="nvd-seat nvd-seat-filled">Koltuk</div>
-            <div className="nvd-seat nvd-seat-filled">Koltuk</div>
-            <div className="nvd-seat nvd-corridor">Koridor</div>
-            <div className="nvd-seat nvd-space">Boşluk</div>
-            <div className="nvd-seat nvd-seat-filled">Koltuk</div>
-          </div>
-          <div className="nvd-seat-row">
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-corridor">Koridor</div>
-            <div className="nvd-seat nvd-space">Boşluk</div>
-            <div className="nvd-seat nvd-seat-filled">Koltuk</div>
-          </div>
-          <div className="nvd-seat-row">
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-          </div>
-          <div className="nvd-seat-row">
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-            <div className="nvd-seat nvd-seat-empty">Sürükle</div>
-          </div>
-        </div>
+        ))}
+      </div>
+      <div className="nvd-bus-cap is-rear">
+        {vehicle?.capacity ? `Arka · ${seatCount} koltuk` : `Arka · örnek düzen (${seatCount} koltuk)`}
       </div>
     </div>
   );

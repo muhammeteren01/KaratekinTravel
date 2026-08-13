@@ -211,7 +211,10 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
                   }));
                 }}
               >
-                {!vehicles.length && <option value="">Araç bulunamadı</option>}
+                {/* Boş seçenek şart: form.vehicleId başlangıçta '' iken tarayıcı
+                    listenin ilk aracını gösteriyor, kayıt ise vehicleId=null
+                    gidiyordu. Kullanıcı seçtiğini sandığı araç kaydedilmiyordu. */}
+                <option value="">{vehicles.length ? 'Araç seçiniz' : 'Araç bulunamadı'}</option>
                 {vehicles.map((vehicle) => (
                   <option key={vehicle.id} value={vehicle.id}>
                     {formatVehicleOption(vehicle)}
@@ -219,14 +222,13 @@ const UpdateSubDate = ({ isSidebarCollapsed }) => {
                 ))}
               </select>
             </div>
-            <button type="button" className="nsd-bus-btn">Otobüs Seç</button>
           </div>
         </div>
 
         <div className="nsd-field">
           <label className="nsd-label">Önizleme <span className="nsd-sub">({selectedVehicle?.busType || '2+1'} Otobüs)</span></label>
           <div className="nsd-preview">
-            <VehicleSeatPreview />
+            <VehicleSeatPreview vehicle={selectedVehicle} />
           </div>
         </div>
 
