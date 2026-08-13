@@ -272,13 +272,34 @@
 .form-field textarea{ width:100%; border:1px solid #EEF2F7; border-radius:8px; padding:10px 12px; font-size:14px; color:#1F2937; background:#FFFFFF; }
 .form-field textarea{ resize:vertical; }
 
-.iban-group{ display:flex; gap:8px; }
-.iban-country{ width:64px; text-align:center; background:#F9FAFB; border:1px solid #EEF2F7; border-radius:8px; height:40px; }
-.iban{ flex:1; height:40px; border:1px solid #EEF2F7; border-radius:8px; padding:0 12px; }
+/* IBAN tek alanda: "TR" öneki artık ayrı kutu değil, biçimlendirmenin
+   parçası. Rakamlar dörderli gruplandığı için eşit genişlik yazı tipi. */
+.iban-full{
+  width:100%; height:40px; border:1px solid #EEF2F7; border-radius:8px;
+  padding:0 12px; font-size:15px; letter-spacing:.06em;
+  font-variant-numeric:tabular-nums;
+  font-family:'SF Mono', 'Roboto Mono', ui-monospace, monospace;
+}
+.iban-full:focus{ outline:2px solid #24BAEC; outline-offset:1px; border-color:#24BAEC; }
 
-.upload-card{ display:flex; align-items:center; justify-content:center; background:#FFFFFF; border:1px dashed #D1D5DB; border-radius:8px; height:40px; cursor:pointer; }
+.form-field .hint{ margin:6px 0 0; font-size:12px; color:#98A2B3; }
+.form-field .hint-ok{ color:#16A34A; font-weight:600; }
+.field-error{ margin:6px 0 0; font-size:12px; color:#DC2626; }
+
+.upload-card{ display:flex; align-items:center; justify-content:center; gap:8px; background:#FFFFFF; border:1px dashed #D1D5DB; border-radius:8px; min-height:40px; padding:8px 12px; cursor:pointer; }
+.upload-card:hover{ border-color:#24BAEC; background:#F7FCFE; }
 .upload-card input{ display:none; }
-.upload-card img{ width:18px; height:18px; opacity:.7; }
+.upload-card img{ width:18px; height:18px; opacity:.7; flex:0 0 auto; }
+.upload-name{ font-size:12px; color:#667085; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* Son talebin durumu */
+.bank-request-status{ margin-top:12px; padding:10px 12px; border-radius:8px; font-size:13px; background:#F5F7FA; color:#344054; }
+.bank-request-status.is-pending{ background:#FFF7ED; color:#B45309; }
+.bank-request-status.is-approved{ background:#F0FDF4; color:#15803D; }
+.bank-request-status.is-rejected{ background:#FEF2F2; color:#B91C1C; }
+.bank-request-note{ margin:6px 0 0; font-size:12px; opacity:.85; }
+
+.bank-action:disabled{ opacity:.6; cursor:not-allowed; }
 
 .form-actions{ display:flex; justify-content:flex-start; }
 .btn-save{ display:inline-flex; align-items:center; gap:8px; background:#22C55E; color:#FFFFFF; border:none; border-radius:8px; padding:10px 14px; font-weight:700; cursor:pointer; }

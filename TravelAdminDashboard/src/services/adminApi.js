@@ -39,6 +39,7 @@ export const API_ENDPOINTS = {
   reviewReports: `${DEFAULT_API_BASE_URL}/api/review-reports`,
   vehicles: `${DEFAULT_API_BASE_URL}/api/vehicles`,
   vehicleOperations: `${DEFAULT_API_BASE_URL}/api/vehicle-operations`,
+  bankChangeRequests: `${DEFAULT_API_BASE_URL}/api/bank-change-requests`,
   payments: `${DEFAULT_API_BASE_URL}/api/payments`,
   tripDepartures: `${DEFAULT_API_BASE_URL}/api/trip-departures`,
   seats: `${DEFAULT_API_BASE_URL}/api/seats`,
@@ -635,6 +636,24 @@ export function fetchVehicleLayoutsApi(companyId) {
 
 export function createVehicleLayoutApi(payload) {
   return request(`${API_ENDPOINTS.vehicles}/layouts`, authOptions({
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }));
+}
+
+// Banka / tahsilat bilgisi değişiklik talepleri
+export function fetchCompanyBankInfoApi(companyId = null) {
+  const suffix = companyId ? `?companyId=${encodeURIComponent(companyId)}` : '';
+  return request(`${API_ENDPOINTS.bankChangeRequests}/current${suffix}`, authOptions());
+}
+
+export function fetchBankChangeRequestsApi(status = null) {
+  const suffix = status ? `?status=${encodeURIComponent(status)}` : '';
+  return request(`${API_ENDPOINTS.bankChangeRequests}${suffix}`, authOptions());
+}
+
+export function createBankChangeRequestApi(payload) {
+  return request(API_ENDPOINTS.bankChangeRequests, authOptions({
     method: 'POST',
     body: JSON.stringify(payload),
   }));
