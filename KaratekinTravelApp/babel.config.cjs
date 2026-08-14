@@ -13,7 +13,9 @@ module.exports = function (api) {
           extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
         },
       ],
-      'react-native-reanimated/plugin',
+      // Reanimated/Worklets babel eklentisi burada listelenmiyor:
+      // SDK 54'te babel-preset-expo, react-native-worklets kuruluysa
+      // eklentiyi kendisi ekliyor. Elle eklemek onu iki kez uygular.
     ],
   };
 };
