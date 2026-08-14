@@ -12,7 +12,7 @@ import {
 import { migrateBootstrap } from '../migrations';
 import { DATA_ENDPOINTS } from '../../config/dataConfig';
 import { apiFetch, ensureIsoDate, mapAuthUser } from './http';
-import { fetchBootstrapLocal } from './local';
+import { emptyToUndefined } from './normalize';
 
 function normalizeReservation(raw: any): Reservation {
   const statusRaw = String(raw.status ?? 'pending').toLowerCase();
@@ -49,42 +49,27 @@ function normalizeReview(raw: any): Review {
 }
 
 export async function fetchBootstrap(): Promise<BootstrapPayload> {
-  try {
-    const raw = await apiFetch<any>(DATA_ENDPOINTS.bootstrap, { auth: false });
-    // Normalize API quirks before Zod
-    if (Array.isArray(raw?.users)) {
-      raw.users = raw.users.map((u: any) => mapAuthUser(u));
-    }
-    if (!Array.isArray(raw?.companies)) raw.companies = [];
-    if (!Array.isArray(raw?.trips)) raw.trips = [];
-    const migrated = migrateBootstrap(raw);
-    return BootstrapSchema.parse(migrated);
-  } catch (err) {
-    console.warn('[api] bootstrap remote failed, using local sample', err);
-    return fetchBootstrapLocal();
+  const raw = emptyToUndefined(
+    await apiFetch<any>(DATA_ENDPOINTS.bootstrap, { auth: false }),
+  );
+  // Normalize API quirks before Zod
+  if (Array.isArray(raw?.users)) {
+    raw.users = raw.users.map((u: any) => mapAuthUser(u));
   }
+  if (!Array.isArray(raw?.companies)) raw.companies = [];
+  if (!Array.isArray(raw?.trips)) raw.trips = [];
+  const migrated = migrateBootstrap(raw);
+  return BootstrapSchema.parse(migrated);
 }
 
 export async function fetchTrips(): Promise<BootstrapPayload['trips']> {
-  try {
-    const res = await apiFetch<any[]>(DATA_ENDPOINTS.trips, { auth: false });
-    return res.map((t) => TripSchema.parse(t));
-  } catch (err) {
-    console.warn('[api] trips remote failed, falling back to bootstrap', err);
-    const b = await fetchBootstrap();
-    return b.trips;
-  }
+  const res = await apiFetch<any[]>(DATA_ENDPOINTS.trips, { auth: false });
+  return (res ?? []).map((t) => TripSchema.parse(emptyToUndefined(t)));
 }
 
 export async function fetchCompanies(): Promise<BootstrapPayload['companies']> {
-  try {
-    const res = await apiFetch<any[]>(DATA_ENDPOINTS.companies, { auth: false });
-    return res.map((c) => CompanySchema.parse(c));
-  } catch (err) {
-    console.warn('[api] companies remote failed, falling back to bootstrap', err);
-    const b = await fetchBootstrap();
-    return b.companies;
-  }
+  const res = await apiFetch<any[]>(DATA_ENDPOINTS.companies, { auth: false });
+  return (res ?? []).map((c) => CompanySchema.parse(emptyToUndefined(c)));
 }
 
 export async function fetchReservations(): Promise<Reservation[]> {

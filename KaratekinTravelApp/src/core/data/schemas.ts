@@ -49,26 +49,42 @@ export const TripPricingSchema = z
 export type TripPricing = z.infer<typeof TripPricingSchema>;
 
 // Trip
+// API tarihleri iki bicimde gonderebiliyor: tam ISO damgasi (createdAt gibi)
+// ve yalnizca gun (TripService, DateStart/DateEnd icin "yyyy-MM-dd" uretiyor).
+// Yalnizca .datetime() beklemek gun bicimli degerleri reddediyordu.
+const DateLike = z
+  .string()
+  .refine(
+    (v) => !Number.isNaN(Date.parse(v)),
+    "must be an ISO datetime or a yyyy-MM-dd date",
+  );
+
 export const TripSchema = z
   .object({
     id: ID,
     companyId: ID,
     title: z.string().min(1),
-    location: z.string().min(1),
-    city: z.string().min(1),
-    region: z.string().min(1),
+    // API bu alanlar bos oldugunda null degil string.Empty donduruyor
+    // (TripService.MapToResponseDto). min(1) beklemek, panelden sehir/bolge
+    // girilmeden eklenen her turu reddediyordu.
+    location: z.string().default(""),
+    city: z.string().default(""),
+    region: z.string().default(""),
     rating: z.number().min(0).max(5).default(0),
     reviewCount: z.number().int().nonnegative().default(0),
     price: z.string().min(1).optional(), // legacy string label
     pricing: TripPricingSchema.optional(),
     dateRange: z.string().optional(),
-    dateStart: z.string().datetime().optional(),
-    dateEnd: z.string().datetime().optional(),
-    capacity: z.number().int().positive(),
+    dateStart: DateLike.optional(),
+    dateEnd: DateLike.optional(),
+    // Kapasite panelde girilmemisse 0 geliyor; positive() bunu reddediyordu.
+    capacity: z.number().int().nonnegative().default(0),
     joinedCount: z.number().int().nonnegative().default(0),
     avatars: z.array(ImageRefSchema).default([]),
-    image: ImageRefSchema,
-    headerImage: ImageRefSchema.optional(),
+    // Gorsel yuklenmemis turlar da listelenebilmeli; arayuz bos degeri
+    // yer tutucuyla karsilamali.
+    image: z.string().default(""),
+    headerImage: z.string().optional(),
     gallery: z.array(ImageRefSchema).optional(),
     description: z.string().default(""),
     purchased: z.boolean().optional().default(false),
