@@ -16,7 +16,7 @@
   width: 100%;
 }
 
-.form-field {
+.tour-cancellation-form .form-field {
   display: flex;
   flex-direction: column;
   gap: 10px;

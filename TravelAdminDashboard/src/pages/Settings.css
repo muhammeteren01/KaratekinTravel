@@ -260,17 +260,17 @@
 .form-grid.two{ grid-template-columns: 1fr 1fr; }
 .form-grid.three{ grid-template-columns: 1fr 1fr 1fr; }
 
-.form-field{ display:flex; flex-direction:column; gap:6px; }
-.form-field label{ font-size:14px; font-weight:600; color:#25324B; }
-.form-field .hint{ margin:0; font-size:12px; color:#6B7280; }
+.settings-page .form-field{ display:flex; flex-direction:column; gap:6px; }
+.settings-page .form-field label{ font-size:14px; font-weight:600; color:#25324B; }
+.settings-page .form-field .hint{ margin:0; font-size:12px; color:#6B7280; }
 
 .select-wrap{ position:relative; }
 .select-wrap select{ width:100%; height:40px; border:1px solid #EEF2F7; border-radius:8px; padding:0 36px 0 12px; appearance:none; font-size:14px; color:#1F2937; background:#FFFFFF; }
 .select-wrap img{ position:absolute; right:10px; top:50%; transform:translateY(-50%); width:16px; height:16px; opacity:.6; pointer-events:none; }
 
-.form-field input[type="text"],
-.form-field textarea{ width:100%; border:1px solid #EEF2F7; border-radius:8px; padding:10px 12px; font-size:14px; color:#1F2937; background:#FFFFFF; }
-.form-field textarea{ resize:vertical; }
+.settings-page .form-field input[type="text"],
+.settings-page .form-field textarea{ width:100%; border:1px solid #EEF2F7; border-radius:8px; padding:10px 12px; font-size:14px; color:#1F2937; background:#FFFFFF; }
+.settings-page .form-field textarea{ resize:vertical; }
 
 /* IBAN tek alanda: "TR" öneki artık ayrı kutu değil, biçimlendirmenin
    parçası. Rakamlar dörderli gruplandığı için eşit genişlik yazı tipi. */
