@@ -20,6 +20,10 @@ module.exports = {
     "^@react-native-community/netinfo$": "<rootDir>/__tests__/mocks/netinfo.js",
     "^expo-status-bar$": "<rootDir>/__tests__/mocks/expo-status-bar.js",
     "^expo-navigation-bar$": "<rootDir>/__tests__/mocks/expo-navigation-bar.js",
+    "^expo-splash-screen$": "<rootDir>/__tests__/mocks/expo-splash-screen.js",
+    "^expo-font$": "<rootDir>/__tests__/mocks/expo-font.js",
+    "^@expo/vector-icons(.*)$": "<rootDir>/__tests__/mocks/vector-icons.js",
+    "^@react-native-async-storage/async-storage$": "<rootDir>/__tests__/mocks/async-storage.js",
   "^react-native-safe-area-context(.*)$": "<rootDir>/__tests__/mocks/react-native-safe-area-context.js",
     "^@/navigation/AppNavigator$": "<rootDir>/__tests__/mocks/app-navigator.js",
     "^@/features/onboarding/screens$":

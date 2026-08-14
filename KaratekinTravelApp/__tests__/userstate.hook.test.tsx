@@ -12,9 +12,12 @@ jest.mock('expo-secure-store', () => ({
   deleteItemAsync: jest.fn(async () => {}),
 }));
 
-// Mock supporting data hook to return a seeded userState
-jest.mock('@/features/trips/hooks', () => ({
-  useTrips: jest.fn(() => ({ data: [], isLoading: false, isError: false, refetch: jest.fn() })),
+// UserState bu uc kancayi @/core/data/store'dan aliyor. Once
+// @/features/trips/hooks mock'lanmisti; o modul kullanilmadigi icin mock hic
+// devreye girmiyor, gercek useQuery calisiyor ve "No QueryClient set" ile
+// dusuyordu. Dogru modul mock'lanarak testin QueryClientProvider'a ihtiyaci
+// kalmadi.
+jest.mock('@/core/data/store', () => ({
   useSupportingData: jest.fn(() => ({
     data: {
       userState: [
@@ -25,6 +28,9 @@ jest.mock('@/features/trips/hooks', () => ({
     isError: false,
     refetch: jest.fn(),
   })),
+  // Kullanici giris yapmadigi icin uzak liste bos; savedIds yerel duruma dusuyor.
+  useSavedTripIds: jest.fn(() => ({ data: undefined, isLoading: false, isError: false })),
+  useToggleSavedTrip: jest.fn(() => ({ mutate: jest.fn(), isPending: false })),
 }));
 
 type Exposed = { isSaved: (id: string|number)=>boolean; toggle: (id: string|number)=>void };
