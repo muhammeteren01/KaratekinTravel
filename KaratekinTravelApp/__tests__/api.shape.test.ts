@@ -130,3 +130,41 @@ describe('resolveImage', () => {
     expect(resolveImage('https://x.test/a.png')).toEqual({ uri: 'https://x.test/a.png' });
   });
 });
+
+// ── null normallestirme ────────────────────────────────────────────
+import { nullToUndefined } from '@/core/data/api/nullToUndefined';
+
+describe('nullToUndefined', () => {
+  test('ic ice null degerleri temizliyor', () => {
+    expect(nullToUndefined({ a: null, b: { c: null, d: 1 } })).toEqual({ b: { d: 1 } });
+  });
+
+  test('dizilerin icine giriyor', () => {
+    expect(nullToUndefined({ xs: [{ hotelIndex: null, day: 1 }] })).toEqual({
+      xs: [{ day: 1 }],
+    });
+  });
+
+  test('bos string ve 0 ve false korunuyor', () => {
+    expect(nullToUndefined({ a: '', b: 0, c: false })).toEqual({ a: '', b: 0, c: false });
+  });
+
+  test('gercek API turu artik hotelIndex null ile de parse ediliyor', () => {
+    const withItinerary = {
+      ...apiTrip,
+      itinerary: [{ day: 1, title: 'Gun 1', activities: [], hotelIndex: null }],
+    };
+    // Ham hali reddediliyor
+    expect(TripSchema.safeParse(withItinerary).success).toBe(false);
+    // Normallestirilmis hali geciyor
+    const r = TripSchema.safeParse(nullToUndefined(withItinerary));
+    if (!r.success) console.error(r.error.issues);
+    expect(r.success).toBe(true);
+  });
+
+  test('zorunlu alan null ise hata gizlenmiyor, sadece mesaji degisiyor', () => {
+    const broken = nullToUndefined({ ...apiTrip, title: null });
+    const r = TripSchema.safeParse(broken);
+    expect(r.success).toBe(false);
+  });
+});
