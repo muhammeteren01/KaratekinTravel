@@ -12,7 +12,6 @@ import {
 import { migrateBootstrap } from '../migrations';
 import { DATA_ENDPOINTS } from '../../config/dataConfig';
 import { apiFetch, ensureIsoDate, mapAuthUser } from './http';
-import { emptyToUndefined } from './normalize';
 
 function normalizeReservation(raw: any): Reservation {
   const statusRaw = String(raw.status ?? 'pending').toLowerCase();
@@ -49,9 +48,7 @@ function normalizeReview(raw: any): Review {
 }
 
 export async function fetchBootstrap(): Promise<BootstrapPayload> {
-  const raw = emptyToUndefined(
-    await apiFetch<any>(DATA_ENDPOINTS.bootstrap, { auth: false }),
-  );
+  const raw = await apiFetch<any>(DATA_ENDPOINTS.bootstrap, { auth: false });
   // Normalize API quirks before Zod
   if (Array.isArray(raw?.users)) {
     raw.users = raw.users.map((u: any) => mapAuthUser(u));
@@ -64,12 +61,12 @@ export async function fetchBootstrap(): Promise<BootstrapPayload> {
 
 export async function fetchTrips(): Promise<BootstrapPayload['trips']> {
   const res = await apiFetch<any[]>(DATA_ENDPOINTS.trips, { auth: false });
-  return (res ?? []).map((t) => TripSchema.parse(emptyToUndefined(t)));
+  return (res ?? []).map((t) => TripSchema.parse(t));
 }
 
 export async function fetchCompanies(): Promise<BootstrapPayload['companies']> {
   const res = await apiFetch<any[]>(DATA_ENDPOINTS.companies, { auth: false });
-  return (res ?? []).map((c) => CompanySchema.parse(emptyToUndefined(c)));
+  return (res ?? []).map((c) => CompanySchema.parse(c));
 }
 
 export async function fetchReservations(): Promise<Reservation[]> {

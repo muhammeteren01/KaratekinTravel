@@ -3,9 +3,16 @@ import type { ImageSourcePropType } from "react-native";
 import { getAssetByKey } from "../../../assets/assetsMap";
 
 // A simple branded type for React Native image references in JSON: use string URL or local asset key
-export const ImageRefSchema = z
-  .string()
-  .min(1, "image must be a non-empty string URL or asset key");
+/** Boş string'i "değer yok" sayan preprocess yardımcısı. */
+const emptyStringToUndefined = (v: unknown) =>
+  typeof v === "string" && v.trim() === "" ? undefined : v;
+
+// API görsel yüklenmemiş kayıtlarda null değil string.Empty gönderiyor
+// (TripService: Image/HeaderImage, BootstrapService: CalendarTrip.Image).
+// min(1) beklemek, görseli olmayan her kaydın parse edilmesini engelliyordu.
+// Boş değer geçerli sayılıyor; resolveImage boş girdide undefined döndürüyor,
+// arayüz de yer tutucusunu gösteriyor.
+export const ImageRefSchema = z.string();
 
 // Common primitives
 const ID = z
@@ -20,8 +27,12 @@ export const CompanySchema = z
     name: z.string().min(1),
     logo: ImageRefSchema.optional(),
     phone: z.string().optional(),
-    email: z.string().email().optional(),
-    website: z.string().url().optional(),
+    // API bu alanları doldurmuyor ve boş string gönderiyor (CompanyService:
+    // Phone/Email/Website = string.Empty). Boş string geçerli bir e-posta
+    // veya URL olmadığı için firma yanıtının tamamı reddediliyordu; boş
+    // değer "yok" olarak yorumlanıyor.
+    email: z.preprocess(emptyStringToUndefined, z.string().email().optional()),
+    website: z.preprocess(emptyStringToUndefined, z.string().url().optional()),
     rating: z.number().min(0).max(10).default(0),
     reviewCount: z.number().int().nonnegative().default(0),
     about: z.string().optional(),
@@ -455,6 +466,9 @@ export type BootstrapPayload = z.infer<typeof BootstrapSchema>;
 // Utility: map JSON image string to RN ImageSourcePropType
 export function resolveImage(ref?: any): ImageSourcePropType | undefined {
   if (ref == null) return undefined;
+  // Görseli olmayan kayıtlarda API boş string gönderiyor; { uri: "" }
+  // üretmek yerine tanımsız dönüp arayüzün yer tutucuya düşmesini sağla.
+  if (typeof ref === "string" && ref.trim() === "") return undefined;
   // If it's already a valid RN source (number from require, or an object), just return it
   const t = typeof ref;
   if (t === "number") return ref as ImageSourcePropType;
