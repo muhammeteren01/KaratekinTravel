@@ -49,9 +49,13 @@ export const TripPricingSchema = z
   .object({
     currency: Currency,
     basePrice: z.number().nonnegative(),
+    // API indirim yoksa alanı atlamıyor, null gönderiyor
+    // (TripService.MapPricingDto). Zod'da .optional() yalnızca undefined'ı
+    // kabul ediyor, null'ı reddediyor; bu yüzden indirimsiz her tur
+    // reddediliyordu. .nullish() ikisini birden kabul ediyor.
     discount: z
       .object({ label: z.string(), amount: z.number().nonnegative() })
-      .optional(),
+      .nullish(),
     extras: z
       .array(z.object({ label: z.string(), amount: z.number().nonnegative() }))
       .optional(),
@@ -83,11 +87,13 @@ export const TripSchema = z
     region: z.string().default(""),
     rating: z.number().min(0).max(5).default(0),
     reviewCount: z.number().int().nonnegative().default(0),
-    price: z.string().min(1).optional(), // legacy string label
-    pricing: TripPricingSchema.optional(),
-    dateRange: z.string().optional(),
-    dateStart: DateLike.optional(),
-    dateEnd: DateLike.optional(),
+    price: z.string().min(1).nullish(), // legacy string label
+    pricing: TripPricingSchema.nullish(),
+    dateRange: z.string().nullish(),
+    // Tarih girilmemişse API boş string gönderiyor; Date.parse("") NaN
+    // döndüğü için doğrulama düşüyordu. Boş değer "tarih yok" sayılıyor.
+    dateStart: z.preprocess(emptyStringToUndefined, DateLike.optional()),
+    dateEnd: z.preprocess(emptyStringToUndefined, DateLike.optional()),
     // Kapasite panelde girilmemisse 0 geliyor; positive() bunu reddediyordu.
     capacity: z.number().int().nonnegative().default(0),
     joinedCount: z.number().int().nonnegative().default(0),
@@ -95,23 +101,32 @@ export const TripSchema = z
     // Gorsel yuklenmemis turlar da listelenebilmeli; arayuz bos degeri
     // yer tutucuyla karsilamali.
     image: z.string().default(""),
-    headerImage: z.string().optional(),
-    gallery: z.array(ImageRefSchema).optional(),
+    headerImage: z.string().nullish(),
+    gallery: z.array(ImageRefSchema).nullish(),
     description: z.string().default(""),
     purchased: z.boolean().optional().default(false),
+    // Sunucunun her turda gönderdiği alanlar. Şema .strict() olduğu için
+    // burada tanımlı olmamaları tek başına tüm tur yanıtını reddettiriyordu.
+    // isPublished özellikle anlamlı: turun kullanıcılara görünür olup
+    // olmadığını söylüyor.
+    createdAt: DateLike.optional(),
+    updatedAt: DateLike.optional(),
+    isPublished: z.boolean().optional(),
+    isFeatured: z.boolean().optional(),
+    isDeleted: z.boolean().optional(),
     details: z
       .object({
         included: z.array(z.string()).default([]),
         excluded: z.array(z.string()).default([]),
         specialNote: z.string().optional(),
       })
-      .optional(),
+      .nullish(),
     policy: z
       .object({
         title: z.string().optional(),
         paragraphs: z.array(z.string()).default([]),
       })
-      .optional(),
+      .nullish(),
     itinerary: z
       .array(
         z.object({
@@ -139,7 +154,7 @@ export const TripSchema = z
           stars: z.number().min(1).max(5).optional(),
           address: z.string().optional(),
           image: ImageRefSchema.optional(),
-          gallery: z.array(ImageRefSchema).optional(),
+          gallery: z.array(ImageRefSchema).nullish(),
           checkIn: z.string().optional(),
           checkOut: z.string().optional(),
           amenities: z.array(z.string()).optional(),
