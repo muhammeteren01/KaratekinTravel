@@ -34,6 +34,7 @@ namespace Repository
         public DbSet<ChatGroup> ChatGroups { get; set; }
         public DbSet<ChatGroupMember> ChatGroupMembers { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatReport> ChatReports { get; set; }
         public DbSet<CalendarTrip> CalendarTrips { get; set; }
         public DbSet<TripDeparture> TripDepartures { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
@@ -72,6 +73,7 @@ namespace Repository
             modelBuilder.Entity<ChatGroup>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<ChatGroupMember>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<ChatMessage>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<ChatReport>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<UserNotification>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<TripDeparture>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<Vehicle>().HasQueryFilter(e => !e.IsDeleted);
@@ -486,6 +488,24 @@ namespace Repository
                 entity.HasOne(e => e.Vehicle)
                     .WithMany(e => e.Operations)
                     .HasForeignKey(e => e.VehicleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Chat Report Configuration
+            modelBuilder.Entity<ChatReport>(entity =>
+            {
+                entity.ToTable("chat_reports");
+                entity.HasIndex(e => e.ChatGroupId);
+                entity.HasIndex(e => e.CompanyId);
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => e.IsDeleted);
+                entity.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("pending");
+
+                // Gezinme ozelligi bilerek yok: sikayet kaydinin sohbeti
+                // yuklemesine gerek yok, yalnizca yabanci anahtar taniniyor.
+                entity.HasOne<ChatGroup>()
+                    .WithMany()
+                    .HasForeignKey(e => e.ChatGroupId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
 

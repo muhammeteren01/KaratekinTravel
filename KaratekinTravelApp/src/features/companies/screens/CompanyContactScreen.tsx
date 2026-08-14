@@ -39,6 +39,13 @@ export default function CompanyContactScreen({
 
   const { data: supporting, isLoading, isError, refetch } = useSupportingData();
 
+  // Sikayet ucu sohbet grubu kimligi istiyor; ekran bunu prop olarak almiyor,
+  // bu yuzden sohbet listesinden cozuluyor. Bulunamazsa "Bildir" hic
+  // gosterilmiyor: calismayacagini bildigimiz bir dugmeyi koymuyoruz.
+  const chatGroupId = supporting?.chats?.groups?.[0]?.id
+    ? String(supporting.chats.groups[0].id)
+    : undefined;
+
   if (isLoading) return <LoadingView />;
   if (isError) return <ErrorView onRetry={refetch} />;
 
@@ -110,7 +117,9 @@ export default function CompanyContactScreen({
       />
 
       {/* Report Button */}
-      <ReportButton onPress={() => setIsReportModalVisible(true)} />
+      {chatGroupId && (
+        <ReportButton onPress={() => setIsReportModalVisible(true)} />
+      )}
 
       {/* Chat Container with Messages and Composer */}
       <ChatContainer>
@@ -131,11 +140,14 @@ export default function CompanyContactScreen({
       </ChatContainer>
 
       {/* Report Modal */}
-      <ReportChatModal
-        visible={isReportModalVisible}
-        onClose={() => setIsReportModalVisible(false)}
-        companyName={companyName}
-      />
+      {chatGroupId && (
+        <ReportChatModal
+          visible={isReportModalVisible}
+          onClose={() => setIsReportModalVisible(false)}
+          companyName={companyName}
+          chatGroupId={chatGroupId}
+        />
+      )}
     </View>
   );
 }

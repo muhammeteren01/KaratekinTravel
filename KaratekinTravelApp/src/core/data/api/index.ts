@@ -238,3 +238,17 @@ export async function archiveNotificationApi(id: string) {
 export async function deleteNotificationApi(id: string) {
   await apiFetch(`${DATA_ENDPOINTS.notifications}/${id}`, { method: 'DELETE' });
 }
+
+/**
+ * Sohbet şikayeti oluşturur. Uygulamadaki "Sohbeti Bildir" penceresinin
+ * "Bildir" düğmesi önceden hiçbir şey yapmıyordu.
+ */
+export async function createChatReportApi(payload: {
+  chatGroupId: string;
+  reason: string;
+}) {
+  return apiFetch<{ id: string; status: string }>(DATA_ENDPOINTS.chatReports, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}

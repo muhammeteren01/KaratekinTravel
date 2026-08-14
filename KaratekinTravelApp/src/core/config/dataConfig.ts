@@ -30,6 +30,7 @@ export const DATA_ENDPOINTS = {
   savedTrips: `${API_BASE_URL}/api/saved-trips`,
   notifications: `${API_BASE_URL}/api/notifications`,
   chats: `${API_BASE_URL}/api/chats`,
+  chatReports: `${API_BASE_URL}/api/chat-reports`,
   seatsAvailability: `${API_BASE_URL}/api/seats/availability`,
   couponsValidate: `${API_BASE_URL}/api/coupons/validate`,
 };

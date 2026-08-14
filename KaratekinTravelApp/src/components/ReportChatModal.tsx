@@ -1,25 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { OverlayModal, ModalHeader, Button } from "@/shared/ui";
+import { createChatReportApi } from "@/core/data/api";
 
 interface ReportChatModalProps {
   visible: boolean;
   onClose: () => void;
   companyName: string;
+  /** Sikayet edilen sohbet. Cagiran taraf bunu cozemiyorsa pencereyi hic
+   *  acmamali; sunucu grup kimligi olmadan sikayet kabul etmiyor. */
+  chatGroupId: string;
 }
+
+const MIN_REASON_LENGTH = 3;
 
 const ReportChatModal: React.FC<ReportChatModalProps> = ({
   visible,
   onClose,
   companyName,
+  chatGroupId,
 }) => {
+  const [reason, setReason] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const canSubmit = reason.trim().length >= MIN_REASON_LENGTH && !submitting;
+
+  const handleSubmit = async () => {
+    const trimmed = reason.trim();
+    if (trimmed.length < MIN_REASON_LENGTH) return;
+
+    setSubmitting(true);
+    try {
+      await createChatReportApi({ chatGroupId, reason: trimmed });
+      setReason("");
+      onClose();
+      Alert.alert(
+        "Bildiriminiz alindi",
+        "Sikayetiniz incelenmek uzere iletildi.",
+      );
+    } catch (err) {
+      Alert.alert(
+        "Gonderilemedi",
+        err instanceof Error ? err.message : "Sikayet gonderilemedi.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <OverlayModal visible={visible} onRequestClose={onClose}>
       <ModalHeader
@@ -40,13 +76,18 @@ const ReportChatModal: React.FC<ReportChatModalProps> = ({
           placeholderTextColor="#7D848D"
           multiline={true}
           textAlignVertical="top"
+          value={reason}
+          onChangeText={setReason}
+          editable={!submitting}
+          maxLength={2000}
         />
       </View>
 
       {/* Report Button */}
       <Button
-        title="Bildir"
-        onPress={() => {}}
+        title={submitting ? "Gonderiliyor..." : "Bildir"}
+        onPress={handleSubmit}
+        disabled={!canSubmit}
         variant="danger"
         style={styles.reportButton}
       />
