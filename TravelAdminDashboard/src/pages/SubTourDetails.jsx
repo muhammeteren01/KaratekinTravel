@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import '../styles/tour-shared.css';
 import './SubTourDetails.css';
-import './TourDetails.css';
 import {
   deleteTripDepartureApi,
   fetchReservationsByTripApi,

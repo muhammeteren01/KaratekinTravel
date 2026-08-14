@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import '../styles/tour-shared.css';
 import './TourDetails.css';
 import {
   fetchTripByIdApi,
