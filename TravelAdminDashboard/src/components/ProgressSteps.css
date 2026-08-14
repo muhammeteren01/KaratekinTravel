@@ -1,3 +1,12 @@
+/* Bu bilesenin sarmalayicisi. Once AddTourPage.css, AddTourStep2.css ve
+   AddTourStep3.css icinde birebir ayni sekilde uc kez tanimliydi; bilesenin
+   yanina alindi. Mobildeki gorunurluk tercihi sayfadan sayfaya degistigi icin
+   ilgili sayfalarin kendi dosyalarinda kapsanmis halde duruyor. */
+.progress-steps-container {
+  flex-shrink: 0;
+  background: transparent !important;
+}
+
 .progress-steps-vertical {
   position: relative;
   width: 242px;

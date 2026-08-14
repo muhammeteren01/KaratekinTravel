@@ -19,10 +19,7 @@
   min-height: 674px;
 }
 
-.progress-steps-container {
-  flex-shrink: 0;
-  background: transparent !important;
-}
+/* .progress-steps-container temel kurali ProgressSteps.css icinde. */
 
 .tour-page-form-section {
   flex: 1;
@@ -119,7 +116,9 @@
     gap: 24px;
   }
   
-  .progress-steps-container {
+  /* Bu sayfada adim gostergesi mobilde gizleniyor. Kapsanmis halde, yoksa
+     kural ProgressSteps kullanan diger tum ekranlari da etkiliyor. */
+  .add-tour-page .progress-steps-container {
     display: none;
   }
   

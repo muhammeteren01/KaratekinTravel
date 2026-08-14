@@ -27,10 +27,7 @@
   margin: 0 auto;
 }
 
-.progress-steps-container {
-  flex-shrink: 0;
-  background: transparent !important;
-}
+/* .progress-steps-container temel kurali ProgressSteps.css icinde. */
 
 /* Form Content */
 .form-content {
@@ -762,7 +759,9 @@
     padding: 15px;
   }
   
-  .progress-steps-container {
+  /* Bu adimda gosterge mobilde gizlenmiyor, ortalanarak gosteriliyor.
+     Kapsanmis halde, yoksa gizleyen sayfalarla carpisiyor. */
+  .add-tour-step2 .progress-steps-container {
     width: 100%;
     display: flex;
     justify-content: center;

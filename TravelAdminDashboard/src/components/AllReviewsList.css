@@ -28,16 +28,7 @@
 .ar-report{align-self:start;display:inline-flex;align-items:center;gap:6px;background:#FFEEF0;color:#D64045;border:1px solid #FFD5DB;border-radius:999px;padding:8px 10px;cursor:pointer;height:fit-content}
 .ar-report img{width:14px;height:14px}
 
-/* Reuse Tour Management pagination visuals */
-.pagination{display:flex;align-items:center;justify-content:center;gap:24px;padding:20px 0;margin-top:16px;background:#fff}
-.pagination-numbers{display:flex;align-items:center;gap:12px}
-.page-btn{width:40px;height:40px;border:none;background:transparent;font-family:'Inter',sans-serif;font-weight:500;font-size:15px;line-height:1.21;color:#FF7029;cursor:pointer;transition:all .2s ease;border-radius:10px;display:flex;align-items:center;justify-content:center}
-.page-btn.active{background:#FF7029;color:#fff}
-.page-btn:hover:not(.active){background:#FFF4F0}
-.next-btn{display:flex;justify-content:center;align-items:center;gap:8px;background:transparent;border:none;font-family:'Inter',sans-serif;font-weight:500;font-size:15px;line-height:1.21;color:#FF7029;cursor:pointer;transition:all .2s ease}
-.next-btn:hover{opacity:.8}
-.next-btn svg{stroke:#FF7029;stroke-width:2px}
-.next-btn:disabled{opacity:.5;cursor:not-allowed}
+/* Sayfalama bileseni styles/pagination.css icinde. */
 
 @media(max-width:768px){
   .ar-item{grid-template-columns:44px 1fr;}

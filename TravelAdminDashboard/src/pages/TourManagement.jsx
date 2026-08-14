@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import '../styles/pagination.css';
 import './TourManagement.css';
 import DownloadIcon from '../assets/icons/download-cloud-02.svg';
 import DeleteIcon from '../assets/icons/delete-icon.svg';

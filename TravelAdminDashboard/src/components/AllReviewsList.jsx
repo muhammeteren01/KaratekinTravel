@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState, useEffect } from 'react';
+import '../styles/pagination.css';
 import './AllReviewsList.css';
 import ReportModal from './ReportModal';
 import { createReviewReportApi } from '../services/adminApi';

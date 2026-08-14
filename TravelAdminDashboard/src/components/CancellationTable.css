@@ -325,7 +325,10 @@ tbody tr:last-child .table-cell.last-col {
   border-color: rgba(34, 34, 34, 0.25);
 }
 
-.pagination {
+/* Bu tablonun sayfalamasi .pagination adini paylassa da icerigi farkli
+   (.pagination-info / .pagination-controls / .pagination-nav). Kapsanmis
+   halde, yoksa AllReviewsList ve TourManagement'in sayfalamasiyla carpisiyor. */
+.cancellation-table-container .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -438,7 +441,7 @@ tbody tr:last-child .table-cell.last-col {
     font-size: 13px;
   }
 
-  .pagination {
+  .cancellation-table-container .pagination {
     gap: 12px;
     flex-direction: column;
   }

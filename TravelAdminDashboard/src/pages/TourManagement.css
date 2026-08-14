@@ -605,84 +605,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
   opacity: 1;
 }
 
-/* Pagination */
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  padding: 20px 0px;
-  margin-top: 16px;
-  background: white;
-}
-
-.pagination-numbers {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.page-btn {
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 1.21;
-  color: #FF7029;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.page-btn.active {
-  background: #FF7029;
-  color: white;
-}
-
-.page-btn:hover:not(.active) {
-  background: #FFF4F0;
-}
-
-.next-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  background: transparent;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 1.21;
-  color: #FF7029;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.next-btn:hover {
-  opacity: 0.8;
-}
-
-.next-btn svg {
-  stroke: #FF7029;
-  stroke-width: 2px;
-}
-
-.next-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.next-btn:disabled:hover {
-  background: transparent;
-  transform: none;
-}
+/* Sayfalama bileseni styles/pagination.css icinde. */
 
 /* Add hover effect to table rows */
 .data-table tbody tr {
@@ -787,11 +710,6 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
   /* Slightly tighter truncation for tour name on medium screens */
   .data-table td:nth-child(3) { max-width: 280px; }
   
-  .pagination {
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-  }
 }
 
 @media (max-width: 768px) {
@@ -845,17 +763,6 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     font-size: 11px;
   }
   
-  .pagination {
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
-  }
-  
-  .pagination-numbers {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
   
   .table-container {
     overflow-x: auto;
@@ -1028,24 +935,6 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     padding: 1px 4px;
   }
   
-  .page-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
-  }
-  
-  .next-btn {
-    font-size: 11px;
-    padding: 6px 10px;
-  }
-  
-  .pagination {
-    gap: 10px;
-  }
-  
-  .pagination-numbers {
-    gap: 4px;
-  }
 }
 
 @media (max-width: 360px) {
@@ -1131,24 +1020,6 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     font-size: 8px;
   }
   
-  .page-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 10px;
-  }
-  
-  .next-btn {
-    font-size: 10px;
-    padding: 4px 8px;
-  }
-
-  .pagination {
-    gap: 8px;
-  }
-  
-  .pagination-numbers {
-    gap: 3px;
-  }
 }
 
 /* Large Monitor Optimizations */
