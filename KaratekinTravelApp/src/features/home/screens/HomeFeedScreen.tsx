@@ -22,6 +22,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { HomeStackParamList } from "@/navigation/AppNavigator";
 import { useAuth } from "@/context/AuthContext";
 import { resolveImage } from "@/core/data/schemas";
+import { userAvatarSource } from "@/utils/avatar";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "HomeFeed">;
 
@@ -55,7 +56,7 @@ export default function HomeFeedScreen({ navigation }: Props) {
   const avatarSource = currentUser?.avatar
     ? (resolveImage(currentUser.avatar) as any)
     : {
-        uri: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face&auto=format",
+        uri: userAvatarSource(currentUser?.avatar),
       };
   const displayName = currentUser?.name?.split(" ")[0] || "Misafir";
 

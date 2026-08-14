@@ -16,6 +16,7 @@ import { LoadingView, ErrorView, Button } from "@/shared/ui";
 import Badge from "@/shared/ui/Badge";
 import { resolveImage } from "@/core/data/schemas";
 import { AppHeader } from "@/shared/ui";
+import { userAvatarSource } from "@/utils/avatar";
 import { openInMaps } from "@/utils/maps";
 
 // Alt karttaki konum sabit kodlanmis. Etiketle butonun ayni degeri
@@ -158,21 +159,15 @@ export default function RouteScreen({ onBack }: RouteScreenProps) {
 
                 <View style={styles.avatarsContainer}>
                   <Image
-                    source={{
-                      uri: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
-                    }}
+                    source={userAvatarSource()}
                     style={styles.smallAvatar}
                   />
                   <Image
-                    source={{
-                      uri: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
-                    }}
+                    source={userAvatarSource()}
                     style={[styles.smallAvatar, styles.avatarOverlap]}
                   />
                   <Image
-                    source={{
-                      uri: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format",
-                    }}
+                    source={userAvatarSource()}
                     style={[styles.smallAvatar, styles.avatarOverlap]}
                   />
                   <Badge

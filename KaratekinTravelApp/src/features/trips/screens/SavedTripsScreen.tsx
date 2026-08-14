@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { AppHeader, SearchBar, SegmentedTabs } from "@/shared/ui";
 import { EmptyState } from "@/shared/ui";
 import InfoRow from "@/shared/ui/InfoRow";
+import { userAvatarSource } from "@/utils/avatar";
 
 interface SavedTripsScreenProps {
   onBack: () => void;
@@ -48,12 +49,11 @@ export default function SavedTripsScreen({
 
   const renderTripCard = ({ item }: { item: SavedTrip }) => (
     <TouchableOpacity style={styles.tripCard} onPress={() => onTripPress(item)}>
+      {/* Gorseli olmayan turlarda dis bir stok adres yerine uygulama
+          yer tutucusu kullaniliyor: ag yoksa veya adres degisirse
+          kirik gorsel cikiyordu. */}
       <Image
-        source={{
-          uri:
-            item.image ||
-            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-        }}
+        source={userAvatarSource(item.image)}
         style={styles.tripImage}
       />
       <TouchableOpacity

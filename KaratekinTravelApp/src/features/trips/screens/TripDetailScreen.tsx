@@ -24,6 +24,8 @@ import ImageViewerModal from "@/components/ImageViewerModal";
 import { resolveImage } from "@/core/data/schemas";
 import Badge from "@/shared/ui/Badge";
 import { SegmentedTabs, RatingStars, Button } from "@/shared/ui";
+import { userAvatarSource } from "@/utils/avatar";
+import { useAuth } from "@/context/AuthContext";
 
 interface TripDetailScreenProps {
   onBack: () => void;
@@ -41,6 +43,7 @@ interface TripDetailScreenProps {
 }
 
 export default function TripDetailScreen(props: TripDetailScreenProps) {
+  const { currentUser } = useAuth();
   const {
     onBack,
     onHome,
@@ -249,9 +252,7 @@ export default function TripDetailScreen(props: TripDetailScreenProps) {
               <Text style={styles.tripLocation}>{trip.location}</Text>
             </View>
             <Image
-              source={{
-                uri: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face&auto=format",
-              }}
+              source={userAvatarSource(currentUser?.avatar)}
               style={styles.avatar}
             />
           </View>

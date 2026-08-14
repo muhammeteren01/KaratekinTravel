@@ -15,12 +15,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { AppHeader, PasswordInput, Button } from "@/shared/ui";
+import { userAvatarSource } from "@/utils/avatar";
+import { useAuth } from "@/context/AuthContext";
 
 interface SecurityScreenProps {
   onBack: () => void;
 }
 
 export default function SecurityScreen({ onBack }: SecurityScreenProps) {
+  const { currentUser } = useAuth();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -67,9 +70,7 @@ export default function SecurityScreen({ onBack }: SecurityScreenProps) {
           <View style={styles.profileSection}>
             <View style={styles.avatarContainer}>
               <Image
-                source={{
-                  uri: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face&auto=format",
-                }}
+                source={userAvatarSource(currentUser?.avatar)}
                 style={styles.avatar}
               />
             </View>

@@ -57,6 +57,8 @@ import { FeaturedTripCard } from "@/features/trips/components";
 import { theme } from "@/shared/theme";
 import { SectionHeader } from "@/shared/ui";
 import { BottomTabBar } from "@/shared/ui";
+import { userAvatarSource } from "@/utils/avatar";
+import { useAuth } from "@/context/AuthContext";
 import {
   navigateToHomeStack,
   navigateToTab,
@@ -77,6 +79,7 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ onLogout }: HomeScreenProps) {
+  const { currentUser } = useAuth();
   const companiesQ = useCompanies();
   const tripsQ = useTrips();
   const supportingQ = useSupportingData();
@@ -796,9 +799,7 @@ export default function HomeScreen({ onLogout }: HomeScreenProps) {
         <View style={styles.header}>
           <View style={styles.userInfo}>
             <Image
-              source={{
-                uri: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face&auto=format",
-              }}
+              source={userAvatarSource(currentUser?.avatar)}
               style={styles.avatar}
               resizeMode="cover"
             />

@@ -16,6 +16,8 @@ import { Ionicons } from "@expo/vector-icons";
 import RatingStars from "@/shared/ui/RatingStars";
 import { resolveImage } from "@/core/data/schemas";
 import { AppHeader, Button } from "@/shared/ui";
+import { userAvatarSource } from "@/utils/avatar";
+import { useAuth } from "@/context/AuthContext";
 
 interface TripRatingDetailScreenProps {
   onBack: () => void;
@@ -36,6 +38,7 @@ export default function TripRatingDetailScreen({
   tripData,
   onSubmitRating,
 }: TripRatingDetailScreenProps) {
+  const { currentUser } = useAuth();
   const [selectedRating, setSelectedRating] = useState(0);
   const [comment, setComment] = useState("");
   const handleStarPress = (rating: number) => setSelectedRating(rating);
@@ -76,9 +79,7 @@ export default function TripRatingDetailScreen({
                 <Text style={styles.tripLocation}>{tripData.location}</Text>
               </View>
               <Image
-                source={{
-                  uri: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face&auto=format",
-                }}
+                source={userAvatarSource(currentUser?.avatar)}
                 style={styles.avatar}
               />
             </View>

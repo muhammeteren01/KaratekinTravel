@@ -185,11 +185,7 @@ export default function ProgramDetailScreen({
               </View>
               <View style={styles.participantsRow}>
                 <AvatarsStack
-                  avatars={[
-                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face&auto=format",
-                    "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=50&h=50&fit=crop&crop=face&auto=format",
-                    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face&auto=format",
-                  ]}
+                  avatars={Array.isArray(tripData?.avatars) ? tripData.avatars : []}
                   maxVisible={3}
                   size={32}
                   overlap={-8}
