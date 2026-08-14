@@ -20,12 +20,18 @@ namespace Api.Controllers
         private readonly IUserService _userService;
         private readonly ICompanyService _companyService;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-        public AuthController(IUserService userService, ICompanyService companyService, IConfiguration configuration)
+        public AuthController(
+            IUserService userService,
+            ICompanyService companyService,
+            IConfiguration configuration,
+            IWebHostEnvironment environment)
         {
             _userService = userService;
             _companyService = companyService;
             _configuration = configuration;
+            _environment = environment;
         }
 
         [HttpPost("register")]
@@ -154,13 +160,23 @@ namespace Api.Controllers
             user.PasswordResetTokenExpiresAt = DateTime.UtcNow.AddHours(1);
             await _userService.UpdateAsync(user);
 
-            // TODO: Send email with reset token
-            return Ok(new
+            // TODO: Sıfırlama bağlantısını e-posta ile gönder.
+            //
+            // Token yanıtta yalnızca geliştirmede dönüyor. Kodda "Exposed only
+            // in Development" yazıyordu ama ortam kontrolü yoktu: production'da
+            // da dönüyordu. Bu, birinin e-postasını bilen herkesin o hesabın
+            // parolasını sıfırlayabilmesi demekti. E-posta gönderimi yazılana
+            // kadar production'da token dışarı verilmiyor.
+            if (_environment.IsDevelopment())
             {
-                message = "If the email exists, a reset link will be sent",
-                // Exposed only in Development for testing
-                resetToken = user.PasswordResetToken
-            });
+                return Ok(new
+                {
+                    message = "If the email exists, a reset link will be sent",
+                    resetToken = user.PasswordResetToken
+                });
+            }
+
+            return Ok(new { message = "If the email exists, a reset link will be sent" });
         }
 
         [HttpPost("reset-password")]
