@@ -20,6 +20,7 @@ import { AppHeader, Badge, RatingStars, Button } from "@/shared/ui";
 import { ReviewCard } from "@/shared/ui";
 import { SectionHeader } from "@/shared/ui";
 import { resolveImage } from "@/core/data/schemas";
+import { openInMaps, mapQueryFromTrip } from "@/utils/maps";
 
 interface PastTripDetailScreenProps {
   onBack: () => void;
@@ -45,6 +46,8 @@ export default function PastTripDetailScreen({
   const [bottomSheetY] = useState(new Animated.Value(screenHeight - 150));
   const [isExpanded, setIsExpanded] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
+  // Haritada aranacak metin tur kaydindan turetiliyor; yoksa buton pasif.
+  const mapQuery = mapQueryFromTrip(tripData);
 
   // Normalize images from supportingData (asset keys/urls) into RN ImageSourcePropType
   const detail = useMemo(() => {
@@ -250,7 +253,8 @@ export default function PastTripDetailScreen({
 
               <Button
                 title="Haritada Görüntüle"
-                onPress={() => {}}
+                onPress={() => openInMaps(mapQuery)}
+                disabled={!mapQuery}
                 variant="primary"
                 style={styles.mapButton}
               />

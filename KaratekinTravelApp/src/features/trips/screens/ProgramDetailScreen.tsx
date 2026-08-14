@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import InfoRow from "@/shared/ui/InfoRow";
 import AvatarsStack from "@/shared/ui/AvatarsStack";
 import { AppHeader, Button } from "@/shared/ui";
+import { openInMaps, mapQueryFromTrip } from "@/utils/maps";
 
 interface ProgramDetailScreenProps {
   onBack: () => void;
@@ -39,6 +40,8 @@ export default function ProgramDetailScreen({
   const [bottomSheetY] = useState(new Animated.Value(screenHeight - 120));
   const [isExpanded, setIsExpanded] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
+  // Haritada aranacak metin tur kaydindan turetiliyor; yoksa buton pasif.
+  const mapQuery = mapQueryFromTrip(tripData);
   const timelineItems: TimelineItem[] = [
     {
       id: 1,
@@ -194,7 +197,8 @@ export default function ProgramDetailScreen({
               </View>
               <Button
                 title="Haritada Görüntüle"
-                onPress={() => {}}
+                onPress={() => openInMaps(mapQuery)}
+                disabled={!mapQuery}
                 variant="primary"
                 style={styles.mapButton}
               />

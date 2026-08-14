@@ -16,6 +16,12 @@ import { LoadingView, ErrorView, Button } from "@/shared/ui";
 import Badge from "@/shared/ui/Badge";
 import { resolveImage } from "@/core/data/schemas";
 import { AppHeader } from "@/shared/ui";
+import { openInMaps } from "@/utils/maps";
+
+// Alt karttaki konum sabit kodlanmis. Etiketle butonun ayni degeri
+// kullanmasi icin tek yerde tutuluyor; API veri saglamaya baslayinca
+// ikisi birlikte tur kaydindan beslenmeli.
+const HARDCODED_LOCATION = "Amasra, Türkiye";
 
 interface RouteScreenProps {
   onBack: () => void;
@@ -35,8 +41,13 @@ export default function RouteScreen({ onBack }: RouteScreenProps) {
     image: resolveImage(s.image) as any,
   }));
 
-  // Compute bottom of the last stop to size the route container precisely
-  const lastStopBottom = Math.max(...routeStops.map((s) => s.top + s.height));
+  // Compute bottom of the last stop to size the route container precisely.
+  // API su an routeStops'u bos donduruyor (BootstrapService: RouteStops =
+  // new List<RouteStopDto>() // TODO). Bos dizide Math.max(...[]) -Infinity
+  // donuyor ve yukseklik hesabini bozuyordu; 0'a sabitlendi.
+  const lastStopBottom = routeStops.length
+    ? Math.max(...routeStops.map((s) => s.top + s.height))
+    : 0;
 
   return (
     <View style={styles.container}>
@@ -125,7 +136,11 @@ export default function RouteScreen({ onBack }: RouteScreenProps) {
               })}
             </View>
 
-            {/* Bottom Card */}
+            {/* Bottom Card
+                DIKKAT: Bu kartin icerigi (otel adi, puan, konum, avatarlar,
+                konaklama suresi) tamamen sabit kodlanmis durumda. API bu
+                ekran icin veri saglamiyor; asagidaki buton en azindan
+                ekranda yazan konumu aciyor. */}
             <BlurView intensity={200} tint="dark" style={styles.bottomCard}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>Amasra Otel</Text>
@@ -138,7 +153,7 @@ export default function RouteScreen({ onBack }: RouteScreenProps) {
               <View style={styles.cardTopRow}>
                 <View style={styles.cardLocationInfo}>
                   <Ionicons name="location-outline" size={16} color="#FFFFFF" />
-                  <Text style={styles.infoText}>Amasra, Türkiye</Text>
+                  <Text style={styles.infoText}>{HARDCODED_LOCATION}</Text>
                 </View>
 
                 <View style={styles.avatarsContainer}>
@@ -175,7 +190,7 @@ export default function RouteScreen({ onBack }: RouteScreenProps) {
 
               <Button
                 title="Haritada Görüntüle"
-                onPress={() => {}}
+                onPress={() => openInMaps(HARDCODED_LOCATION)}
                 variant="primary"
                 style={styles.mapButton}
               />
