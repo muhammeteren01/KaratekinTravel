@@ -30,7 +30,6 @@ const PagerView = forwardRef<PagerViewRef, PagerViewProps>(function PagerView(
         animated: true,
       });
       onPageSelected?.({
-        // @ts-expect-error minimal event for web shim
         nativeEvent: { position: index },
       });
     },
@@ -49,8 +48,7 @@ const PagerView = forwardRef<PagerViewRef, PagerViewProps>(function PagerView(
           (e.nativeEvent as any).layoutMeasurement?.width || window.innerWidth;
         const position = Math.round(x / width);
         onPageSelected?.({
-          // @ts-expect-error minimal event for web shim
-          nativeEvent: { position },
+            nativeEvent: { position },
         });
       }}
     >

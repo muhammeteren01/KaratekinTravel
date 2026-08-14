@@ -1,6 +1,12 @@
 import React from "react";
 import { View, ScrollView, StyleSheet, ViewStyle } from "react-native";
-import { MessageBubble, DateSeparator, Badge } from "@/shared/ui";
+// Kardes modullerden dogrudan import ediliyor. Barrel'dan (@/shared/ui)
+// almak dongu olusturuyordu: barrel bu dosyayi, bu dosya barrel'i
+// yukluyor. Metro bunu "Require cycle" diye uyariyor ve ilk yuklemede
+// tanimsiz deger riski doguruyor.
+import MessageBubble from "./MessageBubble";
+import DateSeparator from "./DateSeparator";
+import Badge from "../Badge";
 
 export interface Message {
   id: string;

@@ -21,7 +21,9 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
 type Exposed = {
   isAuthenticated: boolean;
   currentUser: any;
-  login: (u: any) => Promise<void>;
+  // Gercek imza (user, token); once tek argumanli yaziliydi ve
+  // auth.login'in atanmasi TS2322 veriyordu.
+  login: (u: any, token: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -50,7 +52,10 @@ describe('AuthContext', () => {
   await act(async () => { await flush(); });
   expect(ref.current?.isAuthenticated ?? false).toBe(false);
     await act(async () => {
-      await ref.current?.login({ id: 'u1', name: 'Ahmet', email: 'a@example.com' });
+      await ref.current?.login(
+        { id: 'u1', name: 'Ahmet', email: 'a@example.com' },
+        'test-token',
+      );
     });
   await act(async () => { await flush(); });
     expect(ref.current?.isAuthenticated).toBe(true);

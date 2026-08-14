@@ -1,6 +1,10 @@
 import React from "react";
 import { View, Image, StyleSheet, ImageSourcePropType } from "react-native";
-import { AppHeader } from "@/shared/ui";
+// Kardes modullerden dogrudan import ediliyor. Barrel'dan (@/shared/ui)
+// almak dongu olusturuyordu: barrel bu dosyayi, bu dosya barrel'i
+// yukluyor. Metro bunu "Require cycle" diye uyariyor ve ilk yuklemede
+// tanimsiz deger riski doguruyor.
+import AppHeader from "../AppHeader";
 
 export interface ChatHeaderProps {
   /** Chat title */
