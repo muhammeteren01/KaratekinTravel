@@ -28,7 +28,7 @@
   gap: 20px;
 }
 
-.section-title {
+.tour-management .section-title {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 22px;
@@ -90,20 +90,20 @@
   outline-offset: 2px;
 }
 
-.search-box {
+.tour-management .search-box {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.search-icon {
+.tour-management .search-icon {
   position: absolute;
   left: 21px;
   color: #24BAEC;
   z-index: 1;
 }
 
-.search-box input {
+.tour-management .search-box input {
   padding: 8px 15px 8px 50px;
   background: #F5F7FA;
   border: none;
@@ -115,7 +115,7 @@
   outline: none;
 }
 
-.search-box input::placeholder {
+.tour-management .search-box input::placeholder {
   color: rgba(36, 186, 236, 0.5);
 }
 
@@ -344,7 +344,7 @@
 }
 
 /* Checkbox Column */
-.checkbox-column {
+.tour-management .checkbox-column {
   width: 60px;
   text-align: center;
   padding: 12px 20px;
@@ -361,14 +361,14 @@
 }
 
 /* Header Checkbox - Special "Tümü" Button Style */
-.checkbox-column .checkbox-container {
+.tour-management .checkbox-column .checkbox-container {
   width: 27px;
   height: 20px;
   margin: 0 auto;
   position: relative;
 }
 
-.checkbox-column .checkbox-container input[type="checkbox"] {
+.tour-management .checkbox-column .checkbox-container input[type="checkbox"] {
   width: 27px;
   height: 20px;
   border: 1px solid #24BAEC;
@@ -380,16 +380,16 @@
   transition: all 0.2s ease;
 }
 
-.checkbox-column .checkbox-container input[type="checkbox"]:checked {
+.tour-management .checkbox-column .checkbox-container input[type="checkbox"]:checked {
   background: #24BAEC;
   border-color: #24BAEC;
 }
 
-.checkbox-column .checkbox-container input[type="checkbox"]:checked::after {
+.tour-management .checkbox-column .checkbox-container input[type="checkbox"]:checked::after {
   display: none !important;
 }
 
-.checkbox-column .checkbox-container label {
+.tour-management .checkbox-column .checkbox-container label {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   font-size: 8px;
@@ -408,7 +408,7 @@
   pointer-events: none;
 }
 
-.checkbox-column .checkbox-container input[type="checkbox"]:checked + label {
+.tour-management .checkbox-column .checkbox-container input[type="checkbox"]:checked + label {
   color: white;
 }
 
@@ -666,16 +666,16 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     min-width: 200px;
   }
   
-  .search-box {
+  .tour-management .search-box {
     flex: 1;
     min-width: 200px;
   }
   
-  .search-box input {
+  .tour-management .search-box input {
     width: 100%;
   }
   
-  .table-header {
+  .tour-management .table-header {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
@@ -723,7 +723,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     min-height: auto; /* override desktop min-height */
   }
 
-  .section-title {
+  .tour-management .section-title {
     font-size: 18px;
   }
 
@@ -753,11 +753,11 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     font-size: 11px;
   }
   
-  .search-box {
+  .tour-management .search-box {
     justify-content: center;
   }
   
-  .search-box input {
+  .tour-management .search-box input {
     width: 100%;
     max-width: 280px;
     font-size: 11px;
@@ -776,7 +776,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     display: none;
   }
   
-  .table-header {
+  .tour-management .table-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
@@ -837,7 +837,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     gap: 10px;
   }
 
-  .section-title {
+  .tour-management .section-title {
     font-size: 16px;
   }
   
@@ -852,13 +852,13 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     width: 100%;
   }
   
-  .search-box input {
+  .tour-management .search-box input {
     width: 100%;
     font-size: 12px;
     padding: 8px 12px 8px 40px;
   }
   
-  .table-header {
+  .tour-management .table-header {
     padding: 8px 12px;
   }
   
@@ -919,7 +919,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     display: none;
   }
   
-  .checkbox-column {
+  .tour-management .checkbox-column {
     width: 40px;
     padding: 6px 8px;
   }
@@ -948,7 +948,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     min-height: auto;
   }
   
-  .section-title {
+  .tour-management .section-title {
     font-size: 14px;
   }
 
@@ -961,12 +961,12 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     font-size: 10px;
   }
   
-  .search-box input {
+  .tour-management .search-box input {
     font-size: 11px;
     padding: 6px 10px 6px 35px;
   }
   
-  .table-header {
+  .tour-management .table-header {
     padding: 6px 8px;
   }
   
@@ -1005,7 +1005,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     display: none;
   }
   
-  .checkbox-column {
+  .tour-management .checkbox-column {
     width: 35px;
     padding: 4px 6px;
   }
@@ -1028,7 +1028,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     padding: 24px;
   }
   
-  .section-title {
+  .tour-management .section-title {
     font-size: 24px;
   }
   
@@ -1037,7 +1037,7 @@ tbody .checkbox-container input[type="checkbox"]:checked::after {
     font-size: 13px;
   }
   
-  .search-box input {
+  .tour-management .search-box input {
     width: 220px;
     padding: 10px 18px 10px 55px;
     font-size: 13px;

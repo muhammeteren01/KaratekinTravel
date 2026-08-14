@@ -261,7 +261,7 @@
   padding: 28px 15px;
 }
 
-.section-title {
+.dashboard .section-title {
   font-family: var(--font-inter);
   font-size: 22px;
   font-weight: 600;

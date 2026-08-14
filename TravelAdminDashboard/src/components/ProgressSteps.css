@@ -82,7 +82,7 @@
   flex: 1;
 }
 
-.step-label {
+.progress-steps-vertical .step-label {
   font-size: 14px;
   font-weight: 500;
   color: #1F2937;
@@ -178,7 +178,7 @@
     margin-bottom: 0;
   }
   
-  .step-label {
+  .progress-steps-vertical .step-label {
     font-size: 13px;
   }
 }
@@ -195,7 +195,7 @@
     margin-right: 10px;
   }
   
-  .step-label {
+  .progress-steps-vertical .step-label {
     font-size: 12px;
   }
 } 

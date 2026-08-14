@@ -52,13 +52,13 @@
   border-color: #e9ecef;
 }
 
-.dropdown-arrow {
+.chart-container .dropdown-arrow {
   width: 12px;
   height: 7px;
   transition: transform 0.2s ease;
 }
 
-.dropdown-arrow.open {
+.chart-container .dropdown-arrow.open {
   transform: rotate(180deg);
 }
 
@@ -75,7 +75,7 @@
   margin-top: 4px;
 }
 
-.dropdown-item {
+.chart-container .dropdown-item {
   padding: 12px 16px;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
@@ -85,26 +85,26 @@
   border-bottom: 1px solid #f1f3f4;
 }
 
-.dropdown-item:last-child {
+.chart-container .dropdown-item:last-child {
   border-bottom: none;
 }
 
-.dropdown-item:hover {
+.chart-container .dropdown-item:hover {
   background-color: #f8f9fa;
 }
 
-.dropdown-item.active {
+.chart-container .dropdown-item.active {
   background-color: #e3f2fd;
   color: #1976d2;
   font-weight: 500;
 }
 
-.dropdown-item:first-child {
+.chart-container .dropdown-item:first-child {
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
 
-.dropdown-item:last-child {
+.chart-container .dropdown-item:last-child {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
@@ -162,7 +162,7 @@
     left: auto;
   }
   
-  .dropdown-item {
+  .chart-container .dropdown-item {
     padding: 10px 12px;
     font-size: 13px;
   }
@@ -188,7 +188,7 @@
     font-size: 12px;
   }
   
-  .dropdown-item {
+  .chart-container .dropdown-item {
     padding: 8px 10px;
     font-size: 12px;
   }

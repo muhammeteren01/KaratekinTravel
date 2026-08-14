@@ -42,7 +42,7 @@
   gap: 32px;
 }
 
-.form-actions {
+.add-tour-page .form-actions {
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
@@ -136,7 +136,7 @@
     padding: 14px 24px !important;
   }
   
-  .form-actions {
+  .add-tour-page .form-actions {
     justify-content: stretch;
   }
 }

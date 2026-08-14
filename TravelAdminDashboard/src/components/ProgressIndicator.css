@@ -77,7 +77,7 @@
   color: #FFFFFF;
 }
 
-.step-label {
+.progress-indicator .step-label {
   display: flex;
   flex-direction: column;
   gap: 9px;
@@ -162,7 +162,7 @@
     width: auto;
   }
   
-  .step-label {
+  .progress-indicator .step-label {
     width: auto;
     min-width: 100px;
     align-items: center;

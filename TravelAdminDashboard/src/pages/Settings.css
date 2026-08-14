@@ -301,7 +301,7 @@
 
 .bank-action:disabled{ opacity:.6; cursor:not-allowed; }
 
-.form-actions{ display:flex; justify-content:flex-start; }
+.settings-page .form-actions{ display:flex; justify-content:flex-start; }
 .btn-save{ display:inline-flex; align-items:center; gap:8px; background:#22C55E; color:#FFFFFF; border:none; border-radius:8px; padding:10px 14px; font-weight:700; cursor:pointer; }
 .btn-save img{ width:16px; height:16px; filter:brightness(0) invert(1); }
 .pay-table {
