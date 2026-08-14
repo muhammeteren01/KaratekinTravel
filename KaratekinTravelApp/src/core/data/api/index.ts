@@ -12,6 +12,7 @@ import {
 import { migrateBootstrap } from '../migrations';
 import { DATA_ENDPOINTS } from '../../config/dataConfig';
 import { apiFetch, ensureIsoDate, mapAuthUser } from './http';
+import { parseOrLog } from './parse';
 
 function normalizeReservation(raw: any): Reservation {
   const statusRaw = String(raw.status ?? 'pending').toLowerCase();
@@ -56,17 +57,17 @@ export async function fetchBootstrap(): Promise<BootstrapPayload> {
   if (!Array.isArray(raw?.companies)) raw.companies = [];
   if (!Array.isArray(raw?.trips)) raw.trips = [];
   const migrated = migrateBootstrap(raw);
-  return BootstrapSchema.parse(migrated);
+  return parseOrLog(BootstrapSchema, migrated, 'bootstrap');
 }
 
 export async function fetchTrips(): Promise<BootstrapPayload['trips']> {
   const res = await apiFetch<any[]>(DATA_ENDPOINTS.trips, { auth: false });
-  return (res ?? []).map((t) => TripSchema.parse(t));
+  return (res ?? []).map((t) => parseOrLog(TripSchema, t, 'trip'));
 }
 
 export async function fetchCompanies(): Promise<BootstrapPayload['companies']> {
   const res = await apiFetch<any[]>(DATA_ENDPOINTS.companies, { auth: false });
-  return (res ?? []).map((c) => CompanySchema.parse(c));
+  return (res ?? []).map((c) => parseOrLog(CompanySchema, c, 'company'));
 }
 
 export async function fetchReservations(): Promise<Reservation[]> {
