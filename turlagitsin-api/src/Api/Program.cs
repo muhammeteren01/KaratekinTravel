@@ -6,8 +6,6 @@ using Microsoft.OpenApi.Models;
 using Npgsql;
 using Repository;
 using Service.Validations;
-using Core.Mappings;
-using AutoMapper;
 
 // Autofac DI kullanımı
 var builder = WebApplication.CreateBuilder(args);
@@ -21,9 +19,6 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
     containerBuilder.RegisterModule(new Api.Autofac.DependencyResolverModule());
 });
-
-// AutoMapper yapılandırması
-builder.Services.AddAutoMapper(typeof(MapProfile));
 
 // ***************************************************************
 // 🔥 SUPABASE DATABASE CONFIGURATION (Free Tier optimized)
@@ -89,7 +84,10 @@ static string BuildFreeTierConnectionString(string raw)
 
     // Free tier Npgsql ayarları
     csb.SslMode = SslMode.Require;
-    csb.TrustServerCertificate = true;
+    // TrustServerCertificate kaldırıldı: Npgsql'in yeni sürümlerinde bu
+    // parametre hiçbir şey yapmıyor ve CS0618 ile eskimiş olarak işaretli.
+    // Sertifika doğrulamasını gerçekten atlamak gerekirse SslMode.Require
+    // yerine SslMode.VerifyFull/VerifyCA arasında seçim yapılmalı.
     csb.Timeout = 90;           // cold start
     csb.CommandTimeout = 90;
     csb.KeepAlive = 30;
@@ -238,6 +236,12 @@ if (!jwtKeyIsUsable)
 // doğrulama farklı anahtarlarla yapılır ve her istek 401 döner.
 builder.Configuration["Jwt:Key"] = jwtKey;
 
+// Yukarıdaki blok jwtKey'i ya doğruladı ya da geliştirme anahtarıyla
+// doldurdu; production'da doğrulanmadıysa zaten fırlattı. Derleyici bunu
+// takip edemediği için imzalama anahtarı CS8604 (olası null) uyarısı
+// veriyordu. Null olmadığı bu noktada kesin, ayrı bir değişkene alınıyor.
+var signingKey = jwtKey!;
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
@@ -254,7 +258,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtIssuer,
         ValidAudience = jwtAudience,
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(jwtKey)),
+            System.Text.Encoding.UTF8.GetBytes(signingKey)),
         ClockSkew = TimeSpan.Zero
     };
 });
@@ -374,9 +378,20 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        logger.LogInformation("🔄 Warming up Supabase (free tier cold start)...");
 
-        // Free tier: ilk bağlantı 30-60sn sürebilir — birkaç deneme
+        // Bu satır daha önce koşulsuz "Warming up Supabase (free tier cold
+        // start)" yazıyordu. Yerel PostgreSQL ile çalışırken bu yanıltıcıydı:
+        // ortada Supabase yok, soğuk başlangıç da yok. Mesaj gerçek hedefe
+        // göre yazdırılıyor.
+        var dbHost = new NpgsqlConnectionStringBuilder(finalConnectionString).Host;
+        var isLocalDb = dbHost is "localhost" or "127.0.0.1" or "::1";
+
+        if (isLocalDb)
+            logger.LogInformation("🔄 Yerel veritabanı bağlantısı deneniyor ({Host})...", dbHost);
+        else
+            logger.LogInformation("🔄 Uzak veritabanı ısıtılıyor ({Host}, soğuk başlangıç olabilir)...", dbHost);
+
+        // Uzak free tier'da ilk bağlantı 30-60sn sürebilir — birkaç deneme
         var connected = false;
         for (var attempt = 1; attempt <= 5; attempt++)
         {

@@ -84,6 +84,19 @@ namespace Repository
             modelBuilder.Entity<Hotel>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<CalendarTrip>().HasQueryFilter(e => !e.IsDeleted);
 
+            // Alt koleksiyonlar: bağlı oldukları ana varlıkta soft-delete
+            // filtresi vardı ama burada yoktu. EF bunu açılışta uyarıyordu
+            // (10622): filtresi olan bir varlık, filtresi olmayan zorunlu bir
+            // bağımlının ana ucuysa, ana kayıt elendiğinde bağımlı kayıtlar
+            // beklenmedik sonuç üretebiliyor. Altısı da BaseEntity'den
+            // türediği için IsDeleted taşıyor; filtreler eşitlendi.
+            modelBuilder.Entity<TripPricingExtra>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<TripIncluded>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<TripExcluded>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<TripPolicyParagraph>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<ItineraryActivity>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<HotelAmenity>().HasQueryFilter(e => !e.IsDeleted);
+
             // Company Configuration
             modelBuilder.Entity<Company>(entity =>
             {
