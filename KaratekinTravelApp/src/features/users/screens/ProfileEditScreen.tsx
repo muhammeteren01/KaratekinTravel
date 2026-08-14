@@ -15,6 +15,8 @@ import { AppHeader, Button } from "@/shared/ui";
 import { useAuth } from "@/context/AuthContext";
 import { useUsers } from "@/core/data/store";
 import { LoadingView, ErrorView, LabeledInput } from "@/shared/ui";
+import { pickAvatar, AVATAR_MAX_BYTES } from "@/utils/pickAvatar";
+import { resolveImage } from "@/core/data/schemas";
 
 interface ProfileEditScreenProps {
   onBack: () => void;
@@ -23,11 +25,16 @@ interface ProfileEditScreenProps {
 export default function ProfileEditScreen({ onBack }: ProfileEditScreenProps) {
   const { currentUser, updateProfile } = useAuth();
   const { data: allUsers = [], isLoading, isError, refetch } = useUsers();
-  if (isLoading) return <LoadingView />;
-  if (isError) return <ErrorView onRetry={refetch} />;
+  // Erken return'ler tum kancalardan SONRA. Onceden useState bu
+  // return'lerin altindaydi; yukleme durumu degistiginde cagrilan kanca
+  // sayisi degisiyordu, bu React'in kanca sirasi kuralini ihlal ediyor.
   const bootstrapUser = allUsers.find(
     (u) => String(u.id) === String(currentUser?.id),
   );
+  const [avatarUri, setAvatarUri] = useState<string | undefined>(
+    currentUser?.avatar ?? (bootstrapUser as any)?.avatar,
+  );
+  const [avatarSaving, setAvatarSaving] = useState(false);
   const [formData, setFormData] = useState({
     firstName:
       (currentUser?.name || bootstrapUser?.name || "").split(" ")[0] || "",
@@ -41,6 +48,47 @@ export default function ProfileEditScreen({ onBack }: ProfileEditScreenProps) {
     phoneNumber: currentUser?.phone ?? bootstrapUser?.phone ?? "",
     email: currentUser?.email ?? bootstrapUser?.email ?? "",
   });
+
+  if (isLoading) return <LoadingView />;
+  if (isError) return <ErrorView onRetry={refetch} />;
+
+  const handlePickAvatar = async () => {
+    const picked = await pickAvatar();
+
+    if (picked.status === "denied") {
+      Alert.alert(
+        "İzin gerekli",
+        "Profil fotoğrafı seçebilmek için galeri erişimine izin vermelisiniz.",
+      );
+      return;
+    }
+    if (picked.status === "too-large") {
+      const limitKb = Math.round(AVATAR_MAX_BYTES / 1024);
+      Alert.alert(
+        "Fotoğraf çok büyük",
+        `En fazla ${limitKb} KB yükleyebilirsiniz. Daha küçük bir görsel seçin.`,
+      );
+      return;
+    }
+    if (picked.status === "failed") {
+      Alert.alert("Fotoğraf seçilemedi", "Lütfen tekrar deneyin.");
+      return;
+    }
+    if (picked.status === "cancelled") return;
+
+    setAvatarSaving(true);
+    try {
+      setAvatarUri(picked.dataUri);
+      await updateProfile({ avatar: picked.dataUri } as any);
+    } catch {
+      // Sunucuya yazilamadiysa onizlemeyi geri al; aksi halde kullanici
+      // kaydedilmis saniyor.
+      setAvatarUri(currentUser?.avatar);
+      Alert.alert("Kaydedilemedi", "Profil fotoğrafı güncellenemedi.");
+    } finally {
+      setAvatarSaving(false);
+    }
+  };
 
   const handleSave = async () => {
     const fullName = [formData.firstName, formData.lastName]
@@ -67,11 +115,17 @@ export default function ProfileEditScreen({ onBack }: ProfileEditScreenProps) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.profileSection}>
-          <TouchableOpacity style={styles.avatarContainer} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.avatarContainer}
+            onPress={handlePickAvatar}
+            disabled={avatarSaving}
+          >
+            {/* Onceden sabit bir Unsplash adresi gosteriliyordu; artik
+                kullanicinin kendi avatari, yoksa yer tutucu. */}
             <Image
-              source={{
-                uri: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format",
-              }}
+              source={
+                resolveImage(avatarUri) ?? require("../../../../assets/logo.png")
+              }
               style={styles.profileAvatar}
             />
             <View style={styles.changePhotoButton}>
@@ -80,10 +134,11 @@ export default function ProfileEditScreen({ onBack }: ProfileEditScreenProps) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.changePhotoTextButton}
-            onPress={() => {}}
+            onPress={handlePickAvatar}
+            disabled={avatarSaving}
           >
             <Text style={styles.changePhotoText}>
-              Profil Fotoğrafını Değiştir
+              {avatarSaving ? "Yükleniyor..." : "Profil Fotoğrafını Değiştir"}
             </Text>
           </TouchableOpacity>
         </View>
