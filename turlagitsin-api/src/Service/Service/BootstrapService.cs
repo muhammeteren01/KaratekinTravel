@@ -81,7 +81,7 @@ namespace Service.Service
                     RouteStops = new List<RouteStopDto>(), // TODO: Implement if needed
                     ReservationPresets = new List<ReservationPresetDto>(), // TODO: Implement if needed
                     CompanyReviews = companyReviews,
-                    PastTrips = new List<PastTripDto>(), // TODO: Implement if needed
+                    PastTrips = BuildPastTrips(trips, companies, reviews, users),
                     OnboardingSlides = GetOnboardingSlides(),
                     UserState = savedTrips,
                     Chats = chats
@@ -209,6 +209,114 @@ namespace Service.Service
                 GroupMessages = groupMessages,
                 CompanyContact = new List<CompanyContactMessageDto>()
             };
+        }
+
+        /// <summary>
+        /// Bitmis turlari, zaten yuklenmis tur/firma/degerlendirme listelerinden
+        /// turetir. Onceden burasi bos liste donduruyordu (TODO), bu yuzden
+        /// uygulamadaki "Gecmis Turlar" ekrani hep bostu.
+        ///
+        /// Bitmis sayilma olcutu: turun bitis tarihi bugunden once. Bitis tarihi
+        /// girilmemis turlar hesaba katilmiyor; "tarihi yok" ile "tarihi gecti"
+        /// ayni sey degil.
+        /// </summary>
+        private static List<PastTripDto> BuildPastTrips(
+            List<TripResponseDto> trips,
+            List<CompanyResponseDto> companies,
+            List<ReviewResponseDto> reviews,
+            List<UserResponseDto> users)
+        {
+            var today = DateTime.UtcNow.Date;
+            var companyNames = companies.ToDictionary(c => c.Id, c => c.Name);
+            var usersById = users.ToDictionary(u => u.Id);
+            var reviewsByTrip = reviews
+                .GroupBy(r => r.TripId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var result = new List<PastTripDto>();
+
+            foreach (var trip in trips)
+            {
+                if (!DateTime.TryParse(trip.DateEnd, out var end) || end.Date >= today)
+                    continue;
+
+                var tripReviews = reviewsByTrip.TryGetValue(trip.Id, out var rs)
+                    ? rs
+                    : new List<ReviewResponseDto>();
+
+                var hotel = trip.Hotels.FirstOrDefault();
+
+                result.Add(new PastTripDto
+                {
+                    Id = trip.Id,
+                    Title = trip.Title,
+                    Location = trip.Location,
+                    City = trip.City,
+                    Rating = trip.Rating,
+                    ReviewCount = trip.ReviewCount,
+                    Image = trip.Image,
+                    HeaderImage = trip.HeaderImage,
+                    Gallery = trip.Gallery,
+                    About = trip.Description,
+                    Date = string.IsNullOrWhiteSpace(trip.DateRange) ? trip.DateEnd : trip.DateRange,
+                    CompanyId = trip.CompanyId,
+                    CompanyName = companyNames.TryGetValue(trip.CompanyId, out var name) ? name : string.Empty,
+                    PriceText = trip.Price,
+                    Timeline = BuildTimeline(trip),
+                    Hotel = hotel == null
+                        ? new PastTripHotelDto()
+                        : new PastTripHotelDto
+                        {
+                            Title = hotel.Name,
+                            DurationText = BuildStayText(trip),
+                            Rating = hotel.Stars
+                        },
+                    Reviews = tripReviews.Select(r =>
+                    {
+                        usersById.TryGetValue(r.UserId, out var author);
+                        return new PastTripReviewDto
+                        {
+                            Id = r.Id,
+                            Name = author?.Name ?? string.Empty,
+                            Avatar = new AvatarDto { Uri = author?.Avatar ?? string.Empty },
+                            Rating = r.Rating,
+                            Text = r.Comment
+                        };
+                    }).ToList()
+                });
+            }
+
+            return result
+                .OrderByDescending(t => DateTime.TryParse(t.Date, out var d) ? d : DateTime.MinValue)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Tur programindaki etkinlikleri zaman cizelgesi ogelerine cevirir.
+        /// Tur bitmis oldugu icin tum ogeler tamamlanmis isaretleniyor.
+        /// </summary>
+        private static List<TimelineItemDto> BuildTimeline(TripResponseDto trip)
+        {
+            return trip.Itinerary
+                .OrderBy(i => i.Day)
+                .SelectMany(day => day.Activities.Select(a => new TimelineItemDto
+                {
+                    Id = $"{trip.Id}-{day.Day}-{a.Label}",
+                    Title = string.IsNullOrWhiteSpace(a.Label) ? day.Title : a.Label,
+                    Time = a.Time,
+                    Image = trip.Image,
+                    IsCompleted = true
+                }))
+                .ToList();
+        }
+
+        /// <summary>Konaklama suresini tur tarihlerinden gun cinsinden yazar.</summary>
+        private static string BuildStayText(TripResponseDto trip)
+        {
+            if (!DateTime.TryParse(trip.DateStart, out var start)) return string.Empty;
+            if (!DateTime.TryParse(trip.DateEnd, out var end)) return string.Empty;
+            var days = (end.Date - start.Date).Days;
+            return days > 0 ? $"{days} Gun Konaklama" : string.Empty;
         }
 
         private async Task<List<CompanyReviewItemDto>> GetCompanyReviewsAsync()
